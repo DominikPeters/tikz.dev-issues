@@ -19,6 +19,7 @@ copyfile("lwarp.css", "processed/lwarp.css")
 copyfile("pgfmanual.js", "processed/pgfmanual.js")
 copyfile("lwarp-mathjax-emulation.js", "processed/lwarp-mathjax-emulation.js")
 copytree("pgfplots-images", "processed/pgfplots-images", dirs_exist_ok=True)
+copytree("figures", "processed/figures", dirs_exist_ok=True)
 
 ## table of contents and anchor links
 def rearrange_heading_anchors(soup):
@@ -598,7 +599,7 @@ def handle_code_spaces(soup):
 
 for filename in sorted(os.listdir()):
     if filename.endswith(".html"):
-        if filename in ["description.html", "pgfmanual_html.html", "home.html"] or "spotlight" in filename:
+        if filename in ["description.html", "pgfmanual_html.html", "home.html"] or "spotlight" in filename or ".out." in filename:
             continue
         else:
             print(f"Processing {filename}")
