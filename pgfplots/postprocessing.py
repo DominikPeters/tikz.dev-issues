@@ -478,7 +478,7 @@ def _add_dimensions(tag, svgfilename):
     return (width_px, height_px)
 
 def process_images(soup):
-    return None
+    # return None
     for tag in soup.find_all("img"):
         if "svg" in tag['src']: 
             width_px, height_px = _add_dimensions(tag, tag['src'])
@@ -520,8 +520,8 @@ def semantic_tags(soup):
     for example in soup.find_all(class_="example"):
         example.name = "figure"
     for examplecode in soup.find_all(class_="example-code"):
-        p = examplecode.find("p")
-        p.name = "code"
+        for p in examplecode.find_all("p"):
+            p.name = "code"
 
 def add_meta_tags(filename, soup):
     stem = os.path.splitext(filename)[0]
@@ -599,7 +599,7 @@ def handle_code_spaces(soup):
 
 for filename in sorted(os.listdir()):
     if filename.endswith(".html"):
-        if filename in ["description.html", "pgfmanual_html.html", "home.html"] or "spotlight" in filename or ".out." in filename:
+        if filename in ["description.html", "pgfplots_html.html", "home.html"] or "spotlight" in filename or ".out." in filename:
             continue
         else:
             print(f"Processing {filename}")
@@ -657,7 +657,7 @@ def numspace_to_spaces(filename):
 
 for filename in sorted(os.listdir()):
     if filename.endswith(".html"):
-        if filename in ["index-0.html", "description.html", "pgfmanual_html.html", "home.html"] or "spotlight" in filename:
+        if filename in ["index-0.html", "description.html", "pgfplots_html.html", "home.html"] or "spotlight" in filename or ".out." in filename:
             continue
         else:
             numspace_to_spaces(filename)
