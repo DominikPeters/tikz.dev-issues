@@ -872,7 +872,6 @@ h6:hover > .anchor-link {
   background: #e5e5ff;
   font-family: var(--monospace-font);
   /* font-size: 98%; */
-  line-height: 1;
   position: relative;
   overflow-wrap: break-word;
   word-break: break-word;
@@ -880,6 +879,7 @@ h6:hover > .anchor-link {
 
 .example-code code,
 .example-code p {
+  display: block;
   font-family: var(--monospace-font);
   font-size: 81.25%;
   margin: 0;
