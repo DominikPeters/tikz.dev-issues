@@ -20,6 +20,7 @@ copyfile("pgfmanual.js", "processed/pgfmanual.js")
 copyfile("lwarp-mathjax-emulation.js", "processed/lwarp-mathjax-emulation.js")
 copytree("pgfplots-images", "processed/pgfplots-images", dirs_exist_ok=True)
 copytree("figures", "processed/figures", dirs_exist_ok=True)
+copytree("plotdata", "processed/plotdata", dirs_exist_ok=True)
 
 ## table of contents and anchor links
 def rearrange_heading_anchors(soup):
@@ -62,6 +63,7 @@ def rearrange_heading_anchors(soup):
                 break
 
 def add_copyright_comment_block(filename, soup):
+    return
     # open tex file to fetch copyright block (initial lines starting in %)
     stem = os.path.splitext(filename)[0]
     tex_filename = f"pgfmanual-en-{stem}.tex"
@@ -116,16 +118,18 @@ def make_page_toc(soup):
     toc_nav.append(toc)
     heading_tags = ["h5", "h6"]
     for tag in soup.find_all(heading_tags):
-        try:
+        if tag.find(class_="sectionnumber"):
             anchor = tag.find(class_="sectionnumber").get('id')
-        except:
-            print(f"Error: {tag} has no sectionnumber")
-            continue
+            sectionnumber = tag.find(class_="sectionnumber").text.strip()
+        else:
+            anchor = tag.get('id')
+            sectionnumber = ""
+            print(f"Error: {tag} has no sectionnumber, using id {anchor} instead")
         item = soup.new_tag('p')
         a = soup.new_tag('a', href=f"#{anchor}")
         toc_string = tag.text.strip().replace("¶", "")
-        sectionnumber = tag.find(class_="sectionnumber").text.strip()
-        toc_string = toc_string.replace(sectionnumber, "")
+        if sectionnumber:
+            toc_string = toc_string.replace(sectionnumber, "")
         a.string = toc_string.strip()
         if tag.name == "h5":
             a['class'] = 'tocsubsection'
@@ -192,7 +196,7 @@ def shorten_sidetoc_and_add_part_header(soup, is_home=False):
         filename = entry.a['href'].split('#')[0]
         file_id = entry.a['href'].split('#')[1]
         # not in local version
-        # entry.a['href'] = filename.replace(".html", "") # get rid of autosec in toc, not needed
+        entry.a['href'] = filename.replace(".html", "") # get rid of autosec in toc, not needed
         # get rid of sectionnumber
         new_a = soup.new_tag('a', href=entry.a['href'])
         new_a['class'] = entry.a['class']
@@ -203,7 +207,8 @@ def shorten_sidetoc_and_add_part_header(soup, is_home=False):
         new_a.extend(contents)
         entry.a.replace_with(new_a)
         # Skip introduction link because it doesn't have a part
-        if entry.a['href'] == "index-0":
+        if "index-0" in entry.a['href']:
+            entry.a['href'] = "https://tikz.dev/pgfplots/"
             entry.a['class'] = ['linkintro']
             if is_home:
                 entry['class'] = ['current']
@@ -219,7 +224,7 @@ def shorten_sidetoc_and_add_part_header(soup, is_home=False):
             if file_id == my_file_id:
                 assert 'class' not in entry
                 entry['class'] = ["current"]
-                soup.title.string = entry.a.get_text() + " - PGF/TikZ Manual"
+                soup.title.string = entry.a.get_text() + " - PGFplots Manual"
                 my_part = element
         elif "tocsection" in entry.a['class']:
             element = {
@@ -231,7 +236,7 @@ def shorten_sidetoc_and_add_part_header(soup, is_home=False):
             if file_id == my_file_id:
                 assert 'class' not in entry
                 entry['class'] = ["current"]
-                soup.title.string = entry.a.get_text() + " - PGF/TikZ Manual"
+                soup.title.string = entry.a.get_text() + " - PGFplots Manual"
                 my_part = last_part
         else:
             print(f"unknown class: {entry.a['class']}")
@@ -309,10 +314,9 @@ def write_to_file(soup, filename):
         file.write(html)
 
 def remove_mathjax_if_possible(filename, soup):
-    return None
     with open(filename, "r") as file:
         content = file.read()
-        if content.count("\(") == 61:
+        if content.count("\(") == 78:
             # mathjax isn't actually used
             soup.find(class_="hidden").decompose()
             # remove element with id "MathJax-script"
@@ -336,7 +340,7 @@ def remove_mathjax_if_possible(filename, soup):
 
 def remove_html_from_links(filename, soup):
     # don't do it for this local version
-    return
+    # return
     for tag in soup.find_all("a"):
         if 'href' in tag.attrs:
             if tag['href'] == "index.html" or tag['href'] == "index":
@@ -367,55 +371,36 @@ def add_header(soup):
     header.append(hamburger)
 
     h1 = soup.new_tag('strong')
-    link = soup.new_tag('a', href="/")
+    tikzdevlink = soup.new_tag('a', href="https://tikz.dev")
+    tikzdevlink.append("tikz.dev / ")
+    tikzdevlink['style'] = "font-weight: normal;"
+    h1.append(tikzdevlink)
+    link = soup.new_tag('a', href="https://tikz.dev/pgfplots/")
     h1.append(link)
     link.append("PGFplots")
     link.append(" Manual")
     header.append(h1)
     soup.find(class_="bodyandsidetoc").insert(0, header)
 
-    # Docsearch 2
-    # search_input = soup.new_tag('input', type="search", placeholder="Search..")
-    # search_input['class'] = "search-input"
+    # Docsearch 3
+    # search_input = soup.new_tag('div', id="search")
     # header.append(search_input)
 
-    # link = soup.new_tag('link', rel="stylesheet", href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css")
+    # link = soup.new_tag('link', rel="stylesheet", href="https://cdn.jsdelivr.net/npm/@docsearch/css@3")
     # soup.head.append(link)
 
-    # script = soup.new_tag('script', src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js")
+    # script = soup.new_tag('script', src="https://cdn.jsdelivr.net/npm/@docsearch/js@3")
     # soup.body.append(script)
     # script = soup.new_tag('script')
     # script.append("""
     #   docsearch({
-    #     apiKey: 'ae66ec3fc9df4b52b4d6f24fc8508fd3',
-    #     indexName: 'tikz.dev',
-    #     appId: 'Q70NNMA9GC',
-    #     inputSelector: '.search-input',
-    #     // Set debug to true to inspect the dropdown
-    #     debug: false,
+    #     apiKey: '196e8c10ec187c9ae525dd5226fb9378',
+    #     indexName: 'tikz',
+    #     appId: 'JS6V5VZSDB',
+    #     container: '#search',
     # });
     # """)
     # soup.body.append(script)
-
-    # Docsearch 3
-    search_input = soup.new_tag('div', id="search")
-    header.append(search_input)
-
-    link = soup.new_tag('link', rel="stylesheet", href="https://cdn.jsdelivr.net/npm/@docsearch/css@3")
-    soup.head.append(link)
-
-    script = soup.new_tag('script', src="https://cdn.jsdelivr.net/npm/@docsearch/js@3")
-    soup.body.append(script)
-    script = soup.new_tag('script')
-    script.append("""
-      docsearch({
-        apiKey: '196e8c10ec187c9ae525dd5226fb9378',
-        indexName: 'tikz',
-        appId: 'JS6V5VZSDB',
-        container: '#search',
-    });
-    """)
-    soup.body.append(script)
 
 def favicon(soup):
     link = soup.new_tag('link', rel="icon", type="image/png", sizes="16x16", href="/favicon-16x16.png")
@@ -432,17 +417,17 @@ def add_footer(soup):
     footer_left = soup.new_tag('div')
     footer_left['class'] = "footer-left"
     # Link to license
-    link = soup.new_tag('a', href="/license")
+    link = soup.new_tag('a', href="/install")
     link.string = "License"
     footer_left.append(link)
     footer_left.append(" · ")
     # Link to CTAN
-    link = soup.new_tag('a', href="https://ctan.org/pkg/pgf")
+    link = soup.new_tag('a', href="https://ctan.org/pkg/pgfplots")
     link.string = "CTAN"
     footer_left.append(link)
     footer_left.append(" · ")
     # Link to PDF version
-    link = soup.new_tag('a', href="https://pgf-tikz.github.io/pgf/pgfmanual.pdf")
+    link = soup.new_tag('a', href="https://pgfplots.sourceforge.net/pgfplots.pdf")
     link.string = "Official PDF version"
     footer_left.append(link)
     footer_left.append(" · ")
@@ -452,7 +437,7 @@ def add_footer(soup):
     footer_left.append(link)
     footer_left.append(" · ")
     # Link to About the HTML version
-    link = soup.new_tag('a', href="https://github.com/DominikPeters/pgf-tikz-html-manual")
+    link = soup.new_tag('a', href="https://github.com/DominikPeters/pgfplots-html-manual")
     link.string = "About this HTML version"
     footer_left.append(link)
     #
@@ -527,24 +512,24 @@ def add_meta_tags(filename, soup):
     stem = os.path.splitext(filename)[0]
     # title
     if filename == "index-0.html":
-        soup.title.string = "PGF/TikZ Manual - Complete Online Documentation"
+        soup.title.string = "PGFplots Manual - HTML Documentation"
     # descriptions
     if filename == "index-0.html":
-        meta = soup.new_tag('meta', content="Full online version of the documentation of PGF/TikZ, the TeX package for creating graphics.")
+        meta = soup.new_tag('meta', content="Full online version of the documentation of PGFplots, the TeX package for creating plots.")
         meta['name'] = "description"
         soup.head.append(meta)
-        og_meta = soup.new_tag('meta', property="og:description", content="Full online version of the documentation of PGF/TikZ, the TeX package for creating graphics.")
+        og_meta = soup.new_tag('meta', property="og:description", content="Full online version of the documentation of PGFplots, the TeX package for creating plots.")
         soup.head.append(og_meta)
     # canonical
     if filename == "index-0.html":
-        link = soup.new_tag('link', rel="canonical", href="https://tikz.dev/")
+        link = soup.new_tag('link', rel="canonical", href="https://tikz.dev/pgfplots/")
         soup.head.append(link)
-        meta = soup.new_tag('meta', property="og:url", content="https://tikz.dev/")
+        meta = soup.new_tag('meta', property="og:url", content="https://tikz.dev/pgfplots/")
         soup.head.append(meta)
     else:
-        link = soup.new_tag('link', rel="canonical", href="https://tikz.dev/" + stem)
+        link = soup.new_tag('link', rel="canonical", href="https://tikz.dev/pgfplots/" + stem)
         soup.head.append(link)
-        meta = soup.new_tag('meta', property="og:url", content="https://tikz.dev/" + stem)
+        meta = soup.new_tag('meta', property="og:url", content="https://tikz.dev/pgfplots/" + stem)
         soup.head.append(meta)
     # thumbnail
     img_filename = "social-media-banners/" + stem + ".png"
@@ -652,6 +637,9 @@ def numspace_to_spaces(filename):
             replacement = opener+" "+closer
             html = html.replace(pattern, replacement)
     html = html.replace("&numsp;", '<span class="spaces"> </span>')
+    if html != html.replace("<code> </code>", '<code style="white-space: pre;"> </code>'):
+        print(f"Found code block with only one space in {filename}")
+    html = html.replace("<code> </code>", '<code style="white-space: pre;"> </code>')
     with open("processed/"+filename, "w") as f:
         f.write(html)
 
