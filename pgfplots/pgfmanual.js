@@ -31,9 +31,10 @@ function initClipboardButtons() {
   for (elem of document.getElementsByClassName("clipboardButton")) {
     elem.addEventListener("click", function (e) {
       var target = e.target;
-      var copyText = target.parentElement
-        .getElementsByTagName("code")[0]
-        .innerText.trim();
+      var copyText = "";
+      for (code of target.parentElement.getElementsByTagName("code")) {
+        copyText += code.innerText + "\n";
+      }
       navigator.clipboard.writeText(copyText).then(
         function () {
           target.innerHTML = "&#x2713;";
