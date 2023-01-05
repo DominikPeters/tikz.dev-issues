@@ -403,9 +403,11 @@ def add_header(soup):
     # soup.body.append(script)
 
 def favicon(soup):
-    link = soup.new_tag('link', rel="icon", type="image/png", sizes="16x16", href="/favicon-16x16.png")
+    link = soup.new_tag('link', rel="icon", type="image/png", sizes="16x16", href="/favicon-16x16-pgfplots.png")
     soup.head.append(link)
-    link = soup.new_tag('link', rel="icon", type="image/png", sizes="32x32", href="/favicon-32x32.png")
+    link = soup.new_tag('link', rel="icon", type="image/png", sizes="32x32", href="/favicon-32x32-pgfplots.png")
+    soup.head.append(link)
+    link = soup.new_tag('link', rel="icon", href="/favicon-pgfplots.svg", type="image/svg+xml")
     soup.head.append(link)
     link = soup.new_tag('link', rel="apple-touch-icon", type="image/png", sizes="180x180", href="/apple-touch-icon.png")
     soup.head.append(link)
