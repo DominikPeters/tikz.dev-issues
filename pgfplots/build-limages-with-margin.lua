@@ -489,7 +489,7 @@ end -- do
 -- If not, the compile must have aborted, and the images are incomplete.
 if ( lwimgpage ~= "end" ) then
     warnlimagesrecompile()
-    os.exit(1) ;
+    -- os.exit(1) ;
 end
 if ( pagezerowarning ) then
     warnlimagesrecompile()
