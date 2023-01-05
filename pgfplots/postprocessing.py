@@ -63,7 +63,6 @@ def rearrange_heading_anchors(soup):
                 break
 
 def add_copyright_comment_block(filename, soup):
-    return
     # open tex file to fetch copyright block (initial lines starting in %)
     stem = os.path.splitext(filename)[0]
     tex_filename = f"pgfmanual-en-{stem}.tex"
@@ -77,25 +76,32 @@ def add_copyright_comment_block(filename, soup):
                     break
     if not copyright_lines:
         copyright_lines = [
-            "Copyright 2019 by Till Tantau",
             "",
-            "This file may be distributed and/or modified",
+            "Copyright 2007/2008 by Christian Feuersaenger.",
             "",
-            "1. under the LaTeX Project Public License and/or",
-            "2. under the GNU Free Documentation License.",
+            "This program is free software: you can redistribute it and/or modify",
+            "it under the terms of the GNU General Public License as published by",
+            "the Free Software Foundation, either version 3 of the License, or",
+            "(at your option) any later version.",
             "",
-            "See the file doc/generic/pgf/licenses/LICENSE for more details."
+            "This program is distributed in the hope that it will be useful,",
+            "but WITHOUT ANY WARRANTY; without even the implied warranty of",
+            "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the",
+            "GNU General Public License for more details.",
+            "",
+            "You should have received a copy of the GNU General Public License",
+            "along with this program.  If not, see <http://www.gnu.org/licenses/>.",
         ]
-    copyright_lines.insert(0, "TikZ/PGF documentation:")
+    copyright_lines.insert(0, "Package pgfplots.sty documentation.")
     copyright_lines.append("")
     copyright_lines.append("Translated to HTML using the lwarp package:")
     copyright_lines.append("Copyright 2016-2021 Brian Dunn - BD Tech Concepts LLC")
     copyright_lines.append("")
     copyright_lines.append("tikz.dev:")
-    copyright_lines.append("Copyright 2021-2022 Dominik Peters")
-    copyright_lines.append("This file may be distributed and/or modified under the LaTeX Project Public License.")
+    copyright_lines.append("Copyright 2021-2023 Dominik Peters")
+    copyright_lines.append("This file may be redistributed and/or modified under the GNU General Public License.")
     # add copyright block to html
-    comment = Comment("\n".join(copyright_lines).replace("the file doc/generic/pgf/licenses/LICENSE","https://tikz.dev/license"))
+    comment = Comment("\n".join(copyright_lines))
     soup.html.insert(0, comment)
 
 def make_page_toc(soup):
@@ -420,7 +426,7 @@ def add_footer(soup):
     footer_left['class'] = "footer-left"
     # Link to license
     link = soup.new_tag('a', href="/install")
-    link.string = "License"
+    link.string = "License: GPL 3.0"
     footer_left.append(link)
     footer_left.append(" · ")
     # Link to CTAN

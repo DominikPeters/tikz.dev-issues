@@ -1150,3 +1150,14 @@ nav.sidetoc .sidetoccontents a.tocsubsubsection {
 .dedicationsignature {
   text-align: right;
 }
+
+.abstract-block {
+  margin: 0 auto;
+  padding: 1em;
+  background-color: hsl(30, 37%, 90%);
+}
+
+.abstract-heading {
+  font-weight: bold;
+  text-align: center;
+}
