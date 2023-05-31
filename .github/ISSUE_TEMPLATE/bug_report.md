@@ -20,4 +20,4 @@ A clear and concise description of what the bug is.
 If applicable, add screenshots to help explain your problem, potentially contrasting PDF and HTML version.
 
 **Device / OS / Browser**
-If relevant, say which browser your using.
+If relevant, say which browser you're using.
