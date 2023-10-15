@@ -389,24 +389,27 @@ def add_header(soup):
     soup.find(class_="bodyandsidetoc").insert(0, header)
 
     # Docsearch 3
-    # search_input = soup.new_tag('div', id="search")
-    # header.append(search_input)
+    search_input = soup.new_tag('div', id="search")
+    header.append(search_input)
 
-    # link = soup.new_tag('link', rel="stylesheet", href="https://cdn.jsdelivr.net/npm/@docsearch/css@3")
-    # soup.head.append(link)
+    link = soup.new_tag('link', rel="stylesheet", href="https://cdn.jsdelivr.net/npm/@docsearch/css@3")
+    soup.head.append(link)
 
-    # script = soup.new_tag('script', src="https://cdn.jsdelivr.net/npm/@docsearch/js@3")
-    # soup.body.append(script)
-    # script = soup.new_tag('script')
-    # script.append("""
-    #   docsearch({
-    #     apiKey: '196e8c10ec187c9ae525dd5226fb9378',
-    #     indexName: 'tikz',
-    #     appId: 'JS6V5VZSDB',
-    #     container: '#search',
-    # });
-    # """)
-    # soup.body.append(script)
+    script = soup.new_tag('script', src="https://cdn.jsdelivr.net/npm/@docsearch/js@3")
+    soup.body.append(script)
+    script = soup.new_tag('script')
+    script.append("""
+      docsearch({
+        apiKey: '196e8c10ec187c9ae525dd5226fb9378',
+        indexName: 'tikz',
+        appId: 'JS6V5VZSDB',
+        container: '#search',
+        searchParameters: {
+          filters: "tags:pgfplots",
+        },
+    });
+    """)
+    soup.body.append(script)
 
 def favicon(soup):
     link = soup.new_tag('link', rel="icon", type="image/png", sizes="16x16", href="/favicon-16x16-pgfplots.png")
