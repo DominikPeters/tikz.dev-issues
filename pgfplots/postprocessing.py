@@ -428,7 +428,7 @@ def add_footer(soup):
     footer_left = soup.new_tag('div')
     footer_left['class'] = "footer-left"
     # Link to license
-    link = soup.new_tag('a', href="/install")
+    link = soup.new_tag('a', href="https://tikz.dev/pgfplots/install")
     link.string = "License: GPL 3.0"
     footer_left.append(link)
     footer_left.append(" · ")
