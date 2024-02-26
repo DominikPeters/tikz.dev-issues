@@ -471,13 +471,17 @@ def _add_dimensions(tag, svgfilename):
         claimed_height_pt = svg.documentElement.getAttribute("height").replace("pt", "")
         # ^ this way sometimes gets the wrong aspect ratio, because of SVG encoding errors (January 2023)
         # I've not seen this happen for TikZ, but it does happen for PGFPlots
-        view_box = svg.documentElement.getAttribute("viewBox").split(" ")
-        width_pt = float(view_box[2]) * 1.33333
-        height_pt = float(view_box[3]) * 1.33333
-        # this will throw an error if this stops working correctly
-        assert abs(float(claimed_height_pt) - height_pt) < 10 or abs(float(claimed_width_pt) - width_pt) < 10
-    width_px = float(width_pt) * 1.33333
-    height_px = float(height_pt) * 1.33333
+        if svg.documentElement.getAttribute("viewBox"):
+            view_box = svg.documentElement.getAttribute("viewBox").split(" ")
+            width_pt = float(view_box[2])
+            height_pt = float(view_box[3])
+            # this will throw an error if this stops working correctly
+            assert abs(float(claimed_height_pt) - height_pt) < 10 or abs(float(claimed_width_pt) - width_pt) < 10
+        else:
+            width_pt = claimed_width_pt
+            height_pt = claimed_height_pt
+    width_px = float(width_pt) * 1.33333 * 1.33333
+    height_px = float(height_pt) * 1.33333 * 1.33333
     tag['width'] = "{:.3f}".format(width_px)
     tag['height'] = "{:.3f}".format(height_px)
     return (width_px, height_px)
