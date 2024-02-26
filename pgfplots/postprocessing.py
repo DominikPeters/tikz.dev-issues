@@ -324,9 +324,11 @@ def remove_mathjax_if_possible(filename, soup):
         content = file.read()
         if content.count("\(") == 78:
             # mathjax isn't actually used
-            soup.find(class_="hidden").decompose()
+            if soup.find(class_="hidden"):
+                soup.find(class_="hidden").decompose()
             # remove element with id "MathJax-script"
-            soup.find(id="MathJax-script").decompose()
+            if soup.find(id="MathJax-script"):
+                soup.find(id="MathJax-script").decompose()
             # go through all script tags and remove the ones that contain the word "emulation"
             for tag in soup.find_all('script'):
                 if "Lwarp MathJax emulation code" in tag.string:
