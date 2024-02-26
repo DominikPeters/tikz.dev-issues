@@ -501,6 +501,12 @@ def process_images(soup):
             png_filename = tag['src'].replace("svg", "png")
             if kilobytes(png_filename) < 5 * kilobytes(tag['src']):
                 tag['src'] = png_filename
+            # use svg for images using the pattern library
+            if tag.find_parent("figure"):
+                fig = tag.find_parent("figure")
+                fig_text = fig.get_text()
+                if "pattern" in fig_text:
+                    tag['src'] = tag['src'].replace("png", "svg")
     for tag in soup.find_all("object"):
         if "svg" in tag['data']: 
             _add_dimensions(tag, tag['data'])
@@ -639,10 +645,10 @@ for filename in sorted(os.listdir()):
                 addClipboardButtons(soup)
                 rewrite_svg_links(soup)
                 add_version_to_css_js(soup)
+                semantic_tags(soup)
                 process_images(soup)
                 add_header(soup)
                 favicon(soup)
-                semantic_tags(soup)
                 texttt_spans(soup)
                 add_meta_tags(filename, soup)
                 add_copyright_comment_block(filename, soup)
