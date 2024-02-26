@@ -649,7 +649,7 @@ for filename in sorted(os.listdir()):
                 handle_code_spaces(soup)
                 soup.find(class_="bodyandsidetoc")['class'].append("grid-container")
                 if filename == "index-0.html":
-                    soup.h4.decompose() # don't need header on start page
+                    soup.h2.decompose() # don't need header on start page
                     soup.body['class'] = "index-page"
                     write_to_file(soup, "processed/index.html")
                     add_spotlight_toc("index.html")
