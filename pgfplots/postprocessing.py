@@ -501,12 +501,17 @@ def process_images(soup):
             png_filename = tag['src'].replace("svg", "png")
             if kilobytes(png_filename) < 5 * kilobytes(tag['src']):
                 tag['src'] = png_filename
-            # use svg for images using the pattern library
             if tag.find_parent("figure"):
                 fig = tag.find_parent("figure")
                 fig_text = fig.get_text()
+                # use svg for images using the pattern library
                 if "pattern" in fig_text:
                     tag['src'] = tag['src'].replace("png", "svg")
+                    continue
+                # use imagemagick pngs for images using shaders
+                fig_text = fig.get_text()
+                if "shader" in fig_text or "pgfplotscolorbardrawstandalone" in fig_text or "contour" in fig_text:
+                    tag['src'] = png_filename.replace(".png", ".magick.png")
     for tag in soup.find_all("object"):
         if "svg" in tag['data']: 
             _add_dimensions(tag, tag['data'])

@@ -524,6 +524,14 @@ executecheckerror (
     "pngquant --force --ext .png -- " ..
         imagesdirectory .. dirslash .. lwimgname ..".png" ..
         seqname ..
+    -- Convert the image to png using imagemagick:
+    "convert -density 300 " .. imagesdirectory .. dirslash .. lwimgname .. ".pdf " ..
+        imagesdirectory .. dirslash .. lwimgname ..".magick.png" ..
+        seqname ..
+    -- Compress the imagemagick png:
+    "pngquant --force --ext .png -- " ..
+        imagesdirectory .. dirslash .. lwimgname ..".magick.png" ..
+        seqname ..
     -- Remove the temporary files:
     rmname .. " " .. imagesdirectory .. dirslash .. lwimgname .. ".pdf" .. seqname ..
     rmname .. " " .. imagesdirectory .. dirslash .. "lateximagetemp-" .. lwimgpage .. ".pdf" ..
