@@ -22,8 +22,12 @@ copytree("pgfplots-images", "processed/pgfplots-images", dirs_exist_ok=True)
 copytree("figures", "processed/figures", dirs_exist_ok=True)
 copytree("plotdata", "processed/plotdata", dirs_exist_ok=True)
 
+# make some extra anchors to buggy section numbers for backwards compatibility
+# see https://github.com/DominikPeters/tikz.dev-issues/issues/27
+old_section_numbers = {"preliminaries-components": "2", "preliminaries-upgrade": "3", "preliminaries-team": "4", "preliminaries-acknowledgements": "5", "install": "6", "errors": "7", "tutorial1": "8", "tutorial2": "9", "tutorial3": "10", "tutorial4": "11", "reference-texdialects": "12", "reference-axis": "13", "reference-addplot": "14", "reference-preliminaryoptions": "15", "reference-2dplots": "16", "reference-3dplots": "17", "reference-markers": "18", "reference-meta": "19", "reference-axisdescription": "20", "reference-scaling": "21", "reference-3dconfiguration": "22", "reference-errorbars": "23", "reference-numberformatting": "24", "reference-specifyrange": "25", "reference-tickoptions": "26", "reference-gridoptions-axiscoordinates": "27", "reference-annotations": "28", "reference-styleoptions": "29", "reference-alignment": "30", "reference-bb-clip": "31", "reference-symbolic-transformations": "32", "reference-coordfiltering": "33", "reference-transformations": "34", "reference-linefitting": "35", "reference-miscellaneous": "36", "reference-tikzinteroperability": "37", "reference-layers": "38", "reference-technicalinternals": "39", "libs-clickable": "40", "libs-colorbrewer": "41", "libs-colormaps": "42", "libs-dateplot": "43", "libs-decorations-softclip": "44", "libs-external": "45", "libs-fillbetween": "46", "libs-groupplots": "47", "libs-patchplots": "48", "libs-polar": "49", "libs-smithchart": "50", "libs-statistics": "51", "libs-ternary": "52", "libs-units": "53", "pgfplotstable-load-data": "54", "pgfplotstable-data-processing": "55", "pgfplotstable-createcol": "56", "pgfplotstable-miscellaneous": "57", "optimization": "58", "memorylimits": "59", "faster": "60", "export-pdf-eps": "61", "import-matlab": "62", "export-svg": "63", "python": "64", "utility-commands": "65", "commands-inside-axes": "66", "path-operations": "67", "basic-coordinates": "68", "access-axis-limits": "69", "access-values": "70", "layer-access": "71"}
+
 ## table of contents and anchor links
-def rearrange_heading_anchors(soup):
+def rearrange_heading_anchors(filename, soup):
     heading_tags = ["h4", "h5", "h6"]
     for tag in soup.find_all(heading_tags):
         entry = tag.find()
@@ -37,6 +41,15 @@ def rearrange_heading_anchors(soup):
         entry["id"] = anchor
         # add paragraph links
         if tag.name in ["h5", "h6"]:
+            # extra anchor for backwards compatibility
+            stem = filename.replace(".html", "")
+            if stem in old_section_numbers and int(old_section_numbers[stem]) > 8:
+                # e.g. sec-4.8.1 -> sec-25.1
+                old_anchor = "sec-" + old_section_numbers[stem] + "." + ".".join(anchor.split(".")[2:])
+                # a tag with id
+                old_anchor_tag = soup.new_tag('a')
+                old_anchor_tag['id'] = old_anchor
+                entry.insert(0, old_anchor_tag)
             # wrap the headline tag's contents in a span (for flexbox purposes)
             headline = soup.new_tag("span")
             for child in reversed(tag.contents):
@@ -641,7 +654,7 @@ for filename in sorted(os.listdir()):
                 soup = BeautifulSoup(fp, 'html5lib')
                 add_footer(soup)
                 shorten_sidetoc_and_add_part_header(soup, is_home=(filename == "index-0.html"))
-                rearrange_heading_anchors(soup)
+                rearrange_heading_anchors(filename,soup)
                 make_page_toc(soup)
                 remove_mathjax_if_possible(filename, soup)
                 make_entryheadline_anchor_links(soup)
