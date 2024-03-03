@@ -282,36 +282,34 @@ def shorten_sidetoc_and_add_part_header(soup, is_home=False):
         _add_mobile_toc(soup)
 
 ## make anchor tags to definitions
-def get_entryheadline_p(tag):
-    for child in tag.find_all(name="p"):
-        if child.name is not None:
-            if child.name == 'p':
-                return child
+def find_sibling_with_pgfp_id(tag):
+    # Find the first sibling of the given tag that's a p tag
+    p_sibling = tag.find_next_sibling('p')
+    
+    if p_sibling:
+        # Find all a tags within the p tag
+        a_tags = p_sibling.find_all('a')
+        
+        for a_tag in a_tags:
+            # Check if the a tag has an id attribute that starts with 'pgfp'
+            if a_tag.get('id', '').startswith('pgfp'):
+                return a_tag.get('id')
+    
+    # Return None if no matching a tag is found
     return None
-def get_entryheadline_a(p_tag):
-    for child in p_tag.children:
-        if child.name is not None:
-            if child.name == 'a':
-                return child
-    return None
+
 def make_entryheadline_anchor_links(soup):
     for tag in soup.find_all(class_="entryheadline"):
-        p_tag = get_entryheadline_p(tag)
-        if p_tag is None:
-            continue
-        a_tag = get_entryheadline_a(p_tag)
-        if a_tag is None:
-            continue
-        anchor = a_tag.get('id')
-        if "pgf" not in anchor:
+        anchor = find_sibling_with_pgfp_id(tag)
+        if anchor is None:
             continue
         # make anchor prettier
-        pretty_anchor = anchor.replace("pgf.back/","\\").replace("pgf./","")
+        pretty_anchor = anchor.replace("pgfp./","").replace("pgfp.<CS>","\\").replace(":", "_")
         link = soup.new_tag('a', href=f"#{pretty_anchor}")
         link['class'] = 'anchor-link'
         link['id'] = pretty_anchor
         link.append("¶")
-        p_tag.append(link)
+        tag.find('p').append(link)
 
 ## write to file
 def write_to_file(soup, filename):
@@ -611,7 +609,7 @@ def add_meta_tags(filename, soup):
     meta = soup.new_tag('meta', property="og:title", content=soup.title.string)
     soup.head.append(meta)
     # twitter format
-    meta = soup.new_tag('meta', content="summary_large_image")
+    meta = soup.new_tag('meta', content="summary")
     meta['name'] = "twitter:card"
     soup.head.append(meta)
 

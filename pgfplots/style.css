@@ -1036,23 +1036,23 @@ nav.sidetoc .sidetoccontents a.tocsubsubsection {
 }
 
 .hl-default {
-  margin-left: auto;
+  margin-left: 0.5em;
   /* push to the right */
   color: rgb(49, 50, 58);
 }
 
-/* .entryheadline p {
+.entryheadline p {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   position: relative;
-} */
+}
 
 .entryheadline p > a.anchor-link {
   opacity: 0.4;
   padding-left: 3px;
   position: static;
   /* do not ignore in flex layout */
-  margin-left: 0.5em;
+  margin-left: auto;
 }
 
 .entryheadline p:hover > a.anchor-link {
