@@ -335,8 +335,8 @@ def remove_mathjax_if_possible(filename, soup):
         content = file.read()
         if content.count("\(") == 78:
             # mathjax isn't actually used
-            if soup.find(class_="hidden"):
-                soup.find(class_="hidden").decompose()
+            if soup.find("div", attrs={"data-nosnippet": True}):
+                soup.find("div", attrs={"data-nosnippet": True}).decompose()
             # remove element with id "MathJax-script"
             if soup.find(id="MathJax-script"):
                 soup.find(id="MathJax-script").decompose()
@@ -354,7 +354,7 @@ def remove_mathjax_if_possible(filename, soup):
                     tag.decompose()
                     script = soup.new_tag('script', src="lwarp-mathjax-emulation.js")
                     script.attrs['async'] = None
-                    soup.head.append(script)
+                    soup.find(id="MathJax-script").insert_before(script)
                     break
 
 def remove_html_from_links(filename, soup):
