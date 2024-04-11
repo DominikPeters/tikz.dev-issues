@@ -353,7 +353,6 @@ def remove_mathjax_if_possible(filename, soup):
                 if tag.string is not None and "Lwarp MathJax emulation code" in tag.string:
                     tag.decompose()
                     script = soup.new_tag('script', src="lwarp-mathjax-emulation.js")
-                    script.attrs['async'] = None
                     soup.find(id="MathJax-script").insert_before(script)
                     break
 
