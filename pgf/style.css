@@ -730,7 +730,8 @@ footer {
   font-size: 1em;
 }
 
-header strong {
+header strong,
+header .other-header-links {
   display: block;
   font-size: 1.1em;
   font-family: var(--main-font);
@@ -738,9 +739,9 @@ header strong {
   margin-left: 0.4em;
 }
 
-header strong a,
-header strong a:visited,
-header strong a:hover {
+header a,
+header a:visited,
+header a:hover {
   color: #fff !important;
   text-decoration: none;
 }

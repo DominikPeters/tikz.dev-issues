@@ -743,24 +743,14 @@ def add_quicklinks(filename):
     with open("processed/"+filename, "w") as f:
         f.write(html)
 
-def add_pgfplots_ad(filename):
-    if not "index" in filename:
-        return
+def add_header_links_to_other_sites(filename):
     with open("processed/"+filename, "r") as f:
         html = f.read()
-        html = html.replace('<div id="search"></div>', """<!-- temporary ad for new pgfplots pages -->
-        <div id="pgfplots-link">
-          <a href="https://tikz.dev/pgfplots">
-            <span id="pgfplots-desktop-version">
-              NEW:
-              <span class="pgfplots-link-text">tikz.dev/PGFplots</span>
-            </span>
-            <span id="pgfplots-smaller-version">
-              NEW:
-              <span class="pgfplots-link-text">PGFplots</span>
-            </span>
-          </a>
-        </div>
+        html = html.replace('<div id="search"></div>', """
+        <span class="other-header-links">
+          | <a href="/pgfplots/">PGFplots</a>
+          | <a href="/editor/">TikZ Editor</a>
+        </span>
         <div id="search"></div>""")
     with open("processed/"+filename, "w") as f:
         f.write(html)
@@ -809,11 +799,11 @@ for filename in sorted(os.listdir()):
                     write_to_file(soup, "processed/index.html")
                     add_spotlight_toc("index.html")
                     add_quicklinks("index.html")
-                    add_pgfplots_ad("index.html")
+                    add_header_links_to_other_sites("index.html")
                 else:
                     write_to_file(soup, "processed/"+filename)
                     add_spotlight_toc(filename)
-                    add_pgfplots_ad(filename)
+                    add_header_links_to_other_sites(filename)
 
 # prettify
 # run command with subprocess
