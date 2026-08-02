@@ -791,7 +791,11 @@ def handle_code_spaces(soup):
     # some links within codes have extra spaces, strip them
     for codeblock in soup.find_all(class_="example-code"):
         for link in codeblock.find_all("a"):
-            link.string = link.string.strip()
+            # Broken or nested markup can make ``Tag.string`` return None.
+            # The links this cleanup targets contain a single text node; leave
+            # any structurally more complex link untouched instead of crashing.
+            if link.string is not None:
+                link.string = link.string.strip()
 
 for filename in sorted(os.listdir()):
     if filename.endswith(".html"):
