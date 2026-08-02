@@ -359,6 +359,35 @@ def get_entryheadline_a(p_tag):
             if child.name == 'a':
                 return child
     return None
+
+def repair_lwarp_entryheadline(soup, p_tag, a_tag):
+    """Repair an anchor that lwarp occasionally serializes as invalid HTML."""
+    anchor = a_tag.get('id')
+    if anchor is not None:
+        return anchor
+
+    # With some lwarp/TeX Live combinations, an anchor created in horizontal
+    # mode is emitted as ``id="...">...</a>`` followed by ``<a <span...``.
+    # html5lib parses that as text plus an <a> whose attributes contain
+    # ``<span``. Recover the id and turn the malformed wrapper into a span.
+    if a_tag.name != 'a' or '<span' not in a_tag.attrs:
+        return None
+    if not p_tag.contents or not isinstance(p_tag.contents[0], NavigableString):
+        return None
+    match = re.fullmatch(r'\s*id="([^"]+)">\s*', str(p_tag.contents[0]))
+    if match is None:
+        return None
+
+    anchor = match.group(1)
+    p_tag.contents[0].replace_with('')
+    a_tag.insert_before(soup.new_tag('a', id=anchor))
+    a_tag.name = 'span'
+    a_tag.attrs.pop('<span', None)
+    for stray in p_tag.parent.find_all('a'):
+        if stray is not a_tag and '<span' in stray.attrs:
+            stray.decompose()
+    return anchor
+
 def make_entryheadline_anchor_links(soup):
     for tag in soup.find_all(class_="entryheadline"):
         p_tag = get_entryheadline_p(tag)
@@ -367,8 +396,8 @@ def make_entryheadline_anchor_links(soup):
         a_tag = get_entryheadline_a(p_tag)
         if a_tag is None:
             continue
-        anchor = a_tag.get('id')
-        if "pgf" not in anchor:
+        anchor = repair_lwarp_entryheadline(soup, p_tag, a_tag)
+        if not anchor or "pgf" not in anchor:
             continue
         # make anchor prettier
         pretty_anchor = anchor.replace("pgf.back/","\\").replace("pgf./","")
@@ -401,7 +430,7 @@ def write_to_file(soup, filename):
 def remove_mathjax_if_possible(filename, soup):
     with open(filename, "r") as file:
         content = file.read()
-        if content.count("\(") == 61:
+        if content.count(r"\(") == 61:
             # mathjax isn't actually used: delete div with "data-nosnippet"
             soup.find("div", attrs={"data-nosnippet": True}).decompose()
             # remove element with id "MathJax-script"
