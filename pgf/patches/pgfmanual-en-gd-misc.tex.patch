@@ -1,0 +1,12 @@
+diff --git a/doc/generic/pgf/pgfmanual-en-gd-misc.tex b/doc/generic/pgf/pgfmanual-en-gd-misc.tex
+--- a/doc/generic/pgf/pgfmanual-en-gd-misc.tex
++++ b/doc/generic/pgf/pgfmanual-en-gd-misc.tex
+@@ -7,7 +7,7 @@
+ %
+ % See the file doc/generic/pgf/licenses/LICENSE for more details.
+ 
+-\section[gd-misc]{Graph Drawing Layouts: Miscellaneous}
++\section{Graph Drawing Layouts: Miscellaneous}
+ 
+ 
+ \begin{tikzlibrary}{graphdrawing.misc}

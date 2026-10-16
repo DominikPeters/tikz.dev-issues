@@ -1,0 +1,23 @@
+diff --git a/doc/generic/pgf/pgfmanual.tex b/doc/generic/pgf/pgfmanual.tex
+--- a/doc/generic/pgf/pgfmanual.tex
++++ b/doc/generic/pgf/pgfmanual.tex
+@@ -12,5 +12,19 @@
+ % pgf version is defined in \pgfversion in file
+ % generic/pgf/utilities/pgfrcs.code.tex
+ 
++\usepackage[latexmk,mathjax,HomeHTMLFilename=home]{lwarp}
++\CSSFilename{style.css}
++\MathJaxFilename{javascript.txt}
++\begin{warpMathJax}
++    \CustomizeMathJax{
++    \newcommand{\meta}[1]{\langle\textit{#1}\rangle}
++    }
++\end{warpMathJax}
++\setcounter{FileDepth}{1}
++\setcounter{tocdepth}{1}
++\boolfalse{CombineHigherDepths}
++
+ \input{pgfmanual.cfg}
++% \input{pgfmanual-pdftex.cfg}
++
+ \input{pgfmanual-en-main.tex}

@@ -1,0 +1,1525 @@
+diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotstable.tex
+--- a/doc/latex/pgfplots/pgfplotstable.tex
++++ b/doc/latex/pgfplots/pgfplotstable.tex
+@@ -21,24 +21,23 @@
+ %
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+-\ifdefined\pdfvariable
+-    \pdfvariable minorversion=5
+-    \pdfvariable objcompresslevel=2
+-\else\ifdefined\XeTeXversion
+-    \special{pdf:minorversion 5}
+-    \special{dvipdfmx:config z 2} % also sets normal compresslevel=2
+-\else
+-    \pdfminorversion=5 % to allow compression
+-    \pdfobjcompresslevel=2
+-\fi\fi
+-\documentclass[a4paper,doc2]{ltxdoc}
+-\input{pgfplots.preamble.tex}
++% \ifdefined\pdfvariable
++%     \pdfvariable minorversion=5
++%     \pdfvariable objcompresslevel=2
++% \else\ifdefined\XeTeXversion
++%     \special{pdf:minorversion 5}
++%     \special{dvipdfmx:config z 2} % also sets normal compresslevel=2
++% \else
++%     \pdfminorversion=5 % to allow compression
++%     \pdfobjcompresslevel=2
++% \fi\fi
++% \documentclass[a4paper,doc2]{ltxdoc}
++% \input{pgfplots.preamble.tex}
+ 
+-\usepackage{array}
+-\usepackage{colortbl}
+-\usepackage{booktabs}
+-\usepackage{eurosym}
+-\usepackage{multirow}
++% \usepackage{array}
++% \usepackage{booktabs}
++% \usepackage{eurosym}
++% \usepackage{multirow}
+ 
+ \pgfqkeys{/codeexample}{%
+     every codeexample/.style={
+@@ -49,59 +48,60 @@
+     tabsize=4,
+ }
+ 
+-\pgfkeys{/pgfmanual/gray key prefixes/.add={/pgfplots/table/,/pgf/number format/,}{}}
+-
+-\makeatletter
+-\pgfkeys{%
+-    /codeexample/prettyprint/key name with handler/.code 2 args={%
+-        \gdef\pgfplotstablemanualautocheck{}%
+-        \foreach \special in {columns,create on use,alias,display columns}{%
+-            \expandafter\pgfutil@in@\expandafter{\special/}{#1}%
+-            \ifpgfutil@in@
+-                \xdef\pgfplotstablemanualautocheck{\special}%
+-                \breakforeach
+-            \fi
+-        }%
+-        \ifx\pgfplotstablemanualautocheck\pgfutil@empty%
+-            \pgfmanualpdfref{#1}{#1}/\pgfmanualpdfref{/handlers/#2}{#2}%
+-        \else
+-            \expandafter\def\expandafter\temp\expandafter##\expandafter1\pgfplotstablemanualautocheck/##2\relax{%
+-                \pgfmanualpdfref
+-                    {/pgfplots/table/\pgfplotstablemanualautocheck}%
+-                    {##1\pgfplotstablemanualautocheck/}%
+-                ##2/%
+-                \pgfmanualpdfref{/handlers/#2}{#2}%
+-            }%
+-            \temp#1\relax
+-        \fi
+-    },
+-    /pdflinks/search key prefixes in/.add={/pgf/number format/,}{,/pgfplots/table/create col/},
+-    /pdflinks/show labels=false,
+-}
+-\makeatother
+-
+-\pgfplotstableset{
+-    %debug=true,
+-    begin table=\begin{tabular}[b],
+-}
+-
+-\title{%
+-    Manual for Package \PGFPlotstable{}\\
+-    {\small Component of \PGFPlots{}, Version \pgfplotsversion}\\
+-    {\small\href{http://sourceforge.net/projects/pgfplots}{http://sourceforge.net/projects/pgfplots}}}
+-
+-\begin{document}
+-\maketitle
+-\begin{abstract}
+-    This package reads tab-separated numerical tables from input and generates
+-    code for pretty-printed \LaTeX{}-tabulars. It rounds to the desired precision
+-    and prints it in different number formatting styles.
+-\end{abstract}
+-
+-\tableofcontents
+-
+-
+-\section{Introduction}
++% \pgfkeys{/pgfmanual/gray key prefixes/.add={/pgfplots/table/,/pgf/number format/,}{}}
++
++% \makeatletter
++% \pgfkeys{%
++%     /codeexample/prettyprint/key name with handler/.code 2 args={%
++%         \gdef\pgfplotstablemanualautocheck{}%
++%         \foreach \special in {columns,create on use,alias,display columns}{%
++%             \expandafter\pgfutil@in@\expandafter{\special/}{#1}%
++%             \ifpgfutil@in@
++%                 \xdef\pgfplotstablemanualautocheck{\special}%
++%                 \breakforeach
++%             \fi
++%         }%
++%         \ifx\pgfplotstablemanualautocheck\pgfutil@empty%
++%             \pgfmanualpdfref{#1}{#1}/\pgfmanualpdfref{/handlers/#2}{#2}%
++%         \else
++%             \expandafter\def\expandafter\temp\expandafter##\expandafter1\pgfplotstablemanualautocheck/##2\relax{%
++%                 \pgfmanualpdfref
++%                     {/pgfplots/table/\pgfplotstablemanualautocheck}%
++%                     {##1\pgfplotstablemanualautocheck/}%
++%                 ##2/%
++%                 \pgfmanualpdfref{/handlers/#2}{#2}%
++%             }%
++%             \temp#1\relax
++%         \fi
++%     },
++%     /pdflinks/search key prefixes in/.add={/pgf/number format/,}{,/pgfplots/table/create col/},
++%     /pdflinks/show labels=false,
++% }
++% \makeatother
++
++% \pgfplotstableset{
++%     %debug=true,
++%     begin table=\begin{tabular}[b],
++% }
++
++% \title{%
++%     Manual for Package \PGFPlotstable{}\\
++%     {\small Component of \PGFPlots{}, Version \pgfplotsversion}\\
++%     {\small\href{http://sourceforge.net/projects/pgfplots}{http://sourceforge.net/projects/pgfplots}}}
++
++% \begin{document}
++% \maketitle
++% \begin{abstract}
++%     This package reads tab-separated numerical tables from input and generates
++%     code for pretty-printed \LaTeX{}-tabulars. It rounds to the desired precision
++%     and prints it in different number formatting styles.
++% \end{abstract}
++
++% \tableofcontents
++
++\part[pgfplotstable]{PGFplotsTable}
++
++% \section{Introduction}
+ 
+ \PGFPlotstable{} is a lightweight sub-package of \PGFPlots{} which employs its
+ table input methods and the number formatting techniques to convert
+@@ -116,7 +116,7 @@ scientific etc.). The output is \LaTeX{} code, and that code is finally typeset
+ by \LaTeX{}.
+ 
+ In other words, \PGFPlotstable{} is nothing but a more-or-less smart code
+-generator which spits out something like |\begin{tabular}...\end{tabular}|.
++generator which spits out something like |\begin{tabular}|...|\end{tabular}|.
+ Use it if you'd like to customize row or column dependent styles or if you
+ have numerical data for which you want to have automatically formatted content.
+ 
+@@ -160,7 +160,7 @@ It is used with
+ 
+     Knowledge of |pgfkeys| is useful for a deeper insight into this package, as
+     |/.style|, |/.append style| etc.\@ are specific to |pgfkeys|. Please refer
+-    to the \PGF{} manual~\cite[Section ``pgfkeys'']{tikz} or the shorter
++    to \href{https://tikz.dev/pgfkeys}{the PGF/TikZ manual, Section ``pgfkeys''} or the shorter
+     introduction~\cite{keyvalintro} to learn more about |pgfkeys|. Otherwise,
+     simply skip over to the examples provided in this document.
+ 
+@@ -170,7 +170,7 @@ It is used with
+ \end{command}
+ 
+ 
+-\section{Loading and Displaying data}
++\section[pgfplotstable-load-data]{Loading and Displaying data}
+ 
+ \subsection{Text Table Input Format}
+ 
+@@ -212,7 +212,7 @@ ignored.
+     data, this data will be parsed just as if it was found in a file (see
+     |\pgfplotstableread|).
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[sci zerofill]{
+     a b
+     5000 1.234e5
+@@ -222,7 +222,7 @@ ignored.
+ }
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset{pgfplotstable.example1.dat}
+ \end{codeexample}
+ 
+@@ -230,7 +230,7 @@ ignored.
+     arguments}. Configuration can be done for the complete table or for
+     particular columns (or rows).
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableset{% global config, for example in the preamble
+     % these columns/<colname>/.style={<options>} things define a style
+     % which applies to <colname> only.
+@@ -271,7 +271,7 @@ ignored.
+ 
+     You may also use an input format similar to the tabular environment:
+     %
+-\begin{codeexample}[width=8cm]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},width=8cm]
+ \pgfplotstabletypeset
+     [col sep=&,row sep=\\,sci zerofill]
+ {
+@@ -305,7 +305,7 @@ ignored.
+     Loads a table into the \TeX{} macro \meta{\textbackslash macro}. This macro
+     will store the table as internal structure and can be used multiple times.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableread{pgfplotstable.example1.dat}\loadedtable
+ \pgfplotstabletypeset[columns={dof,error1}]\loadedtable
+ \hspace{2cm}
+@@ -390,7 +390,7 @@ level,dof,error1,error2,info,{grad(log(dof),log(error2))},quot(error1)
+     %
+     Thus, we need to specify |col sep=comma| when we read it.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[col sep=comma]{pgfplotstable.example1.csv}
+ \end{codeexample}
+     %
+@@ -528,7 +528,7 @@ level,dof,error1,error2,info,{grad(log(dof),log(error2))},quot(error1)
+ 
+     \noindent then, we can ignore several of the characters by writing
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset
+     [col sep=comma,ignore chars={(,),\ ,\#}]
+     {pgfplotstable.example5.dat}
+@@ -583,7 +583,7 @@ level,dof,error1,error2,info,{grad(log(dof),log(error2))},quot(error1)
+ 
+     Note that some (selected) special characters are installed by
+     |verb string type|.
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     font=\ttfamily,
+     verb string type,
+@@ -599,7 +599,7 @@ http://example.org/a#b
+     these characters has a similar effect as the |#| character, i.e.\@ all
+     following characters of that particular input line are skipped.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[comment chars=!]{
+ ! Some comments
+ 1 0
+@@ -627,7 +627,7 @@ http://example.org/a#b
+     Allows to define a text indicator character. If this is defined, it can be
+     used to enclose delimiters in a cell's body:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[text indicator=",string type]{
+ A B
+ "A long cell" normalcell
+@@ -636,7 +636,7 @@ A B
+ 
+     If the |text indicator| also occurs within the cell, it has to be doubled:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[text indicator=",string type]{
+ A B
+ "A long ""cell""" normalcell
+@@ -651,7 +651,7 @@ A B
+     Allows to skip the first \meta{integer} lines of an input file. The lines
+     will not be processed.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[skip first n=4]{%<- this '%' is important. Otherwise, the
+                                       %newline here would delimit an (empty) row.
+     XYZ Format,
+@@ -711,7 +711,7 @@ A B
+     |[index]|\meta{integer} can be used to select columns by index. The first
+     column has index~$0$.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[columns={dof,level,[index]4}]{pgfplotstable.example1.dat}
+ \end{codeexample}
+ 
+@@ -726,7 +726,7 @@ A B
+     col name}. Afterwards, accessing \meta{col name} will use the data
+     associated with column \meta{real col name}.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % in preamble:
+ \pgfplotstableset{
+     alias/newname/.initial=b,
+@@ -762,7 +762,7 @@ A B
+     Sets all options in \meta{key-value-list} exclusively for \meta{column
+     name}.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     columns/error1/.style={
+         column name=$L_2$,
+@@ -783,7 +783,7 @@ A B
+     If your column name contains commas `|,|', slashes `|/|' or equal signs
+     `|=|', you need to enclose the column name in braces.
+     %
+-\begin{codeexample}[narrow]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},narrow]
+ \pgfplotstabletypeset[
+     columns={dof,error1,{grad(log(dof),log(error2))}},
+     columns/error1/.style={
+@@ -836,7 +836,7 @@ A B
+     \emph{modify} a value instead of overwriting it. The |/.add| key handler
+     works for other options as well.
+     %
+-\begin{codeexample}[narrow]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},narrow]
+ \pgfplotstabletypeset[
+     columns={dof,error1,info},
+     column type/.add={|}{}% results in '|c'
+@@ -880,7 +880,7 @@ A B
+     |assign column name| to generate final \TeX{} code (for example to insert
+     |\multicolumn{1}{c}{#1}|).
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     assign column name/.style={
+         /pgfplots/table/column name={\textbf{#1}}
+@@ -916,7 +916,7 @@ first second
+ 
+     Please note that you need |\usepackage{array}| for this style.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % requires \usepackage{array}
+ \pgfplotstabletypeset[
+     columns={dof,error1,error2,info,{grad(log(dof),log(error2))}},
+@@ -930,7 +930,7 @@ first second
+ 
+     Or with comma as decimal separator:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % requires \usepackage{array}
+ \pgfplotstabletypeset[
+     use comma,
+@@ -947,7 +947,7 @@ first second
+     at least one digit after the decimal separator to improve placement of
+     exponents:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % requires \usepackage{array}
+ \pgfplotstabletypeset[
+     use comma,
+@@ -1038,7 +1038,7 @@ first second
+     See the description of |\pgfplotstablesort| for how to configure |sort key|
+     and |sort cmp|.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     sort,sort key=error2,
+     columns={dof,error1,error2},
+@@ -1060,7 +1060,7 @@ first second
+ \begin{stylekey}{/pgfplots/table/every first column}
+     A style which is installed for every first column only.
+     %
+-\begin{codeexample}[narrow]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},narrow]
+ \pgfplotstabletypeset[
+  every head row/.style={before row=\hline,after row=\hline\hline},
+  every last row/.style={after row=\hline},
+@@ -1112,7 +1112,7 @@ first second
+         precision=1}}
+ \end{codeexample}
+ 
+-\begin{codeexample}[narrow,graphic=white]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},narrow]
+ % requires \usepackage{colortbl}
+ \pgfplotstabletypeset[
+  every even column/.style={
+@@ -1126,7 +1126,7 @@ first second
+ \begin{stylekey}{/pgfplots/table/every column}
+     A style which is applied to every column.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     every column/.code={
+         \ifnum\pgfplotstablecol>0
+@@ -1221,7 +1221,7 @@ cell contents have been assigned}.
+     An example could be a multicolumn heading for which \PGFPlotstable{} has no
+     own solution:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % \usepackage{booktabs}
+ \pgfplotstabletypeset[
+     column type=l,
+@@ -1266,7 +1266,7 @@ person & singEnglish  & singGaeilge & pluralEnglish  & pluralGaeilge\\
+     demonstrates the combination of |\multicolumn| and |\rowcolor|. It has been
+     taken out of an -- admittedly advanced -- application:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \newcolumntype{C}{>{\centering\arraybackslash}p{6mm}}% a centered fixed-width-column
+ \pgfplotstabletypeset[
+     col sep=&,
+@@ -1367,7 +1367,7 @@ $3$ & $2$ & $2$ & $3 d\delta$ \\
+         precision=1}}
+ \end{codeexample}
+ 
+-\begin{codeexample}[narrow,graphic=white]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},narrow]
+ % requires \usepackage{booktabs}
+ \pgfplotstabletypeset[
+     every head row/.style={
+@@ -1378,7 +1378,7 @@ $3$ & $2$ & $2$ & $3 d\delta$ \\
+     {pgfplotstable.example1.dat}
+ \end{codeexample}
+ 
+-\begin{codeexample}[narrow,graphic=white]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},narrow]
+ % requires \usepackage{booktabs,colortbl}
+ \pgfplotstabletypeset[
+     every even row/.style={
+@@ -1403,7 +1403,7 @@ $3$ & $2$ & $2$ & $3 d\delta$ \\
+     A style which is installed for each first row in the tabular. This can be
+     used to adjust options for column names or to add extra lines/colors.
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+   % suppress the header row 'col1  col2  col3':
+   every head row/.style={output empty row},
+@@ -1440,7 +1440,7 @@ $3$ & $2$ & $2$ & $3 d\delta$ \\
+     This allows to install \meta{options} for every $n$th row with
+     $n=$\meta{integer}.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     every nth row={3}{before row=\midrule},
+     every head row/.style={
+@@ -1467,7 +1467,7 @@ $3$ & $2$ & $2$ & $3 d\delta$ \\
+     handled by |every first row|, it is not considered for |every nth row|.
+ 
+     The second syntax allows to provide an additional \meta{shift}:
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     every nth row={3[+1]}{before row=\midrule},
+ ]{
+@@ -1534,7 +1534,7 @@ also a couple of styles to change single cells.
+ 
+     For example, consider this unmodified table:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     col sep=&,row sep=\\]{
+   colA & colB & colC \\
+@@ -1546,7 +1546,7 @@ also a couple of styles to change single cells.
+     Now, we change the number format of one of its cells, and at the same time
+     we change the formatting of another (single) cell:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     every row 1 column 2/.style={/pgf/number format/sci},
+     every row 0 column 0/.style={postproc cell content/.style={@cell content=\textbf{##1}}},
+@@ -1571,7 +1571,7 @@ also a couple of styles to change single cells.
+     \meta{colname} contains special characters).
+ 
+     Our example from above can thus become:
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     every row 1 column colB/.style={string replace*={2}{4}},
+     every row 0 column colA/.style={preproc/expr={##1*8}},
+@@ -1708,7 +1708,7 @@ provide other sorts of table output, beyond \LaTeX{}.
+     since it contains a completely normal |tabular|.
+     %
+     \pgfplotstableset{begin table=\begin{tabular}}
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     columns={dof,error1},
+     outfile=pgfplotstable.example1.out.tex]
+@@ -1790,7 +1790,7 @@ provide other sorts of table output, beyond \LaTeX{}.
+ (including number formatting and rounding!):
+ %
+ % \usepackage{listings}
+-\begin{codeexample}[width=8cm]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},width=8cm]
+ \pgfplotstabletypeset[
+     begin table={<table>}, end table={</table>},
+     typeset cell/.style={
+@@ -1824,7 +1824,7 @@ for existing \texttt{tabular} environments.
+ \usepackage{array}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \newcolumntype{d}{>{-}c<{+}}
+ \begin{tabular}{dl}
+ a & b \\
+@@ -1836,7 +1836,7 @@ c & d \\
+     column} and \meta{after column} to define numerical columns:
+     %
+ % \usepackage{array}
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % requires \usepackage{array}
+ \newcolumntype{L}[1]
+     {>{\begin{pgfplotstablecoltype}[#1]}r<{\end{pgfplotstablecoltype}}}
+@@ -1860,7 +1860,7 @@ c & d \\
+     numerical columns contain non-numerical data, so it may be necessary to use
+     |\multicolumn| for column names.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % requires \usepackage{array}
+ \newcolumntype{L}[1]
+     {>{\begin{pgfplotstablecoltype}[#1]}r<{\end{pgfplotstablecoltype}}}
+@@ -1885,7 +1885,7 @@ c & d \\
+ \subsection{Number Formatting Options}
+ \label{sec:number:printing}
+ 
+-The following extract of \cite{tikz} explains how to configure number formats.
++The following extract of \href{https://tikz.dev/}{the PGF/TikZ manual} explains how to configure number formats.
+ The common option prefix |/pgf/number format| can be omitted; it will be
+ recognized automatically.
+ 
+@@ -1910,7 +1910,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     Configures |\pgfmathprintnumber| to round the number to a fixed number of
+     digits after the period, discarding any trailing zeros.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,fixed,precision=2}
+ \pgfmathprintnumber{4.568}\hspace{1em}
+ \pgfmathprintnumber{5e-04}\hspace{1em}
+@@ -1926,7 +1926,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     Enables or disables zero filling for any number drawn in fixed point
+     format.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,fixed,fixed zerofill,precision=2}
+ \pgfmathprintnumber{4.568}\hspace{1em}
+ \pgfmathprintnumber{5e-04}\hspace{1em}
+@@ -1938,7 +1938,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     This key affects numbers drawn with |fixed| or |std| styles (the latter
+     only if no scientific format is chosen).
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,std,fixed zerofill,precision=2}
+ \pgfmathprintnumber{4.568}\hspace{1em}
+ \pgfmathprintnumber{5e-05}\hspace{1em}
+@@ -1954,7 +1954,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     that means sign, mantissa and exponent (base~$10$). The mantissa is rounded
+     to the desired |precision| (or |sci precision|, see below).
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,sci,precision=2}
+ \pgfmathprintnumber{4.568}\hspace{1em}
+ \pgfmathprintnumber{5e-04}\hspace{1em}
+@@ -1970,7 +1970,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+ \begin{key}{/pgf/number format/sci zerofill=\marg{boolean}  (default true)}
+     Enables or disables zero filling for any number drawn in scientific format.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,sci,sci zerofill,precision=2}
+ \pgfmathprintnumber{4.568}\hspace{1em}
+ \pgfmathprintnumber{5e-04}\hspace{1em}
+@@ -2000,7 +2000,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     e \le 4$, the number is displayed using |fixed| format. Otherwise, it is
+     displayed using |sci| format.
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,std,precision=2}
+ \pgfmathprintnumber{4.568}\hspace{1em}
+ \pgfmathprintnumber{5e-04}\hspace{1em}
+@@ -2010,7 +2010,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+ \end{codeexample}
+     %
+     The parameters can be customized using the optional integer argument(s): if
+-    $\text{\meta{lower e}} \le e \le \text{\meta{upper e}}$, the number is
++    \meta{lower e} $\le e \le$ \meta{upper e}, the number is
+     displayed in |fixed| format, otherwise in |sci| format. Note that
+     \meta{lower e} should be negative for useful results. The precision used
+     for scientific format can be adjusted with |sci precision| if necessary.
+@@ -2029,7 +2029,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     provide a unified format for a \emph{sequence} of numbers. Consider the
+     following test:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/relative*={1}}
+ \pgfmathprintnumber{6.42e-16}\hspace{1em}
+ \pgfmathprintnumber{1.2}\hspace{1em}
+@@ -2043,7 +2043,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     to $10^1$ (the exponent $1$ is the argument for |relative|), it has no
+     significant digits.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/relative*={2}}
+ \pgfmathprintnumber{123.345}\hspace{1em}
+ \pgfmathprintnumber{0.0012}\hspace{1em}
+@@ -2057,7 +2057,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     the other two numbers are |0| compared to $100$ using the given
+     |precision|.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/relative*={-3}}
+ \pgfmathprintnumber{123.345}\hspace{1em}
+ \pgfmathprintnumber{0.0012}\hspace{1em}
+@@ -2074,7 +2074,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     artifact due to the limited precision. Use |relative*=3,precision=0| to
+     eliminate the artifacts:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,relative*={3},precision=0}
+ \pgfmathprintnumber{123456999}\hspace{1em}
+ \pgfmathprintnumber{123456999.12}
+@@ -2085,7 +2085,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     position. Adding |relative style=fixed| results in fixed point output
+     format:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,relative*={3},precision=0,relative style=fixed}
+ \pgfmathprintnumber{123456999}\hspace{1em}
+ \pgfmathprintnumber{123456999.12}
+@@ -2094,7 +2094,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     \noindent Note that there is another alternative for this use-case which is
+     discussed later: the |fixed relative| style.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,fixed relative,precision=6}
+ \pgfmathprintnumber{123456999}\hspace{1em}
+ \pgfmathprintnumber{123456999.12}
+@@ -2145,7 +2145,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     The motivation is to get the same rounding effect as for |sci|, but to
+     display the number in the |fixed| style:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,fixed relative,precision=3}
+ \pgfmathprintnumber{1000.0123}\hspace{1em}
+ \pgfmathprintnumber{100.0567}\hspace{1em}
+@@ -2182,7 +2182,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     input number is an integer, no period is displayed at all. If not, the
+     scientific format is chosen.
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,int detect,precision=2}
+ \pgfmathprintnumber{15}\hspace{1em}
+ \pgfmathprintnumber{20}\hspace{1em}
+@@ -2202,7 +2202,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+ 
+     The argument \meta{number constant} will be parsed with
+     |\pgfmathfloatparsenumber|.
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ 15 \pgfmathifisint{15}{is an int: \pgfretval.}{is no int}\hspace{1em}
+ 15.5 \pgfmathifisint{15.5}{is an int: \pgfretval.}{is no int}
+ \end{codeexample}
+@@ -2211,7 +2211,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+ \begin{key}{/pgf/number format/int trunc}
+     Truncates every number to integers (discards any digit after the period).
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,int trunc}
+ \pgfmathprintnumber{4.568}\hspace{1em}
+ \pgfmathprintnumber{5e-04}\hspace{1em}
+@@ -2224,7 +2224,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+ \begin{key}{/pgf/number format/frac}
+     Displays numbers as fractionals.
+     %
+-\begin{codeexample}[width=3cm]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},width=3cm]
+ \pgfkeys{/pgf/number format/frac}
+ \pgfmathprintnumber{0.333333333333333}\hspace{1em}
+ \pgfmathprintnumber{0.5}\hspace{1em}
+@@ -2250,7 +2250,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     \begin{key}{/pgf/number format/frac denom=\meta{int} (initially empty)}
+         Allows to provide a custom denominator for |frac|.
+         %
+-\begin{codeexample}[width=3cm]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},width=3cm]
+ \pgfkeys{/pgf/number format/.cd,frac, frac denom=10}
+ \pgfmathprintnumber{0.1}\hspace{1em}
+ \pgfmathprintnumber{0.5}\hspace{1em}
+@@ -2265,7 +2265,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+         the fractional part. In this case, the fractional part will be less
+         then $1$. Use |frac whole=false| to avoid whole number parts.
+         %
+-\begin{codeexample}[width=3cm]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},width=3cm]
+ \pgfkeys{/pgf/number format/.cd,frac, frac whole=false}
+ \pgfmathprintnumber{20.1}\hspace{1em}
+ \pgfmathprintnumber{5.5}\hspace{1em}
+@@ -2307,7 +2307,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     This is one of the few keys which allows to customize the number parser. If
+     this switch is turned on, a comma is read just as a period.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/read comma as period}
+ \pgfmathprintnumber{1234,56}
+ \end{codeexample}
+@@ -2316,7 +2316,7 @@ All these number formatting options can also be applied to \PGFPlots{}.
+     instructions. However, it is supported to format input numbers or input
+     tables. Consider |use comma| to typeset the result with a comma as well.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     read comma as period,
+     use comma}
+@@ -2352,7 +2352,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+     Assigns \meta{text} as thousands separator for any fixed point number
+     (including the mantissa in sci format).
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     fixed,
+     fixed zerofill,
+@@ -2361,7 +2361,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \pgfmathprintnumber{1234.56}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     fixed,
+     fixed zerofill,
+@@ -2370,7 +2370,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \pgfmathprintnumber{1234567890}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     fixed,
+     fixed zerofill,
+@@ -2379,7 +2379,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \pgfmathprintnumber{1234567890}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     fixed,
+     fixed zerofill,
+@@ -2388,7 +2388,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \pgfmathprintnumber{1234567890}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     fixed,
+     fixed zerofill,
+@@ -2412,7 +2412,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+     fractional parts. The value |false| will activate |1000 sep| only for the
+     integer part.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     fixed,
+     precision=999,
+@@ -2422,7 +2422,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \pgfmathprintnumber{1234.1234567}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     fixed,fixed zerofill,
+     precision=9,
+@@ -2439,7 +2439,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+     so $\meta{number}=4$ will use thousand separators starting with $1e4 =
+     10000$.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     int detect,
+     1000 sep={\,},
+@@ -2447,7 +2447,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \pgfmathprintnumber{5000}; \pgfmathprintnumber{1000000}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     int detect,
+     1000 sep={\,},
+@@ -2455,7 +2455,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \pgfmathprintnumber{1000}; \pgfmathprintnumber{5000}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     int detect,
+     1000 sep={\,},
+@@ -2473,12 +2473,12 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+     separators and commas `\texttt{,}' as thousands separators. This style is
+     the default.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,fixed,precision=2,use period}
+ \pgfmathprintnumber{12.3456}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,fixed,precision=2,use period}
+ \pgfmathprintnumber{1234.56}
+ \end{codeexample}
+@@ -2488,12 +2488,12 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+     A predefined style which installs commas `\texttt{,}' as decimal separators
+     and periods `\texttt{.}' as thousands separators.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,fixed,precision=2,use comma}
+ \pgfmathprintnumber{12.3456}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,fixed,precision=2,use comma}
+ \pgfmathprintnumber{1234.56}
+ \end{codeexample}
+@@ -2502,7 +2502,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \begin{key}{/pgf/number format/skip 0.=\marg{boolean} (initially false)}
+     Configures whether numbers like $0.1$ shall be typeset as $.1$ or not.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     fixed,
+     fixed zerofill,precision=2,
+@@ -2510,7 +2510,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \pgfmathprintnumber{0.56}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,
+     fixed,
+     fixed zerofill,precision=2,
+@@ -2522,17 +2522,17 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \begin{key}{/pgf/number format/showpos=\marg{boolean} (initially false)}
+     Enables or disables display of plus signs for non-negative numbers.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/showpos}
+ \pgfmathprintnumber{12.345}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/showpos=false}
+ \pgfmathprintnumber{12.345}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,showpos,sci}
+ \pgfmathprintnumber{12.345}
+ \end{codeexample}
+@@ -2545,7 +2545,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \begin{key}{/pgf/number format/sci 10e}
+     Uses $m \cdot 10^e$ for any number displayed in scientific format.
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,sci,sci 10e}
+ \pgfmathprintnumber{12.345}
+ \end{codeexample}
+@@ -2559,7 +2559,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+     Uses the `$1e{+}0$' format which is generated by common scientific tools
+     for any number displayed in scientific format.
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,sci,sci e}
+ \pgfmathprintnumber{12.345}
+ \end{codeexample}
+@@ -2568,7 +2568,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \begin{key}{/pgf/number format/sci E}
+     The same with an uppercase `\texttt{E}'.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,sci,sci E}
+ \pgfmathprintnumber{12.345}
+ \end{codeexample}
+@@ -2578,7 +2578,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+     Typesets the exponent as subscript for any number displayed in scientific
+     format. This style requires very little space.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,sci,sci subscript}
+ \pgfmathprintnumber{12.345}
+ \end{codeexample}
+@@ -2588,7 +2588,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+     Typesets the exponent as superscript for any number displayed in scientific
+     format. This style requires very little space.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{/pgf/number format/.cd,sci,sci superscript}
+ \pgfmathprintnumber{12.345}
+ \end{codeexample}
+@@ -2608,7 +2608,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+         as argument |#1| (see below).
+     \end{key}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{
+     /pgf/number format/.cd,
+     sci,
+@@ -2630,7 +2630,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \begin{key}{/pgf/number format/retain unit mantissa=\mchoice{true,false} (initially true)}
+     Allows to omit a unit mantissa.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{
+     /pgf/number format/.cd,
+     sci, retain unit mantissa=false}
+@@ -2675,7 +2675,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+     A style which configures the number printer to produce verbatim text
+     output, i.e.\@ it doesn't contain \TeX{} macros.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{
+     /pgf/fpu,
+     /pgf/number format/.cd,
+@@ -2697,7 +2697,7 @@ the correct digits, afterwards a display style generates proper \TeX{}-code.
+ \end{stylekey}
+ 
+ 
+-\section{From Input Data To Output Tables: Data Processing}
++\section[pgfplotstable-data-processing]{From Input Data To Output Tables: Data Processing}
+ \label{sec:data:processing}
+ 
+ The conversion from an unprocessed input table to a final typesetted |tabular|
+@@ -2764,7 +2764,7 @@ specific rows only.
+ }
+ % \usepackage{booktabs}
+ % \usepackage{multirow}
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % An example how to use
+ % \usepackage{multirow} and
+ % \usepackage{booktabs}:
+@@ -2851,7 +2851,7 @@ specific rows only.
+     explained below can be used.
+     %
+ % \usepackage{pgfcalendar}
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % Requires
+ % \usepackage{pgfcalendar}
+ \pgfplotstableset{columns={date,account1}}
+@@ -2932,7 +2932,7 @@ specific rows only.
+ 
+     The date feature is implemented using the \PGF{} calendar module. This
+     module employs the package |translator| (if it is loaded). I don't have
+-    more details yet, sorry. Please refer to \cite{tikz} for more details.
++    more details yet, sorry. Please refer to \href{https://tikz.dev/}{the PGF/TikZ manual} for more details.
+ \end{stylekey}
+ 
+ 
+@@ -2979,7 +2979,7 @@ specific rows only.
+     expansion is performed during this step; \meta{cell match} must match
+     literally.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[columns={level,dof}]
+     {pgfplotstable.example1.dat}
+ 
+@@ -2998,7 +2998,7 @@ specific rows only.
+     every occurrence of \meta{pattern} with \meta{replacement}. No expansion is
+     performed during this step; \meta{pattern} must match literally.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     string replace*={2}{6},
+     col sep=&,row sep=\\]{
+@@ -3044,7 +3044,7 @@ specific rows only.
+             the same.
+     \end{itemize}
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[
+     columns={level},
+     columns/level/.style={
+@@ -3082,7 +3082,7 @@ specific rows only.
+     The following example copies the column |error1| and applies |sqrt| to the
+     copy.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableset{
+     columns={error1,sqrterror1},
+     create on use/sqrterror1/.style={create col/copy=error1},
+@@ -3102,7 +3102,7 @@ specific rows only.
+     cell by $-1$. This style does the same job as |multiply by=-1|, it is just
+     faster because only the sign changes.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableset{
+     columns={dof,error2,slopes2},
+     columns/error2/.style={sci,sci zerofill},
+@@ -3127,7 +3127,7 @@ specific rows only.
+     \declareandlabel{\ifpgfplotstableuserow}. If the boolean is not changed,
+     the return value is true.
+     %
+-\begin{codeexample}[newline=]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},newline=]
+ % requires \usepackage{booktabs}
+ \pgfplotstabletypeset[
+     every head row/.style={
+@@ -3164,7 +3164,7 @@ specific rows only.
+     selection is done by index where indexing starts with~$0$. Every row with
+     index $\meta{begin} \le i < \meta{end}$ will be skipped.
+     %
+-\begin{codeexample}[narrow]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},narrow]
+ % requires \usepackage{booktabs}
+ \pgfplotstabletypeset[
+     every head row/.style={
+@@ -3185,7 +3185,7 @@ specific rows only.
+ 
+     This can be used to simulate multicolumn tables.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % requires \usepackage{booktabs}
+ \pgfplotstableset{
+     every head row/.style={before row=\toprule,after row=\midrule},
+@@ -3257,7 +3257,7 @@ specific rows only.
+     There may be more than one |postproc cell content| command, if you use
+     |/.append code| or |/.append style| to define them:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % requires \usepackage{eurosym}
+ \pgfplotstabletypeset[
+     column type=r,
+@@ -3268,18 +3268,17 @@ specific rows only.
+             /pgfplots/table/@cell content/.add={$\bf}{$},
+         },
+         postproc cell content/.append style={
+-            /pgfplots/table/@cell content/.add={}{\EUR{}},
++            /pgfplots/table/@cell content/.add={}{\$},
+         }
+     }]
+     {pgfplotstable.example1.dat}
+ \end{codeexample}
+     %
+     The code above modifies |@cell content| in two steps. The net effect is to
+-    prepend ``|$\bf |'' and to append ``|$ \EUR|''. It should be noted that
++    prepend ``|$\bf |'' and to append ``|$ \$|''. It should be noted that
+     |pgfkeys| handles |/.style| and |/.code| in (basically) the same way --
+     both are simple code keys and can be used as such. You can combine both
+-    with |/.append style| and |/.append code|. Please refer to~\cite[section
+-    about pgfkeys]{tikz} for details.
++    with |/.append style| and |/.append code|. Please refer to \href{https://tikz.dev/pgfkeys}{the PGF/TikZ manual, Section ``pgfkeys''} for details.
+ 
+     As in |assign cell content|, the code can evaluate helper macros like
+     |\pgfplotstablerow| to change only particular entries. Furthermore, the
+@@ -3327,7 +3326,7 @@ specific rows only.
+ 
+     The following example can be used to insert a dash, $-$, in a slope column:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableset{
+     create on use/slopes1/.style=
+         {create col/gradient loglog={dof}{error1}}}
+@@ -3376,7 +3375,7 @@ specific rows only.
+     %
+ 
+ % \usepackage{pgfcalendar}
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % Requires
+ % \usepackage{pgfcalendar}
+ 
+@@ -3411,7 +3410,7 @@ specific rows only.
+ \end{stylekey}
+ 
+ 
+-\section{Generating Data in New Tables or Columns}
++\section[pgfplotstable-createcol]{Generating Data in New Tables or Columns}
+ \label{pgfplotstable:createcol}
+ 
+ It is possible to create new tables from scratch or to change tables after they
+@@ -3445,7 +3444,7 @@ have been loaded from disk.
+     and the resulting number of rows be used. Otherwise, \meta{row count} will
+     be evaluated as number.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % this key setting could be provided in the document's preamble:
+ \pgfplotstableset{
+     % define how the 'new' column shall be filled:
+@@ -3456,7 +3455,7 @@ have been loaded from disk.
+ \pgfplotstabletypeset[empty cells with={---}]\loadedtable
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % create a new table with 11 rows and column 'new':
+ \pgfplotstablenew[
+     % define how the 'new' column shall be filled:
+@@ -3625,7 +3624,7 @@ have been loaded from disk.
+     available macros. Finally, it uses |\pgfkeyslet| to assign the contents of
+     the resulting |\entry| to |next content|.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableread{pgfplotstable.example1.dat}\loadedtable
+ \pgfplotstablecreatecol[
+     create col/assign/.code={%
+@@ -3676,7 +3675,7 @@ have been loaded from disk.
+     |\pgfplotstabletypeset| command, and such a column does not exist already,
+     it is created on the fly.
+     %
+-\begin{codeexample}[narrow]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}},narrow]
+ % requires \usepackage{array}
+ \pgfplotstableset{% could be used in preamble
+     create on use/quot1/.style=
+@@ -3735,7 +3734,7 @@ The following keys can be used in both |\pgfplotstablecreatecol| and the easier
+     writes \meta{value} into each new cell. The value is written as string
+     (verbatim).
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableset{
+     create on use/my new col/.style={create col/set={--empty--}},
+     columns/my new col/.style={string type}
+@@ -3756,7 +3755,7 @@ The following keys can be used in both |\pgfplotstablecreatecol| and the easier
+     command, that means you can use |...| expressions to provide number (or
+     character) ranges.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableset{
+     create on use/my new col/.style={
+         create col/set list={A,B,C,4,50,55,...,100}},
+@@ -3777,7 +3776,7 @@ The following keys can be used in both |\pgfplotstablecreatecol| and the easier
+     A style for use in column creation context which simply copies the existing
+     column \meta{column name}.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableset{
+     create on use/new/.style={create col/copy={level}}
+ }
+@@ -3838,7 +3837,7 @@ The following keys can be used in both |\pgfplotstablecreatecol| and the easier
+     A style for use in |\pgfplotstablecreatecol| which uses \meta{math
+     expression} to assign contents for the new column.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableset{
+     create on use/new/.style={
+         create col/expr={\thisrow{level}*2}}
+@@ -3889,9 +3888,9 @@ The following keys can be used in both |\pgfplotstablecreatecol| and the easier
+     \texttt{factorial}.}, |rand| (random between $-1$ and $1$ following a
+     uniform distribution), |rnd| (random between $0$ and $1$ following a
+     uniform distribution), number format conversions |hex|, |Hex|, |oct|, |bin|
+-    and some more. The math parser has been written by Mark Wibrow and Till
+-    Tantau~\cite{tikz}, the FPU routines have been developed as part of
+-    \PGFPlots{}. The documentation for both parts can be found in~\cite{tikz}.
++    and some more. The math parser has been written by \href{https://tikz.dev/math}{Mark Wibrow and Till
++    Tantau}, the FPU routines have been developed as part of
++    \PGFPlots{}. The documentation for both parts can be found in~\href{https://tikz.dev/}{the PGF/TikZ manual}.
+     \textbf{Attention:} Trigonometric functions work with degrees, not with
+     radians, unless |trig format| is reconfigured!
+ \end{stylekey}
+@@ -3901,7 +3900,7 @@ The following keys can be used in both |\pgfplotstablecreatecol| and the easier
+     value of |\pgfmathaccuma|. The case \meta{accum initial}=|0| is
+     \emph{equivalent} to |expr=|\marg{math expression}.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableset{
+     create on use/new/.style={
+         create col/expr={\pgfmathaccuma + \thisrow{level}}},
+@@ -3928,7 +3927,7 @@ The following keys can be used in both |\pgfplotstablecreatecol| and the easier
+     $c_i := m_{i-1} / m_i$ for every entry $i = 1,\dotsc, (n-1)$ in the column
+     identified with \meta{column name}. The first value $c_0$ is kept empty.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % requires \usepackage{array}
+ \pgfplotstableset{% configuration, for example, in preamble:
+     create on use/quot1/.style={create col/quotient=error1},
+@@ -3968,7 +3967,7 @@ The following keys can be used in both |\pgfplotstablecreatecol| and the easier
+     %
+     The first value $c_0$ is kept empty.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % requires \usepackage{array}
+ \pgfplotstabletypeset[% here, configuration options apply only to this single statement:
+     create on use/rate1/.style={create col/dyadic refinement rate={error1}},
+@@ -4006,7 +4005,7 @@ The following keys can be used in both |\pgfplotstablecreatecol| and the easier
+     variant applies the logarithm only to~$x$ and the |semilogy| variant
+     applies the logarithm only to~$y$.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % requires \usepackage{array}
+ \pgfplotstableset{% configuration, for example in preamble:
+     create on use/slopes1/.style={create col/gradient loglog={dof}{error1}},
+@@ -4022,7 +4021,7 @@ The following keys can be used in both |\pgfplotstablecreatecol| and the easier
+ \pgfplotstabletypeset{pgfplotstable.example1.dat}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % requires \usepackage{array}
+ \pgfplotstableset{% configuration, for example in preamble:
+     create on use/slopes1/.style={create col/gradient semilogy={level}{error1}},
+@@ -4045,7 +4044,7 @@ The following keys can be used in both |\pgfplotstablecreatecol| and the easier
+     the sample data $(x_i,y_i)$ which has to be specified inside of
+     \meta{key-value-config}.
+     %
+-\begin{codeexample}[pre={\vbox\bgroup\hsize=3cm},post=\egroup]
++\begin{codeexample}[pre={\begin{lateximage}\vbox\bgroup\hsize=3cm},post={\egroup\end{lateximage}}]
+ % load table from somewhere:
+ \pgfplotstableread{
+     x y
+@@ -4093,7 +4092,7 @@ The slope is `\slope'.
+     fixed cost.
+     %
+     \pgfplotsset{anchor=center,/tikz/baseline}
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstablenew[
+     create on use/cut/.style={create col/function graph cut y=
+         {2.5e-4} % search for fixed L2 = 2.5e-4
+@@ -4120,8 +4119,8 @@ The slope is `\slope'.
+ \end{codeexample}
+     %
+     In the example above, we are searching for $x_1$ and $x_2$ such that
+-    $f_1(x_1) = \pgfmathprintnumber{2.5e-4}$ and $f_2(x_2)
+-    =\pgfmathprintnumber{2.5e-4}$. On the left is the automatically computed
++    $f_1(x_1) = 2.5\cdot 10^{-4}$ and $f_2(x_2)
++    =2.5\cdot 10^{-4}$. On the left is the automatically computed
+     result. On the right is a problem illustration with proper annotation using
+     \PGFPlots{} to visualize the results. The \meta{cut value} is set to
+     |2.5e-4|. The \meta{common options} contain the problem setup; in our case
+@@ -4144,7 +4143,7 @@ The slope is `\slope'.
+             head}\marg{file name pattern} This somewhat advanced syntax
+             allows to collect tables in a loop automatically:
+             %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstablenew[
+     % same as above...
+     create on use/cut/.style={create col/function graph cut y=
+@@ -4186,7 +4185,7 @@ The slope is `\slope'.
+ \end{stylekey}
+ 
+ 
+-\section{Miscellaneous}
++\section[pgfplotstable-miscellaneous]{Miscellaneous}
+ 
+ \subsection{Writing (Modified) Tables To Disk}
+ 
+@@ -4215,7 +4214,7 @@ The slope is `\slope'.
+     not round or truncate integers either, even though they are displayed as
+     floats.}
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[code only]
+ \pgfplotstablesave[
+     create on use/postproc1/.style={create col/dyadic refinement rate=error1},
+     columns={dof,error1,postproc1}
+@@ -4282,7 +4281,7 @@ The slope is `\slope'.
+ \subsection{A summary of how to define and use styles and keys}
+ 
+ This section summarizes features of |pgfkeys|. The complete documentation can
+-be found in the \pgfname{} manual,~\cite{tikz}.
++be found in \href{https://tikz.dev/}{the PGF/TikZ manual}.
+ 
+ \begin{handler}{{.style}=\marg{key-value-list}}
+     Defines or redefines a style \meta{key}. A style is a normal key which will
+@@ -4309,7 +4308,7 @@ be found in the \pgfname{} manual,~\cite{tikz}.
+ \begin{handler}{{.add}=\marg{before}\marg{after}}
+     Changes \meta{key} by prepending \meta{before} and appending \meta{after}.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableset{columns={a column}}
+ `\pgfkeysvalueof{/pgfplots/table/columns}';
+ \pgfplotstableset{columns/.add={}{,another}}
+@@ -4329,7 +4328,7 @@ be found in the \pgfname{} manual,~\cite{tikz}.
+     code}. Inside of \meta{\TeX{} code}, any command can be used. Furthermore,
+     the |#1| pattern will be the argument provided to the key.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotsset{
+     My Code/.code={This is a pgfkeys feature. Argument=`#1'}}
+ \pgfplotsset{My Code={is here}}
+@@ -4388,7 +4387,7 @@ one row is complicated and expensive.
+     will be executed. During \meta{code}, |\pgfplotstablecol| denotes the
+     current column index (starting with 0).
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \begin{minipage}{0.8\linewidth}
+ \pgfplotstableread{pgfplotstable.example1.dat}\loadedtable
+ \pgfplotstableforeachcolumn\loadedtable\as\col{%
+@@ -4409,7 +4408,7 @@ one row is complicated and expensive.
+     cellcontent} will contain the cell's content and |\pgfplotstablerow| will
+     contain the current row's index.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \begin{minipage}{0.8\linewidth}
+ \pgfplotstableread{pgfplotstable.example1.dat}\loadedtable
+ \pgfplotstableforeachcolumnelement{error1}\of\loadedtable\as\cell{%
+@@ -4432,7 +4431,7 @@ one row is complicated and expensive.
+     changes of \meta{\textbackslash cellcontent} which might occur during
+     \meta{code} will be written back into the respective cell.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableread{pgfplotstable.example1.dat}\loadedtable
+ \pgfplotstablemodifyeachcolumnelement{error1}\of\loadedtable\as\cell{%
+     \edef\cell{\#\pgfplotstablerow: \cell}%
+@@ -4452,7 +4451,7 @@ one row is complicated and expensive.
+ 
+     The return value will be written to |\pgfplotsretval|.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableread{pgfplotstable.example1.dat}{\loadedtable}
+ \pgfplotstablegetelem{4}{error1}\of{\loadedtable}
+ The value (4,error1) is `\pgfplotsretval'.
+@@ -4470,7 +4469,7 @@ The value (2,0) is `\pgfplotsretval'.
+     Retrieves the column name at \meta{col index} from a \meta{table} and
+     stores it into a \meta{macro}.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableread{pgfplotstable.example1.dat}{\loadedtable}
+ \pgfplotstablegetcolumnnamebyindex{4}\of{\loadedtable}\to\pgfplotsretval
+ The name of column 4 `\pgfplotsretval'.
+@@ -4513,11 +4512,11 @@ The name of column 4 `\pgfplotsretval'.
+     The version with `|*|' is only interesting in conjunction with the
+     |columns| option, see below.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[string type]{pgfplotstable.example3.dat}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletranspose\loadedtable{pgfplotstable.example3.dat}
+ \pgfplotstabletypeset[string type]\loadedtable
+ \end{codeexample}
+@@ -4535,7 +4534,7 @@ The name of column 4 `\pgfplotsretval'.
+         If \meta{colname} is not empty, it denotes an input column name whose
+         cell values will make up the output column names:
+         %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletranspose[colnames from=c]\loadedtable{pgfplotstable.example3.dat}
+ \pgfplotstabletypeset[string type]\loadedtable
+ \end{codeexample}
+@@ -4551,14 +4550,14 @@ The name of column 4 `\pgfplotsretval'.
+         This key will create a further column named \meta{name} which will be
+         filled with the input column names (as string type).
+         %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletranspose[input colnames to=Input]\loadedtable{pgfplotstable.example3.dat}
+ \pgfplotstabletypeset[string type]\loadedtable
+ \end{codeexample}
+         %
+         Set \meta{name} to the empty string to disable this column.
+         %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletranspose[input colnames to=]\loadedtable{pgfplotstable.example3.dat}
+ \pgfplotstabletypeset[string type]\loadedtable
+ \end{codeexample}
+@@ -4577,7 +4576,7 @@ The name of column 4 `\pgfplotsretval'.
+         provide column aliases or |create on use| arguments inside of
+         \meta{list}.
+         %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletranspose[columns={a,b}]\loadedtable{pgfplotstable.example3.dat}
+ \pgfplotstabletypeset[string type]\loadedtable
+ \end{codeexample}
+@@ -4596,7 +4595,7 @@ The name of column 4 `\pgfplotsretval'.
+     Use the high level |sort| key to enable sorting automatically during
+     |\pgfplotstabletypeset|.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstablesort\result{%
+     a      b  c
+     19     2 [a]
+@@ -4656,7 +4655,7 @@ The name of column 4 `\pgfplotsretval'.
+             characters.\footnote{As long as they haven't been consumed by
+             \TeX's preprocessing.}
+             %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstablesort[sort cmp=string <]\result{% 'Header' is the column name:
+     Header
+     the
+@@ -4721,10 +4720,9 @@ The name of column 4 `\pgfplotsretval'.
+ \subsection{Repeating Things: Loops}
+ 
+ \begin{command}{\foreach \meta{variables} |in| \meta{list} \marg{commands}}
+-    A powerful loop command provided by \Tikz, see~\cite[Section
+-    ``Utilities'']{tikz}.
++    A powerful loop command provided by \Tikz, see \href{https://tikz.dev/pgffor}{the PGF/TikZ manual, Section ``Utilities''}.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \foreach \x in {1,2,...,4} {Iterating \x. }%
+ \end{codeexample}
+ 
+@@ -4748,7 +4746,7 @@ The following \PGFPlots{} looping macros are an alternative.
+     invoke the math parser for (simple!)
+     \meta{$x_0$}|,|\meta{$x_1$}|,...,|\meta{$x_n$} expressions.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \def\allcollected{}
+ \pgfplotsforeachungrouped \x in {1,2,...,4} {Iterating \x. \edef\allcollected{\allcollected, \x}}%
+ All collected = \allcollected.
+@@ -4790,7 +4788,7 @@ All collected = \allcollected.
+     The difference to |\foreach \x in |\meta{list}\marg{command} is subtle: the
+     |\x| would \emph{not} be expanded whereas |#1| is.
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{
+   otherstyle a/.code={[a]},
+   otherstyle b/.code={[b]},
+@@ -4803,7 +4801,7 @@ Invoke them: \pgfkeys{key a} \pgfkeys{key b} \pgfkeys{key c} \pgfkeys{key d}
+     %
+     The counterexample would use a macro (here |\x|) as loop argument:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfkeys{
+   otherstyle a/.code={[a]},
+   otherstyle b/.code={[b]},
+@@ -4820,10 +4818,3 @@ Invoke them: \pgfkeys{key a} \pgfkeys{key b} \pgfkeys{key c} \pgfkeys{key d}
+     scopes).
+ \end{command}
+ 
+-
+-\printindex
+-
+-\bibliographystyle{abbrv} %gerapali} %gerabbrv} %gerunsrt.bst} %gerabbrv}% gerplain}
+-\bibliography{pgfplots}
+-\end{document}
+-% vi: spell spelllang=en

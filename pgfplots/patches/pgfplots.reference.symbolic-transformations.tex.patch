@@ -1,0 +1,19 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.symbolic-transformations.tex b/doc/latex/pgfplots/pgfplots.reference.symbolic-transformations.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.symbolic-transformations.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.symbolic-transformations.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Symbolic Coordinates and User Transformations}
++\section[reference.symbolic-transformations]{Symbolic Coordinates and User Transformations}
+ 
+ \PGFPlots{} supports user transformations which can be applied to input and
+ output coordinates. Suppose the plot shall display days versus account
+@@ -301,7 +301,7 @@ calendar. Then, one coordinate unit is one day.
+     %
+ \pgfplotsset{anchor=center,/tikz/every picture/.append style={baseline}}
+ % \usepgfplotslibrary{dateplot}\usepackage{eurosym}
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ % requires \usepgfplotslibrary{dateplot} !
+ 
+ \pgfplotstabletypeset[string type]{plotdata/accounts.dat}

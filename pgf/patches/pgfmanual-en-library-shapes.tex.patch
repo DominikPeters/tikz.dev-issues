@@ -1,0 +1,16 @@
+diff --git a/doc/generic/pgf/pgfmanual-en-library-shapes.tex b/doc/generic/pgf/pgfmanual-en-library-shapes.tex
+--- a/doc/generic/pgf/pgfmanual-en-library-shapes.tex
++++ b/doc/generic/pgf/pgfmanual-en-library-shapes.tex
+@@ -1857,6 +1857,12 @@ center of the appropriate side.
+     fancy, `balloon'-style callouts.
+ \end{pgflibrary}
+ 
++\BlockClassSingle{warning-see-pdf}{
++For the intended rendering of the following examples, please see the \href{https://pgf-tikz.github.io/pgf/pgfmanual.pdf\#nameddest=subsection.71.7}{PDF version} of the manual.
++
++\includegraphics{standalone/pgfmanual-sec-71-7}
++}
++
+ Callouts consist of a main shape and a pointer (which is part of the shape)
+ which points to something in (or outside) the picture. The position on the
+ border of the main shape to which the pointer is connected is determined

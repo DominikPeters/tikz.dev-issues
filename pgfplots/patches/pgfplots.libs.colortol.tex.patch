@@ -1,0 +1,12 @@
+diff --git a/doc/latex/pgfplots/pgfplots.libs.colortol.tex b/doc/latex/pgfplots/pgfplots.libs.colortol.tex
+--- a/doc/latex/pgfplots/pgfplots.libs.colortol.tex
++++ b/doc/latex/pgfplots/pgfplots.libs.colortol.tex
+@@ -455,7 +455,7 @@
+ 
+ % =============================================================================
+ 
+-\section{ColorTol}
++\section[libs.colortol]{ColorTol}
+ \def\pgfplotsmanualcurlibrary{colormaps}
+ 
+ \emph{An extension by Paul Tol and Stefan Pinnow}

@@ -1,0 +1,10 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.layers.tex b/doc/latex/pgfplots/pgfplots.reference.layers.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.layers.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.layers.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Layers}
++\section[reference.layers]{Layers}
+ 
+ {
+ \tikzset{external/figure name/.add={}{layers_}}

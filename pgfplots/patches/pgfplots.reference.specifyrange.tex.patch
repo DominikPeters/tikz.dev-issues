@@ -1,0 +1,10 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.specifyrange.tex b/doc/latex/pgfplots/pgfplots.reference.specifyrange.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.specifyrange.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.specifyrange.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Specifying the Plotted Range}
++\section[reference.specifyrange]{Specifying the Plotted Range}
+ 
+ \subsection{Configuration of Limits Ranges}
+ 

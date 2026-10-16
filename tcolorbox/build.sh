@@ -10,17 +10,21 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 HERE=$(pwd)
+# upstream checkout at the pinned commit (see ../scripts/fetch.sh)
+UPSTREAM=${UPSTREAM:-$HERE/../.upstream/tcolorbox}
+[[ -d $UPSTREAM/doc/latex/tcolorbox ]] || { echo "missing $UPSTREAM, run: scripts/fetch.sh tcolorbox" >&2; exit 1; }
+export UPSTREAM
 TEX="$HERE/build/tex"
 IMG="$HERE/build/images"
-# Use the tcolorbox code of this repository, not the one of the TeX distribution.
+# Use the tcolorbox code of the upstream checkout, not the one of the TeX distribution.
 # The wrapper tcolorbox.sty in build/shim first loads tcbhtml-compat.sty, which
 # lets tcolorbox >= 6.9 run on older LaTeX kernels; it is found first also by
 # the sub-compilations started from the manual (run pdflatex, ...).
 mkdir -p "$HERE/build/shim"
 cp "$HERE/tcbhtml-compat.sty" "$HERE/build/shim/"
-printf '\\RequirePackage{tcbhtml-compat}\n\\input{%s/tcolorbox.sty}\n' "$(cd "$HERE/../tex/latex/tcolorbox" && pwd)" \
+printf '\\RequirePackage{tcbhtml-compat}\n\\input{%s/tcolorbox.sty}\n' "$(cd "$UPSTREAM/tex/latex/tcolorbox" && pwd)" \
   > "$HERE/build/shim/tcolorbox.sty"
-export TEXINPUTS="$HERE/build/shim:$HERE/../tex//:"
+export TEXINPUTS="$HERE/build/shim:$UPSTREAM/tex//:"
 STEP=${1:-all}
 
 if [[ $STEP == all ]]; then
@@ -37,7 +41,7 @@ fi
 if [[ $STEP == all || $STEP == images ]]; then
   python3 extract_images.py "$TEX/tcolorbox-html.pdf" "$TEX/tcolorbox-html.htmlimages" "$IMG"
   # cover page from the official PDF
-  pdftocairo -png -r 60 -f 1 -l 1 -singlefile "$HERE/../doc/latex/tcolorbox/tcolorbox.pdf" "$IMG/cover"
+  pdftocairo -png -r 60 -f 1 -l 1 -singlefile "$UPSTREAM/doc/latex/tcolorbox/tcolorbox.pdf" "$IMG/cover"
 fi
 
 python3 convert.py html

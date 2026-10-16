@@ -1,0 +1,46 @@
+diff --git a/doc/generic/pgf/pgfmanual-en-xxcolor.tex b/doc/generic/pgf/pgfmanual-en-xxcolor.tex
+--- a/doc/generic/pgf/pgfmanual-en-xxcolor.tex
++++ b/doc/generic/pgf/pgfmanual-en-xxcolor.tex
+@@ -43,19 +43,21 @@ such an environment is not available.
+   % spurious spaces because of how the example is absorbed token-by-token by the
+   % renderer.  Sigh...
+   render instead={%
+-    \begin{minipage}{3.5cm}\raggedright
+-    \color{red}Red text,
+-    \begin{colormixin}{25!white}
+-      washed-out red text,
+-      \color{blue}washed-out blue text,
+-      \begin{colormixin}{25!black}
+-        dark washed-out blue text,
+-        \color{green}dark washed-out green text,
++    \begin{lateximage}%
++      \begin{minipage}{3.5cm}\raggedright
++      \color{red}Red text,
++      \begin{colormixin}{25!white}
++        washed-out red text,
++        \color{blue}washed-out blue text,
++        \begin{colormixin}{25!black}
++          dark washed-out blue text,
++          \color{green}dark washed-out green text,
++        \end{colormixin}%
++        back to washed-out blue text,
+       \end{colormixin}%
+-      back to washed-out blue text,
+-    \end{colormixin}%
+-    and back to red.
+-    \end{minipage}%
++      and back to red.
++      \end{minipage}%
++    \end{lateximage}
+   }]
+ \begin{minipage}{3.5cm}\raggedright
+ \color{red}Red text,
+@@ -91,7 +93,7 @@ whether there exists an image named |foo.!25!white!25!black|.
+     adds a mix-in to this list.
+     %
+ \begin{codeexample}[preamble={\usepackage{xxcolor}
+-\usepackage{calc}}]
++\usepackage{calc}},pre={\begin{lateximage}},post={\end{lateximage}}]
+ \begin{minipage}{\linewidth-6pt}\raggedright
+ \begin{colormixin}{75!white}
+   \colorcurrentmixin\ should be ``!75!white''\par

@@ -1,0 +1,26 @@
+diff --git a/doc/generic/pgf/pgfmanual-en-tikz-graphs.tex b/doc/generic/pgf/pgfmanual-en-tikz-graphs.tex
+--- a/doc/generic/pgf/pgfmanual-en-tikz-graphs.tex
++++ b/doc/generic/pgf/pgfmanual-en-tikz-graphs.tex
+@@ -2769,7 +2769,7 @@ The following keys place nodes in a $N\times M$ grid.
+     width and depth are mapped to a $N\times M$ grid. The values of $N$ and $M$
+     depend on the size of the graph and the value of |wrap after|. The number
+     of columns $M$ is either set to |wrap after| explicitly or computed
+-    automatically as $\sqrt{\texttt{\string|V\string|}}$. $N$ is the number of
++    automatically as $\sqrt{|\texttt{V}|}$. $N$ is the number of
+     rows needed to lay out the graph in a grid with $M$ columns.
+     %
+ \begin{codeexample}[preamble={\usetikzlibrary{graphs.standard}}]
+@@ -3306,11 +3306,12 @@ following two keys:
+ \subsubsection{Graph Macros}
+ \label{section-library-graphs-reference-macros}
+ 
++
+ \begin{tikzlibrary}{graphs.standard}
+     This library defines a number of graph macros that are often used in the
+     literature. When new graphs are added to this collection, they will follow
+     the definitions in the Mathematica program, see
+-    \url{mathworld.wolfram.com/topics/SimpleGraphs.html}.
++    \href{https://mathworld.wolfram.com/topics/SimpleGraphs.html}{SimpleGraphs} on mathworld.wolfram.com.
+ \end{tikzlibrary}
+ 
+ \begin{graph}{subgraph I\_n}

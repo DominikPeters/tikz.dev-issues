@@ -1,0 +1,41 @@
+diff --git a/doc/latex/pgfplots/pgfplots.libs.smithchart.tex b/doc/latex/pgfplots/pgfplots.libs.smithchart.tex
+--- a/doc/latex/pgfplots/pgfplots.libs.smithchart.tex
++++ b/doc/latex/pgfplots/pgfplots.libs.smithchart.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Smith Charts}
++\section[libs.smithchart]{Smith Charts}
+ \label{sec:smithcharts}
+ 
+ \begingroup
+@@ -10,16 +10,12 @@
+ 
+     A Smith chart maps the complex half plane with positive real parts to the
+     unit circle. The |smithchart| library allows \PGFPlots{} to visualize Smith
+-    charts: it visualizes two-dimensional input coordinates $z \in \C $ of the
+-    form $z = x+ j y \in \C$ ($j$ being the imaginary unit, $j^2=-1$) with $x
++    charts: it visualizes two-dimensional input coordinates $z \in \mathbb{C} $ of the
++    form $z = x+ j y \in \mathbb{C}$ ($j$ being the imaginary unit, $j^2=-1$) with $x
+     \ge 0$ using the map
+-    %
+-        \[
+-            r\colon [0,\infty] \times [-\infty,\infty] \to
+-                \{ a+j b \;\vert\;  a^2 + b^2 = 1 \},
+-                    \quad r(z) = \frac{z-1}{z+1}
+-        \]
+-    %
++    $r\colon [0,\infty] \times [-\infty,\infty]$ $\to$
++    $\{ a+j b \;\vert\;  a^2 + b^2 = 1 \}$,
++    $r(z) = \frac{z-1}{z+1}$
+     using complex number division. The result is always in the unit circle.
+ 
+     The main application for Smith charts is in the area of electrical and
+@@ -71,7 +67,7 @@
+     labels on the outside.
+ 
+     \begin{pgfplotskey}{smithchart mirrored=\mchoice{true,false} (initially false)}
+-        \paragraph{Attention:}
++        \textbf{Attention:}
+ 
+         This key is deprecated. Its output does \emph{not} resemble Admittance
+         Smith charts because the author failed to understand how to render them

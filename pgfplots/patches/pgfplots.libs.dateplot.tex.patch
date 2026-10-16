@@ -1,0 +1,17 @@
+diff --git a/doc/latex/pgfplots/pgfplots.libs.dateplot.tex b/doc/latex/pgfplots/pgfplots.libs.dateplot.tex
+--- a/doc/latex/pgfplots/pgfplots.libs.dateplot.tex
++++ b/doc/latex/pgfplots/pgfplots.libs.dateplot.tex
+@@ -1,11 +1,10 @@
+ 
+-\section{Dates as Input Coordinates}
++\section[libs.dateplot]{Dates as Input Coordinates}
+ 
+ \begin{pgfplotslibrary}{dateplot}
+     A library which allows to use dates like |2008-01-01| or dates with time
+     like |2008-01-01 11:35| as input coordinates in plots. The library converts
+     dates to numbers and tick labels will be pretty-printed dates (or times).
+ 
+-    This library is documented in Section~\ref{sec:pgfplots:date:coords} on
+-    page~\pageref{sec:pgfplots:date:coords}.
++    This library is documented in Section~\ref{sec:pgfplots:date:coords}.
+ \end{pgfplotslibrary}

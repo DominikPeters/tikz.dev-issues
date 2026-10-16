@@ -1,0 +1,216 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.2dplots.tex b/doc/latex/pgfplots/pgfplots.reference.2dplots.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.2dplots.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.2dplots.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Two Dimensional Plot Types}
++\section[reference.2dplots]{Two Dimensional Plot Types}
+ 
+ {%
+ \tikzset{external/figure name/.add={}{twodim_}}
+@@ -7,10 +7,10 @@
+ \PGFPlots{} supports several two-dimensional line plots like piecewise linear
+ line plots, piecewise constant plots, smoothed plots, bar plots and comb plots.
+ Most of them use the \PGF{} plot handler library directly, see
+-\cite[Section~18.8]{tikz}.
++\href{https://tikz.dev/tikz-plots#sec-22.8}{the PGF/TikZ manual (Section~18.8)}.
+ 
+ Plot types are part of the plot style, so they are set with options. Most of
+-the basic 2d plot types are part of \Tikz{}, see \cite[Section~18.8]{tikz}, and
++the basic 2d plot types are part of \Tikz{}, see \href{https://tikz.dev/tikz-plots#sec-22.8}{the PGF/TikZ manual (Section~18.8)}, and
+ are probably known to users of \Tikz{}. They are documented here as well.
+ 
+ 
+@@ -53,8 +53,8 @@ are probably known to users of \Tikz{}. They are documented here as well.
+ \end{codeexample}
+ \end{plottype}
+ 
+-As described in~\cite{tikz} in all detail, this plot handler results in a
+-``smooth'' outline. However, it ``not very intelligent'' (compare~\cite{tikz})
++As described in \href{https://tikz.dev/tikz-plots#sec-22.8}{the PGF/TikZ manual} in all detail, this plot handler results in a
++``smooth'' outline. However, it ``not very intelligent'' (compare~\href{https://tikz.dev/tikz-plots#sec-22.8}{the PGF/TikZ manual})
+ and is unrelated to common plot-based interpolation schemes.
+ 
+ \begin{key}{/tikz/tension=\marg{tension} (initially 0.55)}
+@@ -62,7 +62,7 @@ and is unrelated to common plot-based interpolation schemes.
+     it controls the smoothing effect. Higher values results in more ``rounded''
+     corners whereas low values result in sharp corners.
+ 
+-    Please refer to~\cite{tikz} for details.
++    Please refer to \href{https://tikz.dev/tikz-plots#sec-22.8}{the PGF/TikZ manual} for details.
+ \end{key}
+ 
+ 
+@@ -728,8 +728,7 @@ in one axis can be stacked on top of each other or aligned next to each other.
+ \end{stylekey}
+ 
+ \begin{pgfplotsxykey}{\x ticklabel interval boundaries}
+-    These are style keys which set |x tick label as interval| (see
+-    page~\pageref{key:pgfplots:ticklabelasinterval} for details) and configure
++    These are style keys which set |x tick label as interval| and configure
+     the tick appearance to be \meta{start} -- \meta{end} for each tick
+     interval.
+ \end{pgfplotsxykey}
+@@ -738,14 +737,12 @@ in one axis can be stacked on top of each other or aligned next to each other.
+ \subsection{Histograms}
+ 
+ This section has been moved to the |statistics| library, see
+-Section~\ref{sec:histograms} on page~\pageref{sec:histograms}.
+-
++Section~\ref{sec:histograms}.
+ 
+ \subsection{Box Plots}
+ 
+ This section has been moved to the |statistics| library, see
+-Section~\ref{sec:boxplots} on page~\pageref{sec:boxplots}.
+-
++Section~\ref{sec:boxplots}.
+ 
+ \subsection{Comb Plots}
+ 
+@@ -905,7 +902,7 @@ horizontal/vertical lines instead of rectangles.
+         starts, |y| the $y$-coordinate and so on.
+ 
+ 
+-        \paragraph{Attention:}
++        \textbf{Attention:}
+ 
+         the fact that |x| refers to \emph{the final $x$-coordinate} means that
+         parametric plots \emph{should use $t$ as variable}\footnote{Sorry for
+@@ -1603,7 +1600,7 @@ of |stack plots=y|, each plot has the same $x$~coordinates).
+ \end{tikzpicture}
+ \end{codeexample}
+ 
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstableread{pgfplots.timeseries.dat}\loadedtable
+ \pgfplotstabletypeset\loadedtable
+ \end{codeexample}
+@@ -1883,7 +1880,7 @@ they contain only markers. They are enabled using the |only marks| key of
+     options like size and color can be specified using the
+     |mark options=|\meta{style options} key (or by modifying the |every mark|
+     style). The available markers along with the accepted style options can be
+-    found in Section~\ref{sec:markers} on page~\pageref{sec:markers}.
++    found in Section~\ref{sec:markers}.
+ \end{plottype}
+ 
+     \label{pgfplots:scatter}
+@@ -1948,8 +1945,8 @@ mandatory, the rest allows fine grained control over marker appearance options.
+     as |scatter| is activated and no different choice has been made. It needs
+     to be provided as \meta{option} for |\addplot| to configure the value used
+     to determine marker appearances. Actually, |scatter src| is nothing but an
+-    alias for |point meta|, so the main documentation for this key is on
+-    page~\pageref{pgfplots:pointmeta}. However, we summarize the choices here
++    alias for |point meta|, so the main documentation for this key at~\ref{pgfplots:pointmeta}. 
++    However, we summarize the choices here
+     together with scatter plot examples.
+ 
+     Usually, |scatter src| provides input data (numeric or string type) which
+@@ -2113,7 +2110,7 @@ mandatory, the rest allows fine grained control over marker appearance options.
+     |@post marker code| (see below).
+ 
+ 
+-    \paragraph{Remark:}
++    \textbf{Remark:}
+ 
+     The style |use mapped color| \emph{re}defines |@pre marker code| and
+     |@post marker code|. There is a starred variant
+@@ -2221,7 +2218,7 @@ mandatory, the rest allows fine grained control over marker appearance options.
+     separated list of \meta{label}|=|\marg{style options}.
+ 
+ 
+-    \paragraph{Attention:}
++    \textbf{Attention:}
+ 
+     The keys |every mark| and |mark options| have \emph{no effect} when used
+     inside of \meta{styles for each class name}! So, instead of assigning
+@@ -2229,7 +2226,7 @@ mandatory, the rest allows fine grained control over marker appearance options.
+     to markers anyway.
+ 
+ 
+-    \paragraph{Remark:}
++    \textbf{Remark:}
+ 
+     To use |\label| and |\ref| in conjunction with |scatter/classes|, you can
+     provide the class labels as optional arguments to |\label| in square
+@@ -2257,12 +2254,12 @@ First class is \ref{label:for:first:class}, second is \ref{label:for:second:clas
+ \end{codeexample}
+ 
+ 
+-    \paragraph{Remark:}
++    \textbf{Remark:}
+ 
+     It is possible to click into the plot to display labels with mouse popups,
+     see the |clickable coords| key of the |clickable| library.
+ 
+-    \paragraph{Remark:}
++    \textbf{Remark:}
+ 
+     The style |scatter/classes| \emph{re}defines |@pre marker code| and
+     |@post marker code|. There is a starred variant
+@@ -2373,7 +2370,7 @@ First class is \ref{label:for:first:class}, second is \ref{label:for:second:clas
+     an example of |nodes near coords|.
+ 
+ 
+-    \paragraph{Remarks and Details:}
++    \textbf{Remarks and Details:}
+ 
+     \begin{itemize}
+         \item |nodes near coords| uses the same options for line styles and
+@@ -2546,9 +2543,7 @@ First class is \ref{label:for:first:class}, second is \ref{label:for:second:clas
+         \item |nodes near coords|,
+         \item |scatter/classes|.
+     \end{itemize}
+-
+-    See also the examples in Section~\ref{sec:coordinate:style} on
+-    page~\pageref{sec:coordinate:style}.
++    See also the examples in Section~\ref{sec:coordinate:style}.
+ \end{pgfplotskeylist}
+ 
+ \begin{pgfplotskey}{scatter/position=\mchoice{absolute,relative} (initially relative)}
+@@ -2800,8 +2795,7 @@ achieved using the |unbounded coords| key combined with coordinate values
+ 
+     For plot expression and its friends, it is more likely to get very large
+     floating point numbers instead of |inf|. In this case, consider using the
+-    |restrict x to domain| key described on
+-    page~\pageref{key:restrict:x:to:domain}.
++    |restrict x to domain| key described at~\ref{key:restrict:x:to:domain}.
+ 
+     The |unbounded coords=jump| method does also work for mesh/surface plots:
+     every face adjacent to an unbounded coordinate will be discarded in this
+@@ -2922,7 +2916,7 @@ i.e.\@ to
+ \end{codeexample}
+ 
+ 
+-\paragraph{Limitations}
++\textbf{Limitations}
+ 
+ of this approach: coordinate filtering by means of |point meta| still includes
+ the omitted patch segments into the limit computation. This is different than
+@@ -2956,8 +2950,7 @@ other options about surface and mesh plots.
+ \subsection{Polar Coordinates / Polar Axes}
+ 
+ Polar coordinates can be provided in any kind of axis by means of
+-|data cs=polar|, please refer to its reference documentation on
+-page~\pageref{key:data:cs}.
++|data cs=polar|, please refer to its reference documentation~\ref{key:data:cs}.
+ 
+ Polar axes are available by means of |\usepgfplotslibrary{polar}|; please refer
+ to Section~\ref{sec:polar}.
+@@ -2966,14 +2959,11 @@ to Section~\ref{sec:polar}.
+ \subsection{Tieline Plots}
+ 
+ Tieline plots are a special application in |ternaryaxis|. They are part of
+-|\usepgfplotslibrary{ternary}|; please refer to Section~\ref{sec:tieline} on
+-page~\pageref{sec:tieline}.
+-
++|\usepgfplotslibrary{ternary}|; please refer to Section~\ref{sec:tieline}.
+ 
+ \subsection{Smith Charts}
+ 
+ Smith charts have a special coordinate system and a part of
+ |\usepgfplotslibrary{smithchart}|; please refer to
+-Section~\ref{sec:smithcharts} on page~\pageref{sec:smithcharts}.
+-
++Section~\ref{sec:smithcharts}.
+ }

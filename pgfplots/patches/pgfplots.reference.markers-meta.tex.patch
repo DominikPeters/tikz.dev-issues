@@ -1,0 +1,117 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.markers-meta.tex b/doc/latex/pgfplots/pgfplots.reference.markers-meta.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.markers-meta.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.markers-meta.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Markers, Linestyles, (Background) Colors and Colormaps}
++\section[reference.markers]{Markers, Linestyles, (Background) Colors and Colormaps}
+ \label{sec:markers}
+ 
+ The following options of \Tikz{} are available to plots.
+@@ -7,7 +7,7 @@ The following options of \Tikz{} are available to plots.
+ 
+ \subsection{Markers}
+ 
+-This list is copied from~\cite[Section~29]{tikz}:
++This list is copied from \href{https://tikz.dev/}{the PGF/TikZ manual (Section 29)}.
+ %
+ \pgfmanualpdflabel{/tikz/mark}{}%
+ \begingroup
+@@ -325,7 +325,7 @@ Note that each of the provided marks can be rotated freely by means of
+     basic level) drawing commands. During \meta{code}, the coordinate system's
+     origin denotes the coordinate where the marker shall be placed.
+ 
+-    Please refer to~\cite{tikz} section ``Mark Plot Handler'' for more detailed
++    Please refer to \href{https://tikz.dev/}{the PGF/TikZ manual} section ``Mark Plot Handler'' for more detailed
+     information.
+ \end{command}
+ 
+@@ -360,7 +360,7 @@ Note that each of the provided marks can be rotated freely by means of
+ Markers paths are not subjected to clipping as other parts of the figure.
+ Markers are either drawn completely or not at all.
+ 
+-\Tikz{} offers more options for marker fine tuning, please refer to~\cite{tikz}
++\Tikz{} offers more options for marker fine tuning, please refer to\href{https://tikz.dev/}{the PGF/TikZ manual}
+ for details.
+ 
+ 
+@@ -440,7 +440,7 @@ using
+ \noindent in marker styles.
+ 
+ Besides linestyles, \PGF{} also offers (a lot of) arrow heads. Please refer
+-to~\cite{tikz} for details.
++to\href{https://tikz.dev/}{the PGF/TikZ manual} for details.
+ %
+ \endgroup
+ 
+@@ -459,7 +459,7 @@ It might occasionally be necessary to change these parameters:
+ }
+     These keys control how lines are joined at edges. Their description is
+     beyond the scope of this manual, so interested readers should
+-    consult~\cite{tikz}.
++    consult\href{https://tikz.dev/}{the PGF/TikZ manual}.
+ 
+     Here is just an example illustrating why it might be of interest to study
+     these parameters:
+@@ -639,8 +639,8 @@ this manual; it is referenced by
+ }
+ 
+ \PGF{} uses the color support of |xcolor|. Therefore, the main reference for
+-how to specify colors is the |xcolor| manual~\cite{xcolor}. The \PGF{}
+-manual~\cite{tikz} is the reference for how to select colors for specific
++how to specify colors is the |xcolor| manual~\cite{xcolor}. 
++\href{https://tikz.dev/}{The PGF/TikZ manual} is the reference for how to select colors for specific
+ purposes like drawing, filling, shading, patterns etc. This section contains a
+ short overview over the specification of colors in~\cite{xcolor} (which is not
+ limited to \PGFPlots{}).
+@@ -768,7 +768,7 @@ or color wheel calculations. Please refer to the |xcolor| manual~\cite{xcolor}.
+ %--------------------------------------------------
+ 
+     Since these keys belong to \Tikz{}, the complete documentation can be found
+-    in the \Tikz{} manual~\cite[Section ``Specifying a Color'']{tikz}.
++    in \href{https://tikz.dev/tikz-actions#sec-15.2}{the PGF/TikZ manual, Section ``Specifying a Color''}.
+ \end{keylist}
+ 
+ 
+@@ -1246,7 +1246,7 @@ and interpolation happens in-between.
+ \begin{command}{\pgfplotscolormaptoshadingspec\marg{colormap name}\marg{right end size}\marg{\textbackslash macro}}
+     A command which converts a colormap into a \PGF{} shading's color
+     specification. It can be used in commands like |\pgfdeclare...shading| (see
+-    the \PGF{} manual~\cite{tikz} for details).
++    \href{https://tikz.dev/}{the PGF/TikZ manual} for details).
+ 
+     The first argument is the name of a (defined) colormap, the second the
+     rightmost dimension of the specification. The result will be stored in
+@@ -3619,12 +3619,11 @@ more complex ones.
+ \end{tikzpicture}
+ \end{codeexample}
+     %
+-    Details about |fill| and |shade| can be found in the \Tikz{} manual,
+-    \cite{tikz}.
++    Details about |fill| and |shade| can be found in \href{https://tikz.dev/}{the PGF/TikZ manual}.
+ \end{pgfplotskey}
+ 
+ 
+-\section{Providing Color Data -- Point Meta}
++\section[reference.meta]{Providing Color Data -- Point Meta}
+ \label{sec:pgfplots:point:meta}
+ 
+ \PGFPlots{} provides features which modify plots depending on a special
+@@ -3713,7 +3712,7 @@ manual.
+     for |scatter src| on page~\pageref{pgfplots:scatter:src} covers the same
+     topics. However, the main reference for |point meta| is here.
+     %
+-    \begin{description}
++    \begin{itemize}
+         \item[\declaretext{none}] The initial choice |none| disables point
+             meta data, resulting in no computational work. Any other choice
+             will activate the computation of upper and lower ranges for point
+@@ -3910,7 +3909,7 @@ manual.
+             i.e.\@
+ 
+             |point meta={symbolic=|\marg{symbol}|}|.
+-    \end{description}
++    \end{itemize}
+ 
+     As already mentioned, a main application of point meta data is to determine
+     (marker/face/edge) colors using a linear map into the range $[0,1000]$

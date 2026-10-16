@@ -1,0 +1,634 @@
+diff --git a/doc/latex/pgfplots/pgfmanual-en-macros.tex b/doc/latex/pgfplots/pgfmanual-en-macros.tex
+--- a/doc/latex/pgfplots/pgfmanual-en-macros.tex
++++ b/doc/latex/pgfplots/pgfmanual-en-macros.tex
+@@ -17,23 +17,31 @@
+ 
+ \providecommand\href[2]{\texttt{#1}}
+ 
++\newcommand{\defaultspan}[1]{\InlineClass{hl-default}{#1}}
++\newcommand{\definitionspan}[1]{\InlineClass{hl-def}{#1}}
++
+ 
+ \colorlet{examplefill}{yellow!80!black}
+ \definecolor{graphicbackground}{rgb}{0.96,0.96,0.8}
+ \definecolor{codebackground}{rgb}{0.8,0.8,1}
+ 
+ \newenvironment{pgfmanualentry}{%
++\BlockClass{manualentry}%
+   \pgfmanualresetlabel
+   \list{}{\leftmargin=2em\itemindent-\leftmargin\def\makelabel##1{\hss##1}}%
+-}{\endlist}
++}{\endlist%
++\endBlockClass}
+ \newcounter{pgfmanualentry}
+ \newcommand\pgfmanualentryheadline[1]{%
++\begin{BlockClass}{entryheadline}
+   \itemsep=0pt\parskip=0pt\relax
+   {\raggedright\item\refstepcounter{pgfmanualentry}\pgfmanualstorelabel
+    \strut{#1}\par}%
+-  \topsep=0pt}
++  \topsep=0pt%
++\end{BlockClass}}
+ \newcommand\pgfmanualbody{\parskip3pt}
+ 
++
+ \makeatletter
+ \newif\if@pgfmanualfirstlabel
+ 
+@@ -44,7 +52,7 @@
+ \newcommand\pgfmanualstorelabel{%
+   \if@pgfmanualfirstlabel
+     \begingroup
+-    \label@hook
++    % \label@hook
+     \xdef\pgfmanual@labelinfo
+       {{\@currentlabel}{\thepage}{\@currentlabelname}{\@currentHref}{}}%
+     \endgroup
+@@ -80,7 +88,7 @@
+ 
+ \newenvironment{pgflayout}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{\texttt{\string\pgfpagesuselayout\char`\{\declare{#1}\char`\}}\oarg{options}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\string\pgfpagesuselayout\char`\{\declare{#1}\char`\}}\oarg{options}}}
+     \index{#1@\protect\texttt{#1} layout}%
+     \index{Page layouts!#1@\protect\texttt{#1}}%
+     \pgfmanualbody
+@@ -115,7 +123,7 @@
+ \newenvironment{math-function}[1]{
+     \begin{pgfmanualentry}
+         \extractmathfunctionname{#1}
+-        \pgfmanualentryheadline{\texttt{#1}}%
++        \pgfmanualentryheadline{\definitionspan{\texttt{#1}}}%
+         \index{\mathname @\protect\texttt{\mathname} math function}%
+         \index{Math functions!\mathname @\protect\texttt{\mathname}}
+         \pgfmanualbody
+@@ -127,7 +135,7 @@
+ \newenvironment{math-operator}[1]{
+     \begin{pgfmanualentry}
+         \extractmathoperatorname{#1}
+-        \pgfmanualentryheadline{\texttt{#1}}%
++        \pgfmanualentryheadline{\definitionspan{\texttt{#1}}}%
+         \index{\mathname @\protect\texttt{\mathname} math operator}%
+         \index{Math operators!\mathname @\protect\texttt{\mathname}}
+         \pgfmanualbody
+@@ -138,7 +146,7 @@
+ 
+ \newenvironment{math-constant}[1]{
+     \begin{pgfmanualentry}
+-        \pgfmanualentryheadline{\texttt{#1}}%
++        \pgfmanualentryheadline{\definitionspan{\texttt{#1}}}%
+         \index{#1@\protect\texttt{#1} math constant}%
+         \index{Math constants!#1@\protect\texttt{#1}}
+         \pgfmanualbody
+@@ -151,7 +159,7 @@
+ 
+ 
+ \def\extractcommand#1#2\@@{%
+-  \pgfmanualentryheadline{\declare{\texttt{\string#1}}#2}%
++  \pgfmanualentryheadline{\definitionspan{\declare{\texttt{\string#1}}#2}}%
+   \removeats{#1}%
+   \index{\strippedat @\protect\myprintocmmand{\strippedat}}}
+ 
+@@ -167,9 +175,9 @@
+ }
+ 
+ \def\extractenvironement#1#2\@@{%
+-  \pgfmanualentryheadline{{\ttfamily\char`\\begin\char`\{\declare{#1}\char`\}}#2}%
+-  \pgfmanualentryheadline{{\ttfamily\ \ }\meta{environment contents}}%
+-  \pgfmanualentryheadline{{\ttfamily\char`\\end\char`\{\declare{#1}\char`\}}}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\begin\char`\{\declare{#1}\char`\}}#2}}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\ \ }\meta{environment contents}}}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\end\char`\{\declare{#1}\char`\}}}}%
+   \index{#1@\protect\texttt{#1} environment}%
+   \index{Environments!#1@\protect\texttt{#1}}}
+ 
+@@ -184,9 +192,9 @@
+ }
+ 
+ \def\extractplainenvironement#1#2\@@{%
+-  \pgfmanualentryheadline{{\ttfamily\declare{\char`\\#1}}#2}%
+-  \pgfmanualentryheadline{{\ttfamily\ \ }\meta{environment contents}}%
+-  \pgfmanualentryheadline{{\ttfamily\declare{\char`\\end#1}}}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\declare{\char`\\#1}}#2}}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\ \ }\meta{environment contents}}}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\declare{\char`\\end#1}}}}%
+   \index{#1@\protect\texttt{#1} environment}%
+   \index{Environments!#1@\protect\texttt{#1}}}
+ 
+@@ -201,16 +209,16 @@
+ }
+ 
+ \def\extractcontextenvironement#1#2\@@{%
+-  \pgfmanualentryheadline{{\ttfamily\declare{\char`\\start#1}}#2}%
+-  \pgfmanualentryheadline{{\ttfamily\ \ }\meta{environment contents}}%
+-  \pgfmanualentryheadline{{\ttfamily\declare{\char`\\stop#1}}}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\declare{\char`\\start#1}}#2}}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\ \ }\meta{environment contents}}}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\declare{\char`\\stop#1}}}}%
+   \index{#1@\protect\texttt{#1} environment}%
+   \index{Environments!#1@\protect\texttt{#1}}}
+ 
+ 
+ \newenvironment{shape}[1]{
+   \begin{pgfmanualentry}
+-      \pgfmanualentryheadline{Shape {\ttfamily\declare{#1}}}%
++      \pgfmanualentryheadline{\definitionspan{Shape \texttt{\declare{#1}}}}%
+     \index{#1@\protect\texttt{#1} shape}%
+     \index{Shapes!#1@\protect\texttt{#1}}
+     \pgfmanualbody
+@@ -231,7 +239,7 @@
+ 
+ \def\gobble#1{}
+ \def\extracthandler#1#2\@nil{%
+-  \pgfmanualentryheadline{Key handler \meta{key}{\ttfamily/\declare{#1}}#2}%
++  \pgfmanualentryheadline{\definitionspan{Key handler \meta{key}\texttt{/\declare{#1}}#2}}%
+   \index{\gobble#1@\protect\texttt{#1} handler}%
+   \index{Key handlers!#1@\protect\texttt{#1}}
+ }
+@@ -274,7 +282,15 @@
+     \ifpgfutil@in@%
+       \extractequalinitial#1\@nil%
+     \else
+-      \pgfmanualentryheadline{{\ttfamily\declarekey{#1}}\hfill(\extrakeytext no value)}%
++      % \pgfmanualentryheadline{%
++      %   \definitionspan{%
++      %     \texttt{%
++      %       \declarekey{#1}%
++      %     }%
++      %   }%
++      %   \defaultspan{(\extrakeytext no value)}%
++      % }%
++      \pgfmanualentryheadline{\definitionspan{\texttt{\declarekey{#1}}}\hfill\defaultspan{(\extrakeytext no value)}}%
+       \def\mykey{#1}%
+       \def\mypath{}%
+       \def\myname{}%
+@@ -319,7 +335,12 @@
+       \extractinitial{#1}#2\@nil%
+     \else
+ %     \pgfmanualentryheadline{{\ttfamily\declarekey{#1}=}#2\hfill(\extrakeytext no default)}%
+-      \pgfmanualentryheadline{{\ttfamily\declarekey{#1}=}#2\hfill}%
++      \pgfmanualentryheadline{%
++        \definitionspan{%
++          \texttt{\InlineClass{keyname2}{\declarekey{#1}}=}#2%
++        \hfill}
++      }%
++      % \pgfmanualentryheadline{{\ttfamily\declarekey{#1}=}#2\hfill}%
+     \fi%
+   \fi%
+   \def\mykey{#1}%
+@@ -330,16 +351,16 @@
+ }
+ 
+ \def\extractdefault#1#2(default #3)\@nil{%
+-  \pgfmanualentryheadline{{\ttfamily\declarekey{#1}\opt{=}}\opt{#2}\hfill (\extrakeytext default {\ttfamily#3})}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\declarekey{#1}\opt{=}}\opt{#2}}\hfill \defaultspan{(\extrakeytext default \texttt{#3})}}%
+ }
+ 
+ \def\extractinitial#1#2(initially #3)\@nil{%
+ %  \pgfmanualentryheadline{{\ttfamily\declarekey{#1}=}#2\hfill (\extrakeytext no default, initially {\ttfamily#3})}%
+-  \pgfmanualentryheadline{{\ttfamily\declarekey{#1}=}#2\hfill (\extrakeytext initially {\ttfamily#3})}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\declarekey{#1}=}#2}\hfill \defaultspan{(\extrakeytext initially \texttt{#3})}}%
+ }
+ 
+ \def\extractequalinitial#1 (initially #2)\@nil{%
+-  \pgfmanualentryheadline{{\ttfamily\declarekey{#1}}\hfill (\extrakeytext initially {\ttfamily#2})}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\declarekey{#1}}}\hfill \defaultspan{(\extrakeytext initially \texttt{#2})}}%
+   \def\mykey{#1}%
+   \def\mypath{}%
+   \def\myname{}%
+@@ -349,7 +370,7 @@
+ 
+ % Introduces a key alias '/#1/<name of current key>'
+ % to be used inside of \begin{key} ... \end{key}
+-\def\keyalias#1{\vspace{-3pt}\item{\small alias {\ttfamily/#1/\myname}}\vspace{-2pt}\par}
++\def\keyalias#1{\vspace{-3pt}\item{\small alias \texttt{/#1/\myname}}\vspace{-2pt}\par}
+ 
+ \newif\iffirsttime
+ 
+@@ -392,7 +413,7 @@
+   \end{pgfmanualentry}
+ }
+ \def\extractpredefinedmethod#1(#2)\@nil{%
+-  \pgfmanualentryheadline{Method \declare{\ttfamily #1}\texttt(#2\texttt) \hfill(predefined for all classes)}
++  \pgfmanualentryheadline{\definitionspan{Method \declare{\texttt{#1}}\texttt(#2\texttt)} \hfill\defaultspan{(predefined for all classes)}}
+   \index{#1@\protect\texttt{#1} method}%
+   \index{Methods!#1@\protect\texttt{#1}}
+ }
+@@ -401,7 +422,7 @@
+ \newenvironment{ooclass}[1]{
+   \begin{pgfmanualentry}
+     \def\currentclass{#1}
+-    \pgfmanualentryheadline{Class \declare{\texttt{#1}}}
++    \pgfmanualentryheadline{\definitionspan{Class \declare{\texttt{#1}}}}
+     \index{#1@\protect\texttt{#1} class}%
+     \index{Class #1@Class \protect\texttt{#1}}%
+     \index{Classes!#1@\protect\texttt{#1}}
+@@ -422,9 +443,9 @@
+ \def\extractmethod#1(#2)\@nil{%
+   \def\test{#1}
+   \ifx\test\currentclass
+-    \pgfmanualentryheadline{Constructor \declare{\ttfamily #1}\texttt(#2\texttt)}
++    \pgfmanualentryheadline{\definitionspan{Constructor \declare{\texttt{#1}}\texttt(#2\texttt)}}
+   \else
+-    \pgfmanualentryheadline{Method \declare{\ttfamily #1}\texttt(#2\texttt)}
++    \pgfmanualentryheadline{\definitionspan{Method \declare{\texttt{#1}}\texttt(#2\texttt)}}
+   \fi
+   \index{#1@\protect\texttt{#1} method}%
+   \index{Methods!#1@\protect\texttt{#1}}
+@@ -444,9 +465,9 @@
+ \def\extractattribute#1=#2;\@nil{%
+   \def\test{#2}%
+   \ifx\test\@empty
+-    \pgfmanualentryheadline{Private attribute \declare{\ttfamily #1} \hfill (initially empty)}
++    \pgfmanualentryheadline{\definitionspan{Private attribute \declare{\texttt{#1}}} \hfill \defaultspan{(initially empty)}}
+   \else
+-    \pgfmanualentryheadline{Private attribute \declare{\ttfamily #1} \hfill (initially {\ttfamily #2})}
++    \pgfmanualentryheadline{\definitionspan{Private attribute \declare{\texttt{#1}}} \hfill \defaultspan{(initially \texttt{ #2})}}
+   \fi
+   \index{#1@\protect\texttt{#1} attribute}%
+   \index{Attributes!#1@\protect\texttt{#1}}
+@@ -457,7 +478,7 @@
+ 
+ \newenvironment{predefinednode}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{Predefined node {\ttfamily\declare{#1}}}%
++    \pgfmanualentryheadline{\definitionspan{Predefined node \texttt{\declare{#1}}}}%
+     \index{#1@\protect\texttt{#1} node}%
+     \index{Predefined node!#1@\protect\texttt{#1}}
+     \pgfmanualbody
+@@ -468,7 +489,7 @@
+ 
+ \newenvironment{coordinatesystem}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{Coordinate system {\ttfamily\declare{#1}}}%
++    \pgfmanualentryheadline{\definitionspan{Coordinate system \texttt{\declare{#1}}}}%
+     \index{#1@\protect\texttt{#1} coordinate system}%
+     \index{Coordinate systems!#1@\protect\texttt{#1}}
+     \pgfmanualbody
+@@ -480,7 +501,7 @@
+ 
+ \newenvironment{snake}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{Snake {\ttfamily\declare{#1}}}%
++    \pgfmanualentryheadline{\definitionspan{Snake \texttt{\declare{#1}}}}%
+     \index{#1@\protect\texttt{#1} snake}%
+     \index{Snakes!#1@\protect\texttt{#1}}
+     \pgfmanualbody
+@@ -491,7 +512,7 @@
+ 
+ \newenvironment{decoration}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{Decoration {\ttfamily\declare{#1}}}%
++    \pgfmanualentryheadline{\definitionspan{Decoration \texttt{\declare{#1}}}}%
+     \index{#1@\protect\texttt{#1} decoration}%
+     \index{Decorations!#1@\protect\texttt{#1}}
+     \pgfmanualbody
+@@ -505,9 +526,9 @@
+ \makeatletter
+ \newenvironment{pathoperation}[3][]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{\textcolor{gray}{{\ttfamily\char`\\path}\
++    \pgfmanualentryheadline{\definitionspan{\textcolor{gray}{\texttt{\char`\\path}\
+         \ \dots}
+-      \declare{\texttt{#2}}#3\ \textcolor{gray}{\dots\texttt{;}}}%
++      \declare{\texttt{#2}}#3\ \textcolor{gray}{\dots\texttt{;}}}}%
+     \def\pgfmanualtest{#1}%
+     \ifx\pgfmanualtest\@empty%
+       \index{#2@\protect\texttt{#2} path operation}%
+@@ -522,7 +543,7 @@
+ \makeatother
+ 
+ \def\extractcommand#1#2\@@{%
+-  \pgfmanualentryheadline{\declare{\texttt{\string#1}}#2}%
++  \pgfmanualentryheadline{\definitionspan{\declare{\texttt{\string#1}}#2}}%
+   \removeats{#1}%
+   \index{\strippedat @\protect\myprintocmmand{\strippedat}}}
+ 
+@@ -531,11 +552,11 @@
+ 
+ \newenvironment{package}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usepackage\char`\{\declare{#1}\char`\}\space\space \char`\%\space\space  \LaTeX}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usepackage\char`\{\declare{#1}\char`\}\space\space \char`\%\space\space  \LaTeX}}}
+     \index{#1@\protect\texttt{#1} package}%
+     \index{Packages and files!#1@\protect\texttt{#1}}%
+-    \pgfmanualentryheadline{{\ttfamily\char`\\input \declare{#1}.tex\space\space\space \char`\%\space\space  plain \TeX}}
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usemodule[\declare{#1}]\space\space \char`\%\space\space  Con\TeX t}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\input \declare{#1}.tex\space\space\space \char`\%\space\space  plain \TeX}}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usemodule[\declare{#1}]\space\space \char`\%\space\space  Con\TeX t}}}
+     \pgfmanualbody
+ }
+ {
+@@ -545,11 +566,11 @@
+ 
+ \newenvironment{pgfmodule}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usepgfmodule\char`\{\declare{#1}\char`\}\space\space\space
+-        \char`\%\space\space  \LaTeX\space and plain \TeX\space and pure pgf}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usepgfmodule\char`\{\declare{#1}\char`\}\space\space\space
++        \char`\%\space\space  \LaTeX\space and plain \TeX\space and pure pgf}}}
+     \index{#1@\protect\texttt{#1} module}%
+     \index{Modules!#1@\protect\texttt{#1}}%
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usepgfmodule[\declare{#1}]\space\space \char`\%\space\space  Con\TeX t\space and pure pgf}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usepgfmodule[\declare{#1}]\space\space \char`\%\space\space  Con\TeX t\space and pure pgf}}}
+     \pgfmanualbody
+ }
+ {
+@@ -558,15 +579,15 @@
+ 
+ \newenvironment{pgflibrary}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usepgflibrary\char`\{\declare{#1}\char`\}\space\space\space
+-        \char`\%\space\space  \LaTeX\space and plain \TeX\space and pure pgf}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usepgflibrary\char`\{\declare{#1}\char`\}\space\space\space
++        \char`\%\space\space  \LaTeX\space and plain \TeX\space and pure pgf}}}
+     \index{#1@\protect\texttt{#1} library}%
+     \index{Libraries!#1@\protect\texttt{#1}}%
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usepgflibrary[\declare{#1}]\space\space \char`\%\space\space  Con\TeX t\space and pure pgf}}
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usetikzlibrary\char`\{\declare{#1}\char`\}\space\space
+-        \char`\%\space\space  \LaTeX\space and plain \TeX\space when using \tikzname}}
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usetikzlibrary[\declare{#1}]\space
+-        \char`\%\space\space  Con\TeX t\space when using \tikzname}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usepgflibrary[\declare{#1}]\space\space \char`\%\space\space  Con\TeX t\space and pure pgf}}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usetikzlibrary\char`\{\declare{#1}\char`\}\space\space
++        \char`\%\space\space  \LaTeX\space and plain \TeX\space when using \tikzname}}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usetikzlibrary[\declare{#1}]\space
++        \char`\%\space\space  Con\TeX t\space when using \tikzname}}}
+     \pgfmanualbody
+ }
+ {
+@@ -575,10 +596,10 @@
+ 
+ \newenvironment{tikzlibrary}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usetikzlibrary\char`\{\declare{#1}\char`\}\space\space \char`\%\space\space  \LaTeX\space and plain \TeX}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usetikzlibrary\char`\{\declare{#1}\char`\}\space\space \char`\%\space\space  \LaTeX\space and plain \TeX}}}
+     \index{#1@\protect\texttt{#1} library}%
+     \index{Libraries!#1@\protect\texttt{#1}}%
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usetikzlibrary[\declare{#1}]\space \char`\%\space\space Con\TeX t}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usetikzlibrary[\declare{#1}]\space \char`\%\space\space Con\TeX t}}}
+     \pgfmanualbody
+ }
+ {
+@@ -589,7 +610,7 @@
+ 
+ \newenvironment{filedescription}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{File {\ttfamily\declare{#1}}}%
++    \pgfmanualentryheadline{\definitionspan{File \texttt{\declare{#1}}}}%
+     \index{#1@\protect\texttt{#1} file}%
+     \index{Packages and files!#1@\protect\texttt{#1}}%
+     \pgfmanualbody
+@@ -601,7 +622,7 @@
+ 
+ \newenvironment{packageoption}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usepackage[\declare{#1}]\char`\{pgf\char`\}}}
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usepackage[\declare{#1}]\char`\{pgf\char`\}}}}
+     \index{#1@\protect\texttt{#1} package option}%
+     \index{Package options for \textsc{pgf}!#1@\protect\texttt{#1}}%
+     \pgfmanualbody
+@@ -612,11 +633,11 @@
+ 
+ 
+ 
+-\newcommand\opt[1]{{\color{black!50!green}#1}}
+-\newcommand\ooarg[1]{{\ttfamily[}\meta{#1}{\ttfamily]}}
++\newcommand\opt[1]{\textcolor{black!50!green}{#1}}
++\newcommand\ooarg[1]{\texttt{[}\meta{#1}\texttt{]}}
+ 
+-\def\opt{\afterassignment\pgfmanualopt\let\next=}
+-\def\pgfmanualopt{\ifx\next\bgroup\bgroup\color{black!50!green}\else{\color{black!50!green}\next}\fi}
++% \def\opt{\afterassignment\pgfmanualopt\let\next=}
++% \def\pgfmanualopt{\ifx\next\bgroup\bgroup\color{black!50!green}\else{\color{black!50!green}\next}\fi}
+ 
+ 
+ 
+@@ -656,8 +677,9 @@
+ 
+ \def\printanat{\char`\@}
+ 
+-\def\declare{\afterassignment\pgfmanualdeclare\let\next=}
+-\def\pgfmanualdeclare{\ifx\next\bgroup\bgroup\color{red!75!black}\else{\color{red!75!black}\next}\fi}
++\newcommand\declare[1]{\textcolor{red!75!black}{#1}}
++% \def\declare{\afterassignment\pgfmanualdeclare\let\next=}
++% \def\pgfmanualdeclare{\ifx\next\bgroup\bgroup\color{red!75!black}\else{\color{red!75!black}\next}\fi}
+ 
+ 
+ \let\textoken=\command
+@@ -685,7 +707,7 @@
+ \extractclass#1@\par\topsep=0pt}
+ \def\endclass{\endlist}
+ \def\extractclass#1#2@{%
+-\item{{{\ttfamily\char`\\documentclass}#2{\ttfamily\char`\{\declare{#1}\char`\}}}}%
++\item{{\texttt{\char`\\documentclass}#2\texttt{\char`\{\declare{#1}\char`\}}}}%
+   \index{#1@\protect\texttt{#1} class}%
+   \index{Classes!#1@\protect\texttt{#1}}}
+ 
+@@ -959,53 +981,107 @@
+   \find@example}
+ \def\endofcodeexample#1{%
+   \endgroup%
++  \begin{BlockClass}{example}%
+   \ifcode@execute%
+-    \setbox\codeexamplebox=\hbox{%
++  \begin{BlockClass}{example-image}%
+       {%
+         {%
+           \returntospace%
+           \commenthandler%
+           \xdef\code@temp{#1}% removes returns and comments
+         }%
+-%\message{Nach returntospace: \meaning\code@temp^^J^^J^^J}%
+         \expandafter\pgfmanual@codeexample@generate@graphic\expandafter{\code@temp}%
+       }%
+-    }%
+-    \ifdim\wd\codeexamplebox>\codeexamplewidth%
+-      \def\code@start{\par}%
+-      \def\code@flushstart{}\def\code@flushend{}%
+-      \def\code@mid{\parskip2pt\par\noindent}%
+-      \def\code@width{\linewidth-6pt}%
+-      \def\code@end{}%
+-    \else%
+-      \def\code@start{%
+-        \linewidth=\textwidth%
+-        \parshape \@ne 0pt \linewidth
+-        \leavevmode%
+-        \hbox\bgroup}%
+-      \def\code@flushstart{\hfill}%
+-      \def\code@flushend{\hbox{}}%
+-      \def\code@mid{\hskip6pt}%
+-      \def\code@width{\linewidth-12pt-\codeexamplewidth}%
+-      \def\code@end{\egroup}%
+-    \fi%
+-    \code@start%
+-    \noindent%
+-    \begin{minipage}[t]{\codeexamplewidth}\raggedright
+-      \hrule width0pt%
+-      \footnotesize\vskip-1em%
+-      \code@flushstart\box\codeexamplebox\code@flushend%
+-      \vskip-1ex
+-      \leavevmode%
+-    \end{minipage}%
++    \end{BlockClass}% % end example-image%
++%     \ifdim\wd\codeexamplebox>\codeexamplewidth%
++%       \def\code@start{\par}%
++%       \def\code@flushstart{}\def\code@flushend{}%
++%       \def\code@mid{\parskip2pt\par\noindent}%
++%       \def\code@width{\linewidth-6pt}%
++%       \def\code@end{}%
++%     \else%
++%       \def\code@start{%
++%         \linewidth=\textwidth%
++%         \parshape \@ne 0pt \linewidth
++%         \leavevmode%
++%         \hbox\bgroup}%
++%       \def\code@flushstart{\hfill}%
++%       \def\code@flushend{\hbox{}}%
++%       \def\code@mid{\hskip6pt}%
++%       \def\code@width{\linewidth-12pt-\codeexamplewidth}%
++%       \def\code@end{\egroup}%
++%     \fi%
++%     \code@start%
++%     \noindent%
++%     \begin{minipage}[t]{\codeexamplewidth}\raggedright
++%       \hrule width0pt%
++%       \footnotesize\vskip-1em%
++%       \code@flushstart\box\codeexamplebox\code@flushend%
++%       \vskip-1ex
++%       \leavevmode%
++%     \end{minipage}%
+   \else%
+     \def\code@mid{\par}
+     \def\code@width{\linewidth-6pt}
+     \def\code@end{}
+   \fi%
+-  \code@mid%
+-  \colorbox{codebackground}{%
+-    \begin{minipage}[t]{\code@width}%
++%   \code@mid%
++%   \colorbox{codebackground}{%
++%     \begin{minipage}[t]{\code@width}%
++%       {%
++%         \let\do\@makeother
++%         \dospecials
++%         \frenchspacing\@vobeyspaces
++%         \normalfont\ttfamily\footnotesize
++%         \typesetcomment%
++%         \codeexample@tabinit@replacementchars
++%         \@tempswafalse
++%         \def\par{%
++%           \if@tempswa
++%           \leavevmode \null \@@par\penalty\interlinepenalty
++%           \else
++%           \@tempswatrue
++%           \ifhmode\@@par\penalty\interlinepenalty\fi
++%           \fi}%
++%         \obeylines
++%         \everypar \expandafter{\the\everypar \unpenalty}%
++%         \pgfmanual@@typeset@listing{#1}%
++%     }
++%     \end{minipage}}%
++%   \code@end%
++%   \par%
++%   \medskip
++  % \begin{BlockClass}{example}%
++    % \ifcode@execute%
++    %   \begin{BlockClass}{example-image}%
++    %   \ifx\code@render\pgfutil@empty%
++    %     {% 
++    %       {%
++    %         \returntospace%
++    %         \commenthandler%
++    %         \xdef\code@temp{#1}% removes returns and comments
++    %       }%
++    %       \edef\pgfmanualmcatcode{\the\catcode`\^^M}%
++    %       \catcode`\^^M=9\relax%
++    %       \code@pre\expandafter\scantokens\expandafter{\code@temp\ignorespaces}\code@post\ignorespaces
++    %       % \expandafter\scantokens\expandafter{\code@temp}%
++    %       \catcode`\^^M=\pgfmanualmcatcode%
++    %     }%
++    %   \fi
++    %   \end{BlockClass}% % end example-image
++    % \fi%
++  %   \def\code@width{\linewidth-6pt}
++  %   \pgfkeysvalueof{/codeexample/prettyprint/base color}%
++    % \begin{BlockClass}{example-code}%
++    %   \pgfmanual@@typeset@listing{#1}%
++    % \end{BlockClass}% % end example-code
++  %   \par%
++  %   \medskip
++  % \end{BlockClass}% % end example
++  % \def\code@mid{\par}
++  % \def\code@width{\linewidth-6pt}
++  % \def\code@end{}
++    \begin{BlockClass}{example-code}%
+       {%
+         \let\do\@makeother
+         \dospecials
+@@ -1025,23 +1101,26 @@
+         \everypar \expandafter{\the\everypar \unpenalty}%
+         \pgfmanual@@typeset@listing{#1}%
+     }
+-    \end{minipage}}%
+-  \code@end%
++    \end{BlockClass}% % end example-code
+   \par%
+   \medskip
++  \end{BlockClass}% % end example
+   \end{codeexample}
+ }
+ 
+ % the purpose of these extra-macros is to plug-in special tex4ht
+ % instructions for the html version:
+ \long\def\pgfmanual@codeexample@generate@graphic#1{%
+-    \colorbox{graphicbackground}{\pgfmanual@codeexample@generate@graphic@{#1}}%
+-}%
+-\long\def\pgfmanual@codeexample@generate@graphic@#1{%
++%     \colorbox{graphicbackground}{\pgfmanual@codeexample@generate@graphic@{#1}}%
++% }%
++% \long\def\pgfmanual@codeexample@generate@graphic@#1{%
+     \color{black}\ignorespaces%
++    % \edef\pgfmanualmcatcode{\the\catcode`\^^M}%
++    % \catcode`\^^M=9\relax%
+     \code@pre%
+     \pgfmanual@scantokens{#1}\ignorespaces%
+     \code@post\ignorespaces%
++    % \catcode`\^^M=\pgfmanualmcatcode%
+ }%
+ 
+ \ifluatex
+@@ -1080,3 +1159,32 @@
+ %%% mode: latex
+ %%% TeX-master: "beameruserguide"
+ %%% End:
++
++
++\makeatletter
++% custom comment command for styling
++\newenvironment{codecomment}{%
++  \LWR@subhtmlelementclass{span}{example-code-comment}%
++  \begin{LWR@nestspan}%
++}{%
++  \LWR@htmltagc{/span}%
++  \end{LWR@nestspan}%
++}
++
++\begin{warpHTML}
++% better label names (remove LWR-ht- prefix)
++\RenewDocumentCommand{\LWR@hypertargetb}{m +m}{%
++  \label{#1}%
++  #2%
++  \endgroup%
++}
++\RenewDocumentCommand{\LWR@hyperlinkb}{m}{%
++\ifbool{LWR@insidemathcomment}%
++{\endgroup}%
++{\LWR@hyperrefcb[#1]}%
++}
++\end{warpHTML}
++\makeatother
++
++% %%%%% MODIFY HTML FILE NAME SYSTEM
++\input{pgfmanual-filename-maker.tex}
+\ No newline at end of file

@@ -1,0 +1,31 @@
+diff --git a/doc/latex/pgfplots/pgfplots.bib b/doc/latex/pgfplots/pgfplots.bib
+--- a/doc/latex/pgfplots/pgfplots.bib
++++ b/doc/latex/pgfplots/pgfplots.bib
+@@ -38,8 +38,8 @@
+   publisher    = {Addison Wesley},
+   year         = {1991},
+   note         = {Also available online at
+-                  \url{http://www.ruhr-uni-bochum.de/www-rz/schwanbs/TeX/} as
+-                  \href{http://www.ruhr-uni-bochum.de/www-rz/schwanbs/TeX/einfuehrung-in-tex.pdf}{\texttt{.pdf}}},
++                  \url{https://www.ruhr-uni-bochum.de/www-rz/schwanbs/TeX/} as
++                  \href{https://www.ruhr-uni-bochum.de/TeX/einfuehrung-in-tex.pdf}{\texttt{.pdf}}},
+ }
+ 
+ @MISC{keyvalintro,
+@@ -60,14 +60,14 @@
+   author       = {C.~Feuers\"anger},
+   title        = {{\PGFPlotstable{} package -- Loading, rounding and formatting tables in \LaTeX{}}},
+   howpublished = {{Available as separate package
+-                   \texttt{\textbackslash usepackage\{\href{file:pgfplotstable.pdf}{pgfplotstable}\}}}, as part of \PGFPlots{}},
++                   \texttt{\textbackslash usepackage\{\href{https://pgfplots.sourceforge.net/pgfplotstable.pdf}{pgfplotstable}\}}}, as part of \PGFPlots{}},
+     year    =    {\today}
+ }
+ 
+ @MISC{programmingnotes,
+   author       = {C.~Feuers\"anger},
+   title        = {{Programming in \TeX{} and Library Functions from \pgfname{} and \PGFPlots{}}},
+-  howpublished = {Available as part of \PGFPlots{}, \href{file:TeX-programming-notes.pdf}{TeX-programming-notes.pdf}},
++  howpublished = {Available as part of \PGFPlots{}, \href{https://pgfplots.sourceforge.net/TeX-programming-notes.pdf}{TeX-programming-notes.pdf}},
+   year         = {\today},
+ }
+ 

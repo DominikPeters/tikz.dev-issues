@@ -1,0 +1,19 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.gridoptions-axiscoordinates.tex b/doc/latex/pgfplots/pgfplots.reference.gridoptions-axiscoordinates.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.gridoptions-axiscoordinates.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.gridoptions-axiscoordinates.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Grid Options}
++\section[reference.gridoptions-axiscoordinates]{Grid Options}
+ 
+ \begin{pgfplotsxykeylist}{%
+     \x minorgrids=\mchoice{true,false} (initially false),
+@@ -55,7 +55,7 @@
+ \end{pgfplotsxykeylist}
+ 
+ 
+-\section{Custom Annotations}
++\section[reference.annotations]{Custom Annotations}
+ \label{sec:pgfplots:annotations}
+ 
+ Often, one may want to add custom drawing elements or descriptive texts to an

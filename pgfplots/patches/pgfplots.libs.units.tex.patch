@@ -1,0 +1,22 @@
+diff --git a/doc/latex/pgfplots/pgfplots.libs.units.tex b/doc/latex/pgfplots/pgfplots.libs.units.tex
+--- a/doc/latex/pgfplots/pgfplots.libs.units.tex
++++ b/doc/latex/pgfplots/pgfplots.libs.units.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Units in Labels}
++\section[libs.units]{Units in Labels}
+ \label{sec:units}
+ 
+ \begingroup
+@@ -162,9 +162,9 @@ functionality. For instance it provides an easy scaling mechanism.
+     These keys sets the prefix of the unit. The allowed prefixes are:
+     %
+     \begin{center}
+-        \begin{tabular}{>{\ttfamily}c>{$}c<{$}}
++        \begin{tabular}{>{\ttfamily}cc}
+                 \toprule
+-            \textrm{Prefix} & $Power$ \\
++            \textrm{Prefix} & Power \\
+                 \midrule
+             yocto           & -24     \\
+             zepto           & -21     \\

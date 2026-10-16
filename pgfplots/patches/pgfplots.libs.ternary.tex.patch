@@ -1,0 +1,72 @@
+diff --git a/doc/latex/pgfplots/pgfplots.libs.ternary.tex b/doc/latex/pgfplots/pgfplots.libs.ternary.tex
+--- a/doc/latex/pgfplots/pgfplots.libs.ternary.tex
++++ b/doc/latex/pgfplots/pgfplots.libs.ternary.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Ternary Diagrams}
++\section[libs.ternary]{Ternary Diagrams}
+ \begingroup
+ \def\pgfplotsmanualcurlibrary{ternary}
+ 
+@@ -46,13 +46,9 @@
+     choose \emph{absolute data ranges} $x \in [x_{\min},x_{\max}]$, $y \in
+     [y_{\min},y_{\max}]$ and $z \in [z_{\min},z_{\max}]$. The important thing
+     is that the relative values
+-    %
+-        \[
+-            \tilde x := \frac{x-x_{\min}}{x_{\max} - x_{\min}},\;
+-            \tilde y := \frac{y-y_{\min}}{y_{\max} - y_{\min}},\;
+-            \tilde z := \frac{z-z_{\min}}{z_{\max} - z_{\min}}
+-        \]
+-    %
++            $\tilde x := \frac{x-x_{\min}}{x_{\max} - x_{\min}}$,
++            $\tilde y := \frac{y-y_{\min}}{y_{\max} - y_{\min}}$,
++            $\tilde z := \frac{z-z_{\min}}{z_{\max} - z_{\min}}$
+     sum up to $100\%$, i.e.\@ $\tilde x + \tilde y + \tilde z = 1$. Thus,
+     \PGFPlots{} computes $\tilde x$, $\tilde y$ and $\tilde z$ and interprets
+     them as barycentric (triangular) coordinates.
+@@ -64,21 +60,21 @@
+     What happens behind the scenes is that a data point $(x,y,z)$ is placed at
+     $X,Y$ determined by
+     %
+-        \[
++        \begin{align*}
+             \begin{bmatrix}
+                 X(x,y,z)\\
+                 Y(x,y,z)
+             \end{bmatrix}
+-            =
+-            \tilde x A + \tilde y B + \tilde z C
+-            =
++            &=
++            \tilde x A + \tilde y B + \tilde z C \\
++            &=
+             \begin{bmatrix}
+                 \frac12 {\tilde x+2 \tilde z}\\
+                 \frac{\sqrt 3}{2} {\tilde x}
+                 %\frac12 \frac{\tilde x+2 \tilde z}{\tilde x+\tilde y+\tilde z}\\
+                 %\frac{\sqrt 3}{2} \frac{\tilde x}{\tilde x+\tilde y+\tilde z}
+             \end{bmatrix}
+-        \]
++        \end{align*}
+     %
+     where $A=(\nicefrac12,\nicefrac{\sqrt3}{2})$ is top corner of the triangle,
+     $B=(0,0)$ the lower left and $C=(1,0)$ the lower right one. The $\tilde y$
+@@ -196,7 +192,7 @@ contain any of the |mark|, |color| and |cycle list| options of a normal axis.
+ 
+ \noindent The following example is a (crude) copy of an example of
+ 
+-\url{http://www.sv.vt.edu/classes/MSE2094_NoteBook/96ClassProj/experimental/ternary2.html}
++\href{http://www.sv.vt.edu/classes/MSE2094_NoteBook/96ClassProj/experimental/ternary2.html}{ternary2.html} (sv.vt.edu)
+ 
+ \noindent and uses |area style| to change |cycle list| and the legend
+ appearance.
+@@ -266,7 +262,7 @@ appearance.
+ Ternary plots can also use |contour prepared| to plot contour lines.
+ The following example is a (crude) copy of an example of
+ 
+-\url{http://www.sv.vt.edu/classes/MSE2094_NoteBook/96ClassProj/experimental/ternary2.html}:
++\href{http://www.sv.vt.edu/classes/MSE2094_NoteBook/96ClassProj/experimental/ternary2.html}{ternary2.html} (sv.vt.edu):
+ 
+ \begin{codeexample}[]
+ \begin{tikzpicture}

@@ -1,0 +1,29 @@
+diff --git a/doc/generic/pgf/pgfmanual-en-library-fpu.tex b/doc/generic/pgf/pgfmanual-en-library-fpu.tex
+--- a/doc/generic/pgf/pgfmanual-en-library-fpu.tex
++++ b/doc/generic/pgf/pgfmanual-en-library-fpu.tex
+@@ -36,11 +36,11 @@ provides at least%
+     integer. That means it supports a significantly larger data range than an
+     IEEE double precision number -- but if a future \TeX\ version may provide
+     low-level access to doubles, this may change.}%
+-the IEEE double precision data range, $\pgfmathprintnumber{-1e+324}, \dotsc,
+-\pgfmathprintnumber{+1e324}$. The absolute smallest number bigger than zero is
+-$\pgfmathprintnumber{1e-324}$. The FPU's relative precision is at least
+-$\pgfmathprintnumber{1e-4}$ although operations like addition have a relative
+-precision of $\pgfmathprintnumber{1e-6}$.
++the IEEE double precision data range, $-1 \cdot 10^{324}, \dotsc,
++1\cdot 10^{324}$. The absolute smallest number bigger than zero is
++$1 \cdot 10^{-324}$. The FPU's relative precision is at least
++$1 \cdot 10^{-4}$ although operations like addition have a relative
++precision of $1 \cdot 10^{-6}$.
+ 
+ Note that the library has not really been tested together with any drawing
+ operations. It should be used to work with arbitrary input data which is then
+@@ -194,7 +194,7 @@ and |fp| are:
+ \begin{itemize}
+     \item The FPU supports at least the complete IEEE double precision number
+         range, while |fp| covers only numbers of magnitude
+-        $\pm\pgfmathprintnumber{1e17}$.
++        $\pm1\cdot 10^{17}$.
+     \item The FPU has a uniform relative precision of about 4--5 correct
+         digits. The fixed point library has an absolute precision which may
+         perform good in many cases -- but will fail at the ends of the data

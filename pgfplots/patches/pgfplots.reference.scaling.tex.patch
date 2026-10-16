@@ -1,0 +1,19 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.scaling.tex b/doc/latex/pgfplots/pgfplots.reference.scaling.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.scaling.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.scaling.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Scaling Options}
++\section[reference.scaling]{Scaling Options}
+ 
+ There are a various options which control or change the scaling of an axis.
+ Here, ``scaling'' typically means two aspects: first, the unit vector size in
+@@ -488,7 +488,7 @@ All common options mentioned in the previous paragraphs are described here.
+     %
+     \noindent Providing |unit vector ratio=2 1| means that
+     $\frac{||e_x||}{||e_y||} = 2$ where each coordinate $(x,y)$ is placed at $x
+-    e_x + y e_y \in \R^2$ (see the documentation for |x| and |y| options). Note
++    e_x + y e_y \in \mathbb{R}^2$ (see the documentation for |x| and |y| options). Note
+     that |axis equal| is nothing but |unit vector ratio=1 1 1|.
+ 
+     The arguments \meta{rx}, \meta{ry}, and \meta{rz} are ratios for $x$, $y$

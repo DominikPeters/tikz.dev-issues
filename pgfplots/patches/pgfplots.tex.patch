@@ -1,0 +1,97 @@
+diff --git a/doc/latex/pgfplots/pgfplots.tex b/doc/latex/pgfplots/pgfplots.tex
+--- a/doc/latex/pgfplots/pgfplots.tex
++++ b/doc/latex/pgfplots/pgfplots.tex
+@@ -23,13 +23,14 @@
+ % SEE pgfplots-macros.tex as well!
+ %\pdfminorversion=5 % to allow compression
+ %\pdfobjcompresslevel=2
+-\documentclass[a4paper,openany]{book}
++% \documentclass[a4paper,openany]{book}
++\documentclass[a4paper,doc2]{ltxdoc}
+ 
+ \let\bookmaketitle=\maketitle
+ 
+ % -----------------------------------
+ % this here is from ltxdoc:
+-\usepackage{doc}[=v2]
++\usepackage{doc}
+ \AtBeginDocument{\MakeShortVerb{\|}}
+ %\setlength{\textwidth}{355pt}
+ %\addtolength\marginparwidth{30pt}
+@@ -46,6 +47,18 @@
+   {\ttfamily(}\meta{#1}{\ttfamily)}}
+ \raggedbottom
+ 
++\usepackage[latexmk,mathjax,HomeHTMLFilename=home]{lwarp}
++\CSSFilename{style.css}
++\MathJaxFilename{javascript.txt}
++\begin{warpMathJax}
++    \CustomizeMathJax{
++    \newcommand{\meta}[1]{\langle\textit{#1}\rangle}
++    }
++\end{warpMathJax}
++\setcounter{FileDepth}{1}
++\setcounter{tocdepth}{1}
++\boolfalse{CombineHigherDepths}
++
+ % -----------------------------------
+ \input{pgfplots.preamble.tex}
+ 
+@@ -58,7 +71,7 @@
+ 
+ %\RequirePackage[german,english,francais]{babel}
+ 
+-\def\matlabcolormaptext{This colormap is similar to one shipped with Matlab$^\text{\textregistered}$ under a similar name.}
++\def\matlabcolormaptext{This colormap is similar to one shipped with Matlab\textregistered{} under a similar name.}
+ 
+ \IfFileExists{tikzlibraryspy.code.tex}{%
+ \usetikzlibrary{spy}
+@@ -95,11 +108,20 @@
+     tabsize=4,
+ }
+ 
+-\pgfplotsmanualenableexternalizationofexpensive
++% \pgfplotsmanualenableexternalizationofexpensive
+ 
+ %\usetikzlibrary{external}
+ %\tikzexternalize[prefix=figures/]{pgfplots}
+ 
++\def\partname{Chapter}
++% Redefine part numbering to Arabic
++\renewcommand{\thepart}{\arabic{part}}
++% Ensure section numbering is in the format 1.1, 1.2, ...
++\renewcommand{\thesection}{\thepart.\arabic{section}}
++\makeatletter
++\@addtoreset{section}{part}
++\makeatother
++
+ \title{%
+     Manual for Package \PGFPlots{}\\
+     {\small 2D/3D Plots in \LaTeX{}, Version \pgfplotsversion}\\
+@@ -170,18 +192,24 @@
+ }%
+ 
+ 
+-\bookmaketitle
++\HTMLTitle{PGFplots Manual}
++\HTMLTitleAfterSection
++
++\maketitle
+ \tableofcontents
++
++
+ \include{pgfplots.title_abstract_intro}
+ \include{pgfplots.preliminaries}
+ \include{pgfplots.intro}
+ \include{pgfplots.reference}
+ \include{pgfplots.libs}
++\include{pgfplotstable}
+ \include{pgfplots.resources}
+ \include{pgfplots.importexport}
+ \include{pgfplots.basic.reference}
+ 
+-\printindex
++% \printindex
+ 
+ \bibliographystyle{abbrv} %gerapali} %gerabbrv} %gerunsrt.bst} %gerabbrv}% gerplain}
+ \nocite{pgfplotstable}

@@ -1,0 +1,30 @@
+diff --git a/doc/latex/pgfplots/pgfplots.install.tex b/doc/latex/pgfplots/pgfplots.install.tex
+--- a/doc/latex/pgfplots/pgfplots.install.tex
++++ b/doc/latex/pgfplots/pgfplots.install.tex
+@@ -1,6 +1,6 @@
+ % main=manual.tex
+ 
+-\section{Installation and Prerequisites}
++\section[install]{Installation and Prerequisites}
+ 
+ \subsection{Licensing}
+ 
+@@ -161,7 +161,7 @@ Please refer to \url{http://www.ctan.org/installationadvice/} for more
+ information about package installation.
+ 
+ 
+-\section{Troubleshooting -- Error Messages}
++\section[errors]{Troubleshooting -- Error Messages}
+ 
+ This section discusses some problems which may occur when using \PGFPlots{}.
+ Some of the error messages are shown in the index, take a look at the end of
+@@ -268,7 +268,8 @@ following options:
+         explicitly.
+ \end{itemize}
+ %
+-Please read the corresponding sections in~\cite[Sections~7.2.1 and 7.2.2]{tikz}
++Please read the corresponding sections in
++\href{https://tikz.dev/drivers}{the PGF/TikZ manual (Sections~7.2.1 and 7.2.2)}
+ if you have further questions. These sections also contain limitations of
+ particular drivers.
+ 

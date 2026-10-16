@@ -1,0 +1,374 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.axis-addplot.tex b/doc/latex/pgfplots/pgfplots.reference.axis-addplot.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.axis-addplot.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.axis-addplot.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{The Axis Environments}
++\section[reference.axis]{The Axis Environments}
+ 
+ There is an axis environment for linear scaling, two for semi-logarithmic
+ scaling and one for double-logarithmic scaling.
+@@ -74,7 +74,7 @@ scaling and one for double-logarithmic scaling.
+ \noindent with properly set variables `|xmode|' and `|ymode|' (see below).
+ 
+ 
+-\section{The \protect\texttt{\protect\textbackslash addplot} Command: Coordinate Input}
++\section[reference.addplot]{The \protect\texttt{\protect\textbackslash addplot} Command: Coordinate Input}
+ \label{sec:addplot}
+ 
+ {
+@@ -260,15 +260,12 @@ plot coordinate).
+         As soon as the axes limits are completely known, \PGFPlots{} applies
+         a transformation which maps these floating point numbers into \TeX{}
+         precision using transformations
+-        %
+-            \[
+-                T_x(x) = 10^{s_x} \cdot x - a_x
+-                \text{ and } T_y(y) = 10^{s_y} \cdot y - a_y
+-                \text{ and (for 3D plots) } T_z(y) = 10^{s_z} \cdot z - a_z
+-            \]
+-        %
+-        with properly chosen integers $s_x, s_y, s_z \in \Z$ and shifts
+-        $a_x,a_y, a_z\in \R$. Page~\pageref{pgfplots:disabledatascaling} contains a
++        $T_x(x) = 10^{s_x} \cdot x - a_x$
++        and
++        $T_y(y) = 10^{s_y} \cdot y - a_y$
++        and (for 3D plots) $T_z(y) = 10^{s_z} \cdot z - a_z$
++        with properly chosen integers $s_x, s_y, s_z \in \mathbb{Z}$ and shifts
++        $a_x,a_y, a_z\in \mathbb{R}$. Section~\ref{pgfplots:disabledatascaling} contains a
+         description of |disabledatascaling| and provides more details about
+         the transformation.\index{Accuracy!Floating Point in \PGFPlots}
+     \item Some of the coordinate input routines use the powerful
+@@ -461,7 +458,7 @@ The coordinates as such can be numbers as |+5|, |-1.2345e3|, |35.0e2|,
+ Furthermore, |coordinates| allows to define ``meta data'' for each coordinate.
+ The interpretation of meta data depends on the visualization technique: for
+ scatter plots, meta data can be used to define colors or style associations for
+-every point (see page~\pageref{pgfplots:scatterclasses} for an example). Meta
++every point (see \ref{pgfplots:scatterclasses} for an example). Meta
+ data (if any) must be provided after the coordinates and after error bar bounds
+ (if any) in square brackets:
+ %
+@@ -480,8 +477,7 @@ data (if any) must be provided after the coordinates and after error bar bounds
+ \end{tikzpicture}
+ \end{codeexample}
+ %
+-Please refer to the documentation of |point meta| on
+-page~\pageref{sec:pgfplots:point:meta} for more information about per point meta
++Please refer to the documentation of |point meta| at~\ref{sec:pgfplots:point:meta} for more information about per point meta
+ data.
+ 
+ The coordinate stream can contain |empty line|s to tell \PGFPlots{} that the
+@@ -639,7 +635,7 @@ Summary and remarks:
+         `|x error index|'/`|y error index|' to \meta{source columns}. See
+         Section~\ref{sec:errorbars} for details about error bars.
+     \item It is possible to read per point meta data (usable in
+-        |scatter src|, see page~\pageref{pgfplots:scatter:src}) as has been
++        |scatter src|, see Section~\ref{pgfplots:scatter:src}) as has been
+         discussed for |\addplot coordinates| and |\addplot file| above. The meta data
+         column can be provided using the |meta| key (or the |meta index| key).
+     \item Use |\addplot table [|\meta{source columns}|] |\marg{\textbackslash
+@@ -880,7 +876,7 @@ prefix can always be omitted when used in a \PGFPlots{} method.
+     the normal way.
+ 
+ 
+-    \paragraph{Attention:}
++    \textbf{Attention:}
+ 
+     Usually, \verbpdfref{\addplot table} only picks required entries, requiring
+     linear runtime complexity. As soon as |read completely| is activated,
+@@ -1021,7 +1017,7 @@ prefix can always be omitted when used in a \PGFPlots{} method.
+     which are described below.
+ 
+ 
+-    \paragraph{Remarks}
++    \textbf{Remarks}
+ 
+     \begin{enumerate}
+         \item What really goes on is a loop which assigns the current sample
+@@ -1047,9 +1043,9 @@ prefix can always be omitted when used in a \PGFPlots{} method.
+             \texttt{factorial}.} |rand| (random between $-1$ and $1$), |rnd|
+             (random between $0$ and $1$), number format conversions |hex|,
+             |Hex|, |oct|, |bin| and some more. The math parser has been
+-            written by Mark Wibrow and Till Tantau~\cite{tikz}, the FPU
++            written by \href{https://tikz.dev/math}{Mark Wibrow and Till Tantau}, the FPU
+             routines have been developed as part of \PGFPlots{}. The
+-            documentation for both parts can be found in~\cite{tikz}.
++            documentation for both parts can be found in~\href{https://tikz.dev/}{the PGF/TikZ manual}.
+ 
+             Please note, however, that trigonometric functions are defined in
+             degrees (see |trig format|). The character `|^|' is used for
+@@ -1061,7 +1057,7 @@ prefix can always be omitted when used in a \PGFPlots{} method.
+     \end{enumerate}
+ 
+ 
+-    \paragraph{About the precision and number range:}
++    \textbf{About the precision and number range:}
+         \index{Accuracy!High Precision for Plot Expression}%
+         \index{Errors!dimension too large}%
+         \index{Precision}%
+@@ -1113,7 +1109,8 @@ prefix can always be omitted when used in a \PGFPlots{} method.
+     |\addplot expression |\marg{math expression}|;|
+ \end{addplotoperation}
+ 
+-\begin{addplotoperation}[]{(\meta{$x$ expression},\meta{$y$ expression})}{}
++\begin{addplotoperation}[]{(\meta{x expression},\meta{y expression})}{}
++% \begin{addplotoperation}[]{(\meta{$x$ expression},\meta{$y$ expression})}{}
+     A variant of \verbpdfref{\addplot expression} which allows to provide
+     different coordinate expressions for the $x$- and $y$-coordinates. This can
+     be used to generate parameterized plots.
+@@ -1136,9 +1133,9 @@ prefix can always be omitted when used in a \PGFPlots{} method.
+ }
+     Sets the function's domain(s) for |\addplot expression| and
+     |\addplot gnuplot|. Two dimensional plot expressions are defined as
+-    functions $f\colon [x_1,x_2] \to \R$ and \meta{$x_1$} and \meta{$x_2$} are
++    functions $f\colon [x_1,x_2] \to \mathbb{R}$ and \meta{$x_1$} and \meta{$x_2$} are
+     set with |domain|. Three dimensional plot expressions use functions
+-    $f\colon [x_1,x_2] \times [y_1,y_2] \to \R$ and \meta{$y_1$} and
++    $f\colon [x_1,x_2] \times [y_1,y_2] \to \mathbb{R}$ and \meta{$y_1$} and
+     \meta{$y_2$} are set with |y domain|. If |y domain| is empty, $[y_1,y_2] =
+     [x_1,x_2]$ is assumed for three dimensional plots (see
+     page~\pageref{cmd:addplot3:expr} for details about three dimensional plot
+@@ -1158,7 +1155,7 @@ prefix can always be omitted when used in a \PGFPlots{} method.
+     |restrict x to domain|.
+ 
+ 
+-    \paragraph{Remark for \Tikz{} users:}
++    \textbf{Remark for \Tikz{} users:}
+ 
+     |/pgfplots/domain| and |/tikz/domain| are independent options. Please
+     prefer the \PGFPlots{} variant (i.e.\@ provide |domain| to an axis,
+@@ -1205,7 +1202,7 @@ prefix can always be omitted when used in a \PGFPlots{} method.
+     as for the |domain| key applies here. See above for details.
+ 
+ 
+-    \paragraph{Attention:}
++    \textbf{Attention:}
+ 
+     |samples at| overrides |domain|, even if |domain| has been set \emph{after}
+     |samples at|! Use |samples at={}| to clear \meta{coordinate list} and
+@@ -1256,7 +1253,7 @@ prefix can always be omitted when used in a \PGFPlots{} method.
+ \end{tikzpicture}
+ \end{codeexample}
+ 
+-    \paragraph{Limitations:}
++    \textbf{Limitations:}
+ 
+     this feature is currently unavailable for |polaraxis| and |smithchart|.
+ \end{pgfplotskey}
+@@ -1310,8 +1307,9 @@ both file input and modifications by means of mathematical expressions.
+     special command `|\thisrow|\marg{column name}' within \meta{expression} (or
+     |\thisrowno|\meta{column index}).
+     %
++% EXAMPLE DOESN'T COMPILE
+ \pgfplotstableset{begin table={\begin{tabular}[b]}}
+-\begin{codeexample}[vbox]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \pgfplotstabletypeset[columns={maxlevel,L2}]{plotdata/newexperiment1.dat}
+ 
+ \begin{tikzpicture}
+@@ -1348,7 +1346,7 @@ both file input and modifications by means of mathematical expressions.
+         ``Unknown function'' error message.
+ 
+ 
+-        \paragraph{Limitations:}
++        \textbf{Limitations:}
+ 
+         this macro is currently unavailable if you use something of like
+         |\addplot table {\loadedtable}| and the expression occurs outside of
+@@ -1368,7 +1366,7 @@ both file input and modifications by means of mathematical expressions.
+         index \meta{column index} (starting with $0$).
+ 
+ 
+-        \paragraph{Limitations:}
++        \textbf{Limitations:}
+ 
+         see limitations for |\thisrow|.
+     \end{command}
+@@ -1401,7 +1399,7 @@ both file input and modifications by means of mathematical expressions.
+             doubt, prefer using |\thisrow|\marg{column name}.
+     \end{enumerate}
+ 
+-    \paragraph{Attention:}
++    \textbf{Attention:}
+ 
+     If your table has less than two rows, you may need to set
+     |x index={},y index={}| explicitly. This is a consequence of the fact that
+@@ -1475,8 +1473,7 @@ pdflatex -shell-escape filename.tex.
+     The \meta{options} determine the appearance of the plotted function; these
+     parameters also affect the legend. There is also a set of options which are
+     specific to the gnuplot interface. These options are described in all
+-    detail in \cite[Section~18.6]{tikz}. A short summary is shown below.
+-
++    detail in \href{https://tikz.dev/tikz-plots#sec-22.6}{the PGF/TikZ manual, Section 22.6}. A short summary is shown below.
+     Some remarks:
+     %
+     \begin{itemize}
+@@ -1495,7 +1492,7 @@ pdflatex -shell-escape filename.tex.
+             below.
+     \end{itemize}
+ 
+-    Please refer to \cite[Section~18.6]{tikz} for more details about
++    Please refer to \href{https://tikz.dev/tikz-plots#sec-22.6}{the PGF/TikZ manual, Section 22.6} for more details about
+     |\addplot function| and the |gnuplot| interaction.
+ \end{addplotoperation}
+ 
+@@ -1548,7 +1545,7 @@ pdflatex -shell-escape filename.tex.
+ \end{key}
+ 
+ \begin{key}{/tikz/prefix=\marg{file name prefix}}
+-    A common path prefix for temporary filenames (see \cite[Section~18.6]{tikz}
++    A common path prefix for temporary filenames (see \href{https://tikz.dev/tikz-plots#sec-22.6}{the PGF/TikZ manual, Section 22.6}
+     for details).
+ \end{key}
+ 
+@@ -1609,7 +1606,7 @@ pdflatex -shell-escape filename.tex.
+     The \meta{options} determine the appearance of the plotted function; these
+     parameters also affect the legend. There is also a set of options which are
+     specific to the gnuplot and the shell interface. These options are
+-    described in all detail in \cite[Section~19.6]{tikz}. A short summary is
++    described in all detail in \href{https://tikz.dev/tikz-plots#sec-22.6}{the PGF/TikZ manual, Section 22.6}. A short summary is
+     shown below.
+ \end{addplotoperation}
+ 
+@@ -1619,7 +1616,7 @@ pdflatex -shell-escape filename.tex.
+ \end{key}
+ 
+ \begin{key}{/tikz/prefix=\marg{file name prefix}}
+-    A common path prefix for temporary filenames (see \cite[Section~19.6]{tikz}
++    A common path prefix for temporary filenames (see \href{https://tikz.dev/tikz-plots#sec-22.6}{the PGF/TikZ manual, Section 22.6}
+     for details).
+ \end{key}
+ 
+@@ -1634,7 +1631,7 @@ pdflatex -shell-escape filename.tex.
+     (for example, a contour plot, a complicated shaded surface\footnote{See
+     also Section~\ref{sec:pgfplots:surfplots} for an overview of \PGFPlots{}
+     methods to draw shaded surfaces.} or a large point cluster) with an
+-    external program like Matlab$^\text{\textregistered}$ or |gnuplot|. The graphics,
++    external program like Matlab\textregistered{} or |gnuplot|. The graphics,
+     however, should \emph{not} contain an axis or descriptions. Then, we use
+     |\includegraphics| and a \PGFPlots{} axis which fits exactly on top of the
+     imported graphics.
+@@ -1708,7 +1705,7 @@ print -dpng external1
+             computes a tight bounding box around every picture element.
+ 
+             However, some images may contain a rectangular path which is as
+-            large as the bounding box (Matlab$^\text{\textregistered}$
++            large as the bounding box (Matlab\textregistered{}
+             computes such |.eps| images). In this case, use the ``Ungroup''
+             method (context menu of |inkscape|) as often as necessary and
+             remove such a path.
+@@ -2001,14 +1998,14 @@ points in your image. \PGFPlots{} will then squeeze the graphics correctly, and
+ it reconfigures the axis to ensure a correct display of the result.
+ 
+ 
+-\paragraph{Matlab versus other tools:}
++\textbf{Matlab versus other tools:}
+ 
+ Although this section is based on Matlab images, the technique to import
+ three-dimensional graphics is independent of Matlab. Thus, if you have a
+ different tool, you need to read all that follows. However, users of Matlab
+ \emph{can use a simplified export mechanism} which has been contributed by
+ Jürnjakob Dugge. Please skip to Section~\ref{sec:plotgraphics3d:matlabscript}
+-on page~\pageref{sec:plotgraphics3d:matlabscript} if you use Matlab to generate
++if you use Matlab to generate
+ the graphics files (although you may want to take a brief look at the examples
+ on the following pages to learn about flexibility or legends).
+ 
+@@ -2031,10 +2028,7 @@ transparent (|gimp|: select the outer white space with the magic wand, then
+ use\footnote{I have a German version, I am not sure if the translation is
+ correct.} Layer$\gg$Transparency$\gg$Color to Transparency) we get:
+ 
+-{\setlength{\fboxsep}{0pt}%
+-\centering%
+-\fbox{\includegraphics[width=6cm]{plotdata/plotgraphics3dsurf.png}}%
+-}
++\includegraphics[width=6cm]{plotdata/plotgraphics3dsurf.png}
+ 
+ The key idea is now to identify several points in the image, and assign
+ \emph{both} their logical three-dimensional coordinates \emph{and} the
+@@ -2045,15 +2039,10 @@ Figure~\ref{fig:plotgraphics3d} (left).
+ 
+ 
+ \begin{figure}
+-    \noindent
+-    \hbox to \linewidth{\hfill
+         \includegraphics{plotdata/plotgraphics3dsurfmatlab.png}%
+         \hfill
+-        \begin{minipage}[b][4cm][c]{2.6cm}%
+-        \includegraphics[width=\linewidth]{plotdata/plotgraphics_gimpmeasure.png}%
+-        \end{minipage}
++        \includegraphics[width=4cm]{plotdata/plotgraphics_gimpmeasure.png}%
+         \hfill
+-    }
+     \caption{Using Matlab to extract image coordinates (left) and Gimp to
+              measure distances (right).}
+         \label{fig:plotgraphics3d}
+@@ -2146,10 +2135,7 @@ can.
+ Here is a further example. Suppose we are given the three-dimensional
+ visualization
+ 
+-{\setlength{\fboxsep}{0pt}%
+-\centering%
+-\fbox{\includegraphics[width=6cm]{plotdata/risingdrop3d}}%
+-}
++\includegraphics[width=6cm]{plotdata/risingdrop3d}
+ 
+ It has been generated by Matlab (I only added transparency to the background
+ with |gimp|). Besides advanced visualization techniques, it uses |axis equal|,
+@@ -2166,7 +2152,7 @@ when you import the resulting graphics:
+     xlabel=$x$,ylabel=$y$,
+     title={\centering
+       Geometry provided by Sven Gro\ss, Bonn\\
+-      \url{http://www.igpm.rwth-aachen.de/DROPS}\\},
++      http://www.igpm.rwth-aachen.de/DROPS\\},
+     title style={text width=6cm,font=\tiny},
+ ]
+     \addplot3 graphics [
+@@ -2203,7 +2189,7 @@ ratio between |width| and |height| improves the display:
+     xlabel=$x$,ylabel=$y$,
+     title={\centering
+       Geometry provided by Sven Gro\ss, Bonn\\
+-      \url{http://www.igpm.rwth-aachen.de/DROPS}\\},
++      http://www.igpm.rwth-aachen.de/DROPS\\},
+     title style={text width=6cm,font=\tiny},
+ ]
+     \addplot3 graphics [
+@@ -2234,7 +2220,7 @@ the axis limits. In the default configuration |scale uniformly strategy=auto|,
+ \PGFPlots{} will \emph{never} shrink axis limits.
+ 
+ 
+-\paragraph{Compatibility remark:}
++\textbf{Compatibility remark:}
+ 
+ Note that the scaling capabilities have been improved for \PGFPlots{}
+ version~1.6. In previous versions, only
+@@ -2270,10 +2256,7 @@ save  plotgraphics3.seed seed -ASCII % to reproduce the result
+ \noindent I only added background transparency with |gimp| and got the following
+ graphics:
+ 
+-{\setlength{\fboxsep}{0pt}%
+-\centering%
+-\fbox{\includegraphics[width=6cm]{plotdata/plotgraphics3.png}}%
+-}
++\includegraphics[width=6cm]{plotdata/plotgraphics3.png}
+ 
+ We proceed as before and collect four points, each with 3d logical coordinates
+ (by clicking into the Matlab figure) and their associated 2d canvas (graphics)
+@@ -2499,7 +2482,7 @@ with \verbpdfref{\addplot3} |graphics|:
+ \begin{addplotoperation}[]{file}{\marg{name}}
+ \labelprefix\label{pgfplots:addplot:file}
+ 
+-    \paragraph{Deprecation note:}
++    \textbf{Deprecation note:}
+ 
+     If you have data files, you should generally use |\addplot table|. The
+     input type |\addplot file| is almost the same, but considerably less
+@@ -2528,7 +2511,7 @@ with \verbpdfref{\addplot3} |graphics|:
+ 10.00000 -0.54402 i
+ \end{codeexample}
+     %
+-    This listing has been copied from~\cite[Section~16.4]{tikz}.
++    This listing has been copied from~\href{https://tikz.dev/tikz-plots#sec-22.4}{the PGF/TikZ manual, Section 22.4}.
+ 
+     Plot file accepts one optional argument,
+ 

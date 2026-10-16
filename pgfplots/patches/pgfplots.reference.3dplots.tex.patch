@@ -1,0 +1,147 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.3dplots.tex b/doc/latex/pgfplots/pgfplots.reference.3dplots.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.3dplots.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.3dplots.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Three Dimensional Plot Types}
++\section[reference.3dplots]{Three Dimensional Plot Types}
+ \label{sec:3d}
+ 
+ {
+@@ -58,7 +58,7 @@ Section~\ref{sec:pgfplots:export}.
+     The \verbpdfref{\addplot3} command is the main interface for any three
+     dimensional plot. It works in the same way as its two dimensional variant
+     |\addplot| which has been described in all detail in
+-    Section~\ref{sec:addplot} on page~\pageref{sec:addplot}.
++    Section~\ref{sec:addplot}.
+ 
+     The \verbpdfref{\addplot3} command accepts the same input methods as the
+     |\addplot| variant, including expression plotting, coordinates, files and
+@@ -69,7 +69,7 @@ Section~\ref{sec:pgfplots:export}.
+     Furthermore, \verbpdfref{\addplot3} has a way to decide whether a
+     \emph{line} visualization or a \emph{mesh} visualization has to be
+     done\index{3d: line or mesh}. The first one is a map from one dimension
+-    into $\R^3$ and the latter one a map from two dimensions to $\R^3$. Here,
++    into $\mathbb{R}^3$ and the latter one a map from two dimensions to $\mathbb{R}^3$. Here,
+     the keys |mesh/rows| and |mesh/cols| are used to define mesh sizes (matrix
+     sizes). Usually, you don't have to care about that because the coordinate
+     input routines already allow either one- or two-dimensional structure.
+@@ -123,7 +123,7 @@ Section~\ref{sec:pgfplots:export}.
+ \begin{addplot3operation}[]{coordinates}{\marg{coordinate list}}
+     The \verbpdfref{\addplot3 coordinates} method works like its
+     two-dimensional variant, \verbpdfref{\addplot coordinates} which is
+-    described in all detail on page~\pageref{pgfplots:addplot:coordinates}:
++    described in all detail at~\ref{pgfplots:addplot:coordinates}:
+ 
+     A long list of coordinates |(|\meta{x}|,|\meta{y}|,|\meta{z}|)| is
+     expected, separated by white spaces. The input list can be either an
+@@ -209,8 +209,7 @@ Section~\ref{sec:pgfplots:export}.
+     column and $z_i$ in the third.
+ 
+     A further column is read after $z_i$ if |point meta=explicit| has been
+-    requested, see the documentation of \verbpdfref{\addplot file} on
+-    page~\pageref{pgfplots:addplot:file} for details.
++    requested, see the documentation of \verbpdfref{\addplot file} at~\ref{pgfplots:addplot:file} for details.
+ 
+     As for \verbpdfref{\addplot3 coordinates}, an |empty line| in the file
+     marks the end of one matrix row.
+@@ -354,7 +353,7 @@ Section~\ref{sec:pgfplots:export}.
+     Again, note the subtle difference to the common matrix indexing where a
+     column has the second index fixed. \PGFPlots{} refers to the way one would
+     write down a function on a sheet of paper (this is consistent with how
+-    Matlab$^\text{\textregistered}$ displays discrete functions with matrices).
++    Matlab\textregistered{} displays discrete functions with matrices).
+ \end{pgfplotskey}
+ 
+ \begin{addplot3operation}[]{\marg{math expression}}{}
+@@ -366,7 +365,7 @@ Section~\ref{sec:pgfplots:export}.
+ 
+     The method \verbpdfref{\addplot3} \marg{math expr} visualizes the function
+     $f(x,y) = $\meta{math expr} where $ f \colon [x_1,x_2] \times [y_1,y_2] \to
+-    \R$. The interval $[x_1,x_2]$ is determined using the |domain| key, for
++    \mathbb{R}$. The interval $[x_1,x_2]$ is determined using the |domain| key, for
+     example using |domain=0:1|. The interval $[y_1,y_2]$ is determined using
+     the |y domain| key. If |y domain| is empty, $[y_1,y_2] = [x_1,x_2]$ will be
+     assumed. If |y domain=0:0| (or any other interval of length zero), it is
+@@ -418,7 +417,7 @@ Section~\ref{sec:pgfplots:export}.
+     \verbpdfref{\addplot3 expression} \marg{math expression}|;|
+ \end{addplot3operation}
+ 
+-\begin{addplot3operation}[]{(\meta{$x$ expression},\meta{$y$ expression},\meta{$z$ expression})}{}
++\begin{addplot3operation}[]{(\meta{x expression},\meta{y expression},\meta{z expression})}{}
+     A variant of \verbpdfref{\addplot3 expression} which allows to provide
+     different coordinate expressions for the $x$-, $y$- and $z$-coordinates.
+     This can be used to generate parameterized plots.
+@@ -1081,7 +1080,7 @@ each input coordinate. The color for each box is determined by
+     \noindent There are (currently) two possibilities to determine the single
+     color for every segment:
+     %
+-    \begin{description}
++    \begin{itemize}
+         \item[\declaretext{flat corner}] Uses the color data of one vertex to
+             color the segment. The color of the \emph{first} vertex
+             determines the color of the entire segment. Note that \PGFPlots{}
+@@ -1095,7 +1094,7 @@ each input coordinate. The color for each box is determined by
+         \item[\declaretext{flat mean}] Uses the mean of all four color data
+             values as segment color. This is the initial value as it provides
+             symmetric colors for symmetric functions.
+-    \end{description}
++    \end{itemize}
+     %
+     The choice |flat| is actually the same as |flat mean|. Please note that
+     |shader=flat mean| and |shader=flat corner| also influence mesh plots --
+@@ -1685,8 +1684,7 @@ streamed coordinate. We use a table here, and a table reads its color data from
+ the column name provided in the |table/meta| key.
+ 
+ The accepted format of colors is quite similar to that of colormap definitions
+-(compare Section~\ref{sec:colormap:input:format} on
+-page~\pageref{sec:colormap:input:format}). The common format is
++(compare Section~\ref{sec:colormap:input:format}). The common format is
+ \declaretext{\meta{color model}|=|\meta{arguments}}. In contrast to the similar
+ input format inside of colormap definitions, the syntax here has no round
+ braces and does not have the \meta{length} argument. Nevertheless, the same
+@@ -2208,7 +2206,7 @@ table {
+     There are several fine-tuning parameters of the input/output file
+     management, and it is even possible to invoke different programs than
+     |lua| (see |contour gnuplot|). These details are discussed at the end of this
+-    section, see below at page~\pageref{key:pgfplots:contour:gnuplot}.
++    section.
+ \end{plottype}
+ 
+ \begin{pgfplotskey}{contour/number=\marg{integer} (initially 5)}
+@@ -2669,7 +2667,7 @@ save 'exporteddata.dat' data -ASCII
+     and each last point on contour lines. The contour lines as such are defined
+     by the |level| column since we wrote |point meta=\thisrow{level}|. Such a
+     feature also allows |contour prepared| for nonstandard axes, compare the
+-    examples for the |ternary| lib on page~\pageref{page:ternary:contour}.
++    examples for the |ternary| lib at~\ref{page:ternary:contour}.
+ 
+     \begin{pgfplotskey}{contour/draw color=\marg{color} (initially mapped color)}
+         Defines the draw color for every contour. Note that only |mapped color|
+@@ -3543,8 +3541,7 @@ Another example follows. Note that |z buffer=sort| is a necessary method here.
+     \begin{axis}[
+         xlabel=$x$, ylabel=$y$,
+         view/h=-10,
+-        title=\footnotesize
+- \url{http://en.wikipedia.org/wiki/Klein_bottle},
++        title=Klein bottle,
+     ]
+         \addplot3 [
+             surf,
+@@ -4321,8 +4318,7 @@ axis on top,
+ 
+         The choice |mesh input=lattice| is the initial configuration for |mesh|
+         and |surf| plots: it expects input in a compact matrix form as
+-        described at the beginning of this section starting with
+-        page~\pageref{sec:3d} and requires a |mesh/ordering| and perhaps
++        described at the beginning of this section and requires a |mesh/ordering| and perhaps
+         end-of-scanline markers. It yields patches with exactly four corners
+         and is compatible with |patch type=rectangle| and |patch type=bilinear|
+         (the latter requiring to load the |patchplots| library). In this case,
+@@ -4484,4 +4480,4 @@ the bar plot types like |ybar| for three dimensional axes, sorry.
+ 
+ Please refer to Section~\ref{sec:pgfplots:interrupt} for interrupted plots.
+ 
+-}
++}
+\ No newline at end of file

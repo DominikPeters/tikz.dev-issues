@@ -1,0 +1,19 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.3dconfiguration.tex b/doc/latex/pgfplots/pgfplots.reference.3dconfiguration.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.3dconfiguration.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.3dconfiguration.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{3D Axis Configuration}
++\section[reference.3dconfiguration]{3D Axis Configuration}
+ \label{sec:3d:axis:config}
+ 
+ {
+@@ -73,7 +73,7 @@ this manual.
+     the view direction is always the transformed positive $y$-axis.
+ 
+     The |view| argument is compatible with the argument of the
+-    Matlab$^\text{\textregistered}$ view command, i.e.\@ you can use
++    Matlab\textregistered{} view command, i.e.\@ you can use
+ 
+     |[h,v] = view|
+ 

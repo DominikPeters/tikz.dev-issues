@@ -1,0 +1,10 @@
+diff --git a/doc/latex/pgfplots/pgfplots.tutorial3.tex b/doc/latex/pgfplots/pgfplots.tutorial3.tex
+--- a/doc/latex/pgfplots/pgfplots.tutorial3.tex
++++ b/doc/latex/pgfplots/pgfplots.tutorial3.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Use Cases involving Scatter Plots}
++\section[tutorial3]{Use Cases involving Scatter Plots}
+ 
+ Assuming that we are more or less familiar with the basics of the preceding
+ tutorials, we would like to draw a scatter plot. A scatter plot is one in which

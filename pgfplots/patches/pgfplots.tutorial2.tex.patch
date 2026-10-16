@@ -1,0 +1,10 @@
+diff --git a/doc/latex/pgfplots/pgfplots.tutorial2.tex b/doc/latex/pgfplots/pgfplots.tutorial2.tex
+--- a/doc/latex/pgfplots/pgfplots.tutorial2.tex
++++ b/doc/latex/pgfplots/pgfplots.tutorial2.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Solving a Real Use Case: Scientific Data Analysis}
++\section[tutorial2]{Solving a Real Use Case: Scientific Data Analysis}
+ 
+ In this section, we assume that you did some scientific experiment. The
+ scientific experiment yielded three input data tables: one table for each

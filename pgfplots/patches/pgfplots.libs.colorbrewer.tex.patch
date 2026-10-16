@@ -1,0 +1,21 @@
+diff --git a/doc/latex/pgfplots/pgfplots.libs.colorbrewer.tex b/doc/latex/pgfplots/pgfplots.libs.colorbrewer.tex
+--- a/doc/latex/pgfplots/pgfplots.libs.colorbrewer.tex
++++ b/doc/latex/pgfplots/pgfplots.libs.colorbrewer.tex
+@@ -389,7 +389,7 @@
+ \end{tikzpicture}%
+ }}
+ 
+-\section{ColorBrewer}
++\section[libs.colorbrewer]{ColorBrewer}
+ \def\pgfplotsmanualcurlibrary{colormaps}
+ 
+ {\emph{An extension by Vincent A.\ Traag and Stefan Pinnow}}
+@@ -867,7 +867,7 @@ To find a scheme, e.g.\@ the above chosen \texttt{GnBu-7} on
+ \subsection{External Examples}
+ 
+ If you want to see some examples, where Brewer has used her schemes, have a
+-look at \url{https://www.census.gov/population/www/cen2000/atlas/index.html}.
++look at \href{https://www.census.gov/population/www/cen2000/atlas/index.html}{this census.gov page}.
+ 
+ \end{pgfplotslibrary}
+ 

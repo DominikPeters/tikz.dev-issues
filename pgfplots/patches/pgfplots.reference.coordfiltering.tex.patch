@@ -1,0 +1,10 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.coordfiltering.tex b/doc/latex/pgfplots/pgfplots.reference.coordfiltering.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.coordfiltering.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.coordfiltering.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Skipping Or Changing Coordinates -- Filters}
++\section[reference.coordfiltering]{Skipping Or Changing Coordinates -- Filters}
+ \label{sec:filters}
+ 
+ \PGFPlots{} offers filters. A filter expects a (numeric) input coordinate and

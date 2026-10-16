@@ -1,0 +1,10 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.transformations.tex b/doc/latex/pgfplots/pgfplots.reference.transformations.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.transformations.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.transformations.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Transforming Coordinate Systems}
++\section[reference.transformations]{Transforming Coordinate Systems}
+ 
+ Usually, \PGFPlots{} works with Cartesian coordinates. However, one may want to
+ provide coordinates in a different coordinate system.

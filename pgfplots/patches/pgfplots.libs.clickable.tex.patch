@@ -1,0 +1,56 @@
+diff --git a/doc/latex/pgfplots/pgfplots.libs.clickable.tex b/doc/latex/pgfplots/pgfplots.libs.clickable.tex
+--- a/doc/latex/pgfplots/pgfplots.libs.clickable.tex
++++ b/doc/latex/pgfplots/pgfplots.libs.clickable.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Clickable Plots}
++\section[libs.clickable]{Clickable Plots}
+ 
+ \begingroup
+ \def\pgfplotsmanualcurlibrary{clickable}
+@@ -53,13 +53,8 @@ where $m = (y_1-y_0) / (x_1-x_0)$ is the slope and $n$ the offset chosen such
+ that $l(x_0;\dotsc) = y_0$. For logarithmic plots, logarithms will be applied
+ before computing slopes.
+ 
+-    \noindent
+-    \hbox to \linewidth{%
+-    \hspace{-0.5cm}%
+-    \begin{tikzpicture}
+-        \node at (8cm,0cm)    {\includegraphics[height=6cm]{figures/pgfplotsclickable-fig4.png}};
+-        \node at (0cm,0cm)    {\includegraphics[height=6cm]{figures/pgfplotsclickable-fig3.png}};
+-    \end{tikzpicture}\hss}%
++    \includegraphics[height=6cm]{figures/pgfplotsclickable-fig4.png}
++    \includegraphics[height=6cm]{figures/pgfplotsclickable-fig3.png}
+ 
+ \nobreak These screen shots show the result of drag- and drop for
+ \emph{logarithmic} axes: the end points show, again, the coordinates (without
+@@ -87,7 +82,7 @@ to load it into Acrobat Reader and simply click into a plot.
+     value by default (i.e.\@ you write just |clickable coords| without an equal
+     sign).
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[code only]
+ \begin{tikzpicture}
+ \begin{loglogaxis}[
+     clickable coords={
+@@ -125,9 +120,9 @@ to load it into Acrobat Reader and simply click into a plot.
+     If you want the $(x,y)$ values to be displayed, use the special placeholder
+     string `|(xy)|' inside of \meta{displayed text}. As an example, we consider
+     again the |scatter/classes| example of
+-    page~\pageref{pgfplots:scatterclasses}:
++    Section~\ref{pgfplots:scatterclasses}:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[code only]
+ \begin{tikzpicture}
+ \begin{axis}[
+     clickable coords={(xy): \thisrow{label}},
+@@ -229,7 +224,7 @@ to load it into Acrobat Reader and simply click into a plot.
+     ``Number = \meta{the value}''. The following example uses it twice to
+     pretty-print the data:
+     %
+-\begin{codeexample}[]
++\begin{codeexample}[code only]
+ \begin{tikzpicture}
+ \begin{loglogaxis}[clickable coords code={
+     \pgfmathprintnumberto[verbatim,precision=1]

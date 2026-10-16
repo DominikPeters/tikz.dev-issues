@@ -1,0 +1,10 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.linefitting.tex b/doc/latex/pgfplots/pgfplots.reference.linefitting.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.linefitting.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.linefitting.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Fitting Lines -- Regression}
++\section[reference.linefitting]{Fitting Lines -- Regression}
+ \label{sec:linefitting}
+ 
+ {

@@ -1,0 +1,37 @@
+diff --git a/doc/latex/pgfplots/pgfplots.libs.fillbetween.tex b/doc/latex/pgfplots/pgfplots.libs.fillbetween.tex
+--- a/doc/latex/pgfplots/pgfplots.libs.fillbetween.tex
++++ b/doc/latex/pgfplots/pgfplots.libs.fillbetween.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Fill between}
++\section[libs.fillbetween]{Fill between}
+ \label{sec:fillbetween}
+ 
+ \begin{pgfplotslibrary}{fillbetween}
+@@ -872,7 +872,7 @@ all |intersection segments| are computed and concatenated in a suitable order
+ This method can also be applied to plain \tikzname{} paths to achieve
+ interesting effects:
+ %
+-\begin{codeexample}[width=7cm,vbox]
++\begin{codeexample}[width=7cm]
+ \begin{tikzpicture}
+ 
+         \def\verticalbar{2}
+@@ -1240,7 +1240,7 @@ are used.
+     Before you want to replicate this example, you may want to read about
+     |intersection segments| which is a much simpler way to get the same effect!
+     %
+-\begin{codeexample}[vbox]
++\begin{codeexample}[]
+ \begin{tikzpicture}[line join=round,x=3cm,y=3cm]
+     \draw [name path=first,red]   (0,0) -- (1,1) -- (2,0);
+     \draw [name path=second,blue] (0,0.5) -- (2,0.5);
+@@ -1280,7 +1280,7 @@ are used.
+     \tikzname. This allows access to any \tikzname{} options, including
+     |decorate|:
+     %
+-\begin{codeexample}[vbox]
++\begin{codeexample}[]
+ \begin{tikzpicture}[line join=round,x=3cm,y=3cm]
+     \draw [name path=first,red]   (0,0) -- (1,1) -- (2,0);
+     \draw [name path=second,blue] (0,0.5) -- (2,0.5);

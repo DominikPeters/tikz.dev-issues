@@ -1,0 +1,20 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.miscellaneous.tex b/doc/latex/pgfplots/pgfplots.reference.miscellaneous.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.miscellaneous.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.miscellaneous.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Miscellaneous Options}
++\section[reference.miscellaneous]{Miscellaneous Options}
+ \label{sec:pgfplots:misc}
+ 
+ \begin{pgfplotskey}{disablelogfilter=\mchoice{true,false} (initially false, default true)}
+@@ -129,7 +129,8 @@
+     drawing commands until |\end{axis}| (splitting of survey and visualization
+     phase).
+ 
+-    See \url{http://www.texample.net/weblog/2008/nov/02/creating-pdf-layers}
++    See the article \href{http://www.texample.net/weblog/2008/nov/02/creating-pdf-layers}{Creating PDF layers using ocg.sty}
++    on texample.net
+     for more details on \textsc{ocg} and how to obtain it.
+ 
+     Technical note: these hooks are also inserted for |\pgfplotsextra| commands.

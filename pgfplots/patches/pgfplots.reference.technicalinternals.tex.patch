@@ -1,0 +1,10 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.technicalinternals.tex b/doc/latex/pgfplots/pgfplots.reference.technicalinternals.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.technicalinternals.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.technicalinternals.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Technical Internals}
++\section[reference.technicalinternals]{Technical Internals}
+ 
+ {
+ \tikzset{external/figure name/.add={}{techinternals_}}

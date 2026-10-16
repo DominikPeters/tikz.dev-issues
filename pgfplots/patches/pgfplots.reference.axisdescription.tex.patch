@@ -1,0 +1,98 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.axisdescription.tex b/doc/latex/pgfplots/pgfplots.reference.axisdescription.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.axisdescription.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.axisdescription.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Axis Descriptions}
++\section[reference.axisdescription]{Axis Descriptions}
+ 
+ Axis descriptions are labels for $x$- and $y$-axis, titles, legends and the
+ like. Axis descriptions are drawn after the plot is finished and they are not
+@@ -66,9 +66,9 @@ use it explicitly.
+ \end{codeexample}
+ 
+     Axis descriptions are \Tikz{} nodes, that means all placement and detail
+-    options of \cite{tikz} apply. The point on the node's boundary which is
++    options of \href{https://tikz.dev/}{TikZ} apply. The point on the node's boundary which is
+     actually shifted to the |at| coordinate needs to be provided with an anchor
+-    (cf~\cite[``Nodes and Edges'']{tikz}):
++    (cf~\href{https://tikz.dev/tikz-shapes}{the PGF/TikZ manual, Section ``Nodes and edges''}):
+     %
+ \begin{codeexample}[]
+ \begin{tikzpicture}
+@@ -86,7 +86,7 @@ use it explicitly.
+ \end{codeexample}
+ 
+     Standard anchors of nodes are |north|, |east|, |south|, |west| and mixed
+-    components like |north east|. Please refer to \cite{tikz} for a complete
++    components like |north east|. Please refer to \href{https://tikz.dev/}{the PGF/TikZ manual} for a complete
+     documentation of anchors.
+ 
+ 
+@@ -353,7 +353,7 @@ actually be moved to the desired position.
+ \Tikz{} uses many anchors to provide alignment; most of them are named like
+ |north|, |north east| etc. These names hold for any axis description as well
+ (as axis descriptions are \Tikz{} nodes). Readers can learn details about this
+-topic in the \Tikz{} manual~\cite{tikz} or some more advice in
++topic in \href{https://tikz.dev/}{the PGF/TikZ manual} or some more advice in
+ Section~\ref{sec:pgfplots:sec:align}.
+ 
+ When it comes to axis descriptions, \PGFPlots{} offers some specialized anchors
+@@ -728,7 +728,7 @@ and alignment methods which are described below.
+ \end{axis}
+ \end{codeexample}
+     %
+-    \noindent See \cite{tikz} to learn more about |align| and |text width|.
++    \noindent See \href{https://tikz.dev/}{the PGF/TikZ manual} to learn more about |align| and |text width|.
+ 
+     \paragraph{Upgrade notice:}
+ 
+@@ -757,8 +757,7 @@ and alignment methods which are described below.
+         labels are large, axis labels will move away from the axis. This is the
+         default for every three dimensional plot, but it \emph{won't} be used
+         initially for two-dimensional plots for backwards compatibility. Take a
+-        look at the definition of |near ticklabel| on
+-        page~\pageref{key:near:ticklabel} for an example.
++        look at the definition of |near ticklabel| for an example.
+ 
+         The definition of these styles is
+         %
+@@ -794,8 +793,7 @@ and alignment methods which are described below.
+         description of absolute, fixed distance to the axis. This is the
+         initial configuration (for backwards compatibility with versions before
+         1.3). Use |compat=1.3| to get the most recent, more flexible
+-        configuration. Take a look at the definition of |near ticklabel| on
+-        page~\pageref{key:near:ticklabel} for an example.
++        configuration. Take a look at the definition of |near ticklabel| for an example.
+ 
+         These styles are defined by
+         %
+@@ -1161,7 +1159,7 @@ Legends can be generated in two ways: the first is to use |\addlegendentry| or
+     \emph{of the legend} will be placed at $(0,0)$ or $(1,1)$.
+ 
+     The legend is a \Tikz{} matrix, so one can use any \Tikz{} option which
+-    affects nodes and matrices (see~\cite[Chapters~13 and 14]{tikz}). The
++    affects nodes and matrices (see~\href{https://tikz.dev/tikz-matrices}{the PGF/TikZ manual}). The
+     matrix is created by something like
+     %
+ \begin{codeexample}[code only]
+@@ -1931,7 +1929,7 @@ computations, and place it absolutely such that it fits. Another is the
+     outside of any picture, will cause the legend to be drawn.
+ {
+ \pgfplotsmanualdisablecolorforref
+-\begin{codeexample}[vbox]
++\begin{codeexample}[]
+ \pgfplotsset{footnotesize,samples=10}
+ \begin{center}% note that \centering uses less vspace...
+ \begin{tikzpicture}
+@@ -3496,8 +3494,8 @@ which is similar to the related method for legends, |legend to name|:
+     outside of any picture, will cause the |colorbar| to be drawn.
+ 
+ {
+-    \pgfplotsmanualdisablecolorforref
+-\begin{codeexample}[vbox]
++    % \pgfplotsmanualdisablecolorforref
++\begin{codeexample}[code only]
+     \pgfplotsset{footnotesize,samples=10, domain=0:1,point meta min=0, point meta max=1}
+ \begin{center}% note that \centering uses less vspace...
+     \begin{tikzpicture}

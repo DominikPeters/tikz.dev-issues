@@ -1,0 +1,74 @@
+diff --git a/doc/generic/pgf/pgfmanual-en-tutorial-Euclid.tex b/doc/generic/pgf/pgfmanual-en-tutorial-Euclid.tex
+--- a/doc/generic/pgf/pgfmanual-en-tutorial-Euclid.tex
++++ b/doc/generic/pgf/pgfmanual-en-tutorial-Euclid.tex
+@@ -508,7 +508,7 @@ The second proposition in the Elements is the following:
+ \end{tikzpicture}
+ 
+ 
+-\subsubsection{Using Partway Calculations for the Construction of \emph{D}}
++\subsubsection{Using Partway Calculations for the Construction of D}
+ 
+ Euclid's construction starts with ``referencing'' Proposition~I for the
+ construction of the point~$D$. Now, while we could simply repeat the
+@@ -604,11 +604,12 @@ straight line to \meta{q}.
+ 
+ We know that the point $G$ is on the way from $B$ to $F$. The distance is given
+ by the radius of the circle~$H$. Here is the code for computing $H$:
+-%
+-{\ifpgfmanualexternalize\tikzexternaldisable\fi
++% TODO example doesn't compile, using code only
++% {\ifpgfmanualexternalize\tikzexternaldisable\fi
+ \begin{codeexample}[
+     preamble={\usetikzlibrary{calc,through}},
+-    pre={\begin{tikzpicture}
++]
++\begin{tikzpicture}
+   \coordinate [label=left:$A$]  (A) at (0,0);
+   \coordinate [label=right:$B$] (B) at (0.75,0.25);
+   \coordinate [label=above:$C$] (C) at (1,1.5);
+@@ -616,22 +617,21 @@ by the radius of the circle~$H$. Here is the code for computing $H$:
+   \coordinate [label=above:$D$] (D) at
+     ($ (A) ! .5 ! (B) ! {sin(60)*2} ! 90:(B) $) {};
+   \draw (D) -- ($ (D) ! 3.5 ! (B) $) coordinate [label=below:$F$] (F);
+-  \draw (D) -- ($ (D) ! 2.5 ! (A) $) coordinate [label=below:$E$] (E);},
+-    post={\end{tikzpicture}},
+-]
++  \draw (D) -- ($ (D) ! 2.5 ! (A) $) coordinate [label=below:$E$] (E);
+   \node (H) [label=135:$H$,draw,circle through=(C)] at (B) {};
+   \path let \p1 = ($ (B) - (C) $) in
+     coordinate [label=left:$G$] (G) at ($ (B) ! veclen(\x1,\y1) ! (F) $);
+   \fill[red,opacity=.5] (G) circle [radius=2pt];
++\end{tikzpicture}
+ \end{codeexample}
+ 
+ However, there is a simpler way: We can simply name the path of the circle and
+ of the line in question and then use |name intersections| to compute the
+ intersections.
+-%
+ \begin{codeexample}[
+     preamble={\usetikzlibrary{calc,intersections,through}},
+-    pre={\begin{tikzpicture}
++]
++\begin{tikzpicture}
+   \coordinate [label=left:$A$]  (A) at (0,0);
+   \coordinate [label=right:$B$] (B) at (0.75,0.25);
+   \coordinate [label=above:$C$] (C) at (1,1.5);
+@@ -639,15 +639,14 @@ intersections.
+   \coordinate [label=above:$D$] (D) at
+     ($ (A) ! .5 ! (B) ! {sin(60)*2} ! 90:(B) $) {};
+   \draw (D) -- ($ (D) ! 3.5 ! (B) $) coordinate [label=below:$F$] (F);
+-  \draw (D) -- ($ (D) ! 2.5 ! (A) $) coordinate [label=below:$E$] (E);},
+-    post={\end{tikzpicture}},
+-]
++  \draw (D) -- ($ (D) ! 2.5 ! (A) $) coordinate [label=below:$E$] (E);
+   \node (H) [name path=H,label=135:$H$,draw,circle through=(C)] at (B) {};
+   \path [name path=B--F] (B) -- (F);
+   \path [name intersections={of=H and B--F,by={[label=left:$G$]G}}];
+   \fill[red,opacity=.5] (G) circle [radius=2pt];
++\end{tikzpicture}
+ \end{codeexample}
+-}%
++% }%
+ 
+ 
+ \subsubsection{The Complete Code}

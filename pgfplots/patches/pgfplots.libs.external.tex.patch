@@ -1,0 +1,19 @@
+diff --git a/doc/latex/pgfplots/pgfplots.libs.external.tex b/doc/latex/pgfplots/pgfplots.libs.external.tex
+--- a/doc/latex/pgfplots/pgfplots.libs.external.tex
++++ b/doc/latex/pgfplots/pgfplots.libs.external.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Image Externalization}
++\section[libs.external]{Image Externalization}
+ 
+ \begingroup
+ \def\pgfplotsmanualcurlibrary{external}
+@@ -16,7 +16,7 @@
+     The |external| library has been written by Christian Feuersänger (author
+     of \PGFPlots). It has been contributed to \Tikz{} as general purpose
+     library, so the reference documentation along with all tweaks can be found
+-    in~\cite[Section ``Externalization Library'']{tikz}. The command
++    in \href{https://tikz.dev/library-external}{the PGF/TikZ manual (Section ``Externalization Library'')}. The command
+     |\usepgfplotslibrary{external}| is actually just a wrapper which loads
+     |\usetikzlibrary{external}| or, if this library does not yet exist because
+     the installed \pgfname{} has at most version 2.00, it will load a copy

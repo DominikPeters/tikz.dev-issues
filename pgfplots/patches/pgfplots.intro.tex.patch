@@ -1,0 +1,17 @@
+diff --git a/doc/latex/pgfplots/pgfplots.intro.tex b/doc/latex/pgfplots/pgfplots.intro.tex
+--- a/doc/latex/pgfplots/pgfplots.intro.tex
++++ b/doc/latex/pgfplots/pgfplots.intro.tex
+@@ -1,12 +1,10 @@
+ % main=pgfplots.tex
+ 
+-\chapter{Step-by-Step Tutorials}
++\part[tutorials]{Step-by-Step Tutorials}
+ {%
+ \tikzset{external/figure name/.add={}{tutorials_}}%
+ 
+ 
+-\section{Introduction}
+-
+ Visualization of data is often necessary and convenient in order to analyze and
+ communicate results of research, theses, or perhaps just results.
+ 

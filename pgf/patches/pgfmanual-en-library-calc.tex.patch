@@ -1,0 +1,10 @@
+diff --git a/doc/generic/pgf/pgfmanual-en-library-calc.tex b/doc/generic/pgf/pgfmanual-en-library-calc.tex
+--- a/doc/generic/pgf/pgfmanual-en-library-calc.tex
++++ b/doc/generic/pgf/pgfmanual-en-library-calc.tex
+@@ -3,5 +3,5 @@
+ 
+ \begin{tikzlibrary}{calc}
+     The library allows advanced Coordinate Calculations. It is documented in
+-    all detail in Section~\ref{tikz-lib-calc} on page~\pageref{tikz-lib-calc}.
++    all detail in Section~\ref{tikz-lib-calc}.
+ \end{tikzlibrary}

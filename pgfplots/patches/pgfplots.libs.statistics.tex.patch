@@ -1,0 +1,29 @@
+diff --git a/doc/latex/pgfplots/pgfplots.libs.statistics.tex b/doc/latex/pgfplots/pgfplots.libs.statistics.tex
+--- a/doc/latex/pgfplots/pgfplots.libs.statistics.tex
++++ b/doc/latex/pgfplots/pgfplots.libs.statistics.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Statistics}
++\section[libs.statistics]{Statistics}
+ 
+ \begingroup
+ \def\pgfplotsmanualcurlibrary{statistics}
+@@ -319,15 +319,9 @@ the $x$ components are ignored. This default can be changed using the
+     are sorted, $x_1 < \dotsb < x_N$ (which is not a requirement for |boxplot|,
+     by the way). For any real number $p$ with $0\le p\le1$, the
+     ``$p$-quantile'' (or $p$--percentage) is defined as
+-        \[
+-            x_p :=
+-                \begin{cases}
+-                     x_{N \cdot p}
+-                        & \text{if $N \cdot p$ is an integer number}\\
+-                    \frac{1}{2} (x_{\lfloor N p \rfloor} + x_{\lceil N \cdot p \rceil})
+-                        & \text{if $N \cdot p$ is not an integer.}
+-                \end{cases}
+-        \]
++    $x_p := x_{N \cdot p}$ if $N \cdot p$ is an integer number, and
++    $x_p := \frac{1}{2} (x_{\lfloor N p \rfloor} + x_{\lceil N \cdot p \rceil})$
++    if $N \cdot p$ is not an integer.
+     %FIXME : this is not as in textbooks! BUG in the computation!?
+ 
+     |median| is the $0.5$-quantile of the input data: half of the points are

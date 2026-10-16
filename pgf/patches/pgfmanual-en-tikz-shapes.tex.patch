@@ -1,0 +1,164 @@
+diff --git a/doc/generic/pgf/pgfmanual-en-tikz-shapes.tex b/doc/generic/pgf/pgfmanual-en-tikz-shapes.tex
+--- a/doc/generic/pgf/pgfmanual-en-tikz-shapes.tex
++++ b/doc/generic/pgf/pgfmanual-en-tikz-shapes.tex
+@@ -275,7 +275,7 @@ The syntax for specifying nodes is the following:
+     Section~\ref{section-tikz-animations}. Here is a typical example of how
+     this syntax can be used:
+     %
+-\begin{codeexample}[preamble={\usetikzlibrary{animations}},animation list={0.5,1,1.5,2}]
++\begin{codeexample}[imagesource={standalone/pgfmanual-en-tikz-shapes-animation-1.svg}]
+ \tikz
+   \node  :fill opacity = { 0s="1", 2s="0", begin on=click }
+          :rotate = { 0s="0", 2s="90", begin on=click }
+@@ -957,8 +957,8 @@ Let us now first have a look at the |text width| command.
+ 
+     In detail, you can set \meta{alignment option} to one of the following values:
+     %
+-    \begin{description}
+-        \item[|align=|\declare{|left|}] For alignment without line breaking,
++    \begin{itemize}
++        \item |align=|\declare{|left|} For alignment without line breaking,
+             the different lines are simply aligned such that their left borders
+             are below one another.
+             %
+@@ -975,7 +975,7 @@ Let us now first have a look at the |text width| command.
+   {This is a demonstration text for showing how line breaking works.};
+ \end{codeexample}
+             %
+-        \item[|align=|\declare{\texttt{flush left}}] For alignment without line
++        \item |align=|\declare{\texttt{flush left}} For alignment without line
+             breaking this option has exactly the same effect as |left|.
+             However, for alignment with line breaking, there is a difference:
+             While |left| uses the original \hologo{plainTeX} definition of a ragged
+@@ -990,7 +990,7 @@ Let us now first have a look at the |text width| command.
+   {This is a demonstration text for showing how line breaking works.};
+ \end{codeexample}
+             %
+-        \item[|align=|\declare{|right|}] Works like |left|, only for right
++        \item |align=|\declare{|right|} Works like |left|, only for right
+             alignment.
+             %
+ \begin{codeexample}[]
+@@ -1003,7 +1003,7 @@ Let us now first have a look at the |text width| command.
+   {This is a demonstration text for showing how line breaking works.};
+ \end{codeexample}
+             %
+-        \item[|align=|\declare{\texttt{flush right}}] Works like |flush left|,
++        \item |align=|\declare{\texttt{flush right}} Works like |flush left|,
+             only for right alignment.
+             %
+ \begin{codeexample}[]
+@@ -1011,7 +1011,7 @@ Let us now first have a look at the |text width| command.
+   {This is a demonstration text for showing how line breaking works.};
+ \end{codeexample}
+             %
+-        \item[|align=|\declare{|center|}] Works like |left| or |right|, only
++        \item |align=|\declare{|center|}  Works like |left| or |right|, only
+             for centered alignment.
+             %
+ \begin{codeexample}[]
+@@ -1042,7 +1042,7 @@ Let us now first have a look at the |text width| command.
+                 and the contents is not long enough to fill the box
+                 sufficiently.
+             \end{key}
+-        \item[|align=|\declare{\texttt{flush center}}] Works like |flush left|
++        \item |align=|\declare{\texttt{flush center}}  Works like |flush left|
+             or |flush right|, only for center alignment. Because of all the
+             trouble that results from the |center| option in conjunction with
+             narrow lines, I suggest picking this option rather than  |center|
+@@ -1054,7 +1054,7 @@ Let us now first have a look at the |text width| command.
+   {This is a demonstration text for showing how line breaking works.};
+ \end{codeexample}
+             %
+-        \item[|align=|\declare{|justify|}] For alignment without line breaking,
++        \item |align=|\declare{|justify|} For alignment without line breaking,
+             this has the same effect as |left|. For alignment with line
+             breaking, this causes the text to be ``justified''. Use this only
+             with rather broad nodes.
+@@ -1069,9 +1069,9 @@ Let us now first have a look at the |text width| command.
+             badly typeset lines. (For this manual I asked \TeX\ to stop
+             complaining by using |\hbadness=10000|, but this is a foul deed,
+             indeed.)
+-        \item[|align=|\declare{|none|}] Disables all alignments and |\\| will
++        \item |align=|\declare{|none|} Disables all alignments and |\\| will
+             not be redefined.
+-    \end{description}
++    \end{itemize}
+ \end{key}
+ 
+ \begin{key}{/tikz/node halign header=\meta{macro storing a header} (initially \normalfont empty)}
+@@ -1187,12 +1187,12 @@ list for predefined shapes is given in Section~\ref{section-predefined-shapes}).
+ \medskip\noindent
+ \begin{tikzpicture}
+   \path node[minimum height=2cm,minimum width=5cm,fill=blue!25](x) {Big node};
+-  \fill (x.north)      circle [radius=2pt] node[above] {|north|}
+-        (x.north east) circle [radius=2pt] node[above] {|north east|}
+-        (x.north west) circle [radius=2pt] node[above] {|north west|}
+-        (x.west) circle [radius=2pt]       node[left]  {|west|}
+-        (x.east) circle [radius=2pt]       node[right] {|east|}
+-        (x.base) circle [radius=2pt]       node[below] {|base|};
++  \fill (x.north)      circle [radius=2pt] node[above] {\texttt{north}}
++        (x.north east) circle [radius=2pt] node[above] {\texttt{north east}}
++        (x.north west) circle [radius=2pt] node[above] {\texttt{north west}}
++        (x.west) circle [radius=2pt]       node[left]  {\texttt{west}}
++        (x.east) circle [radius=2pt]       node[right] {\texttt{east}}
++        (x.base) circle [radius=2pt]       node[below] {\texttt{base}};
+ \end{tikzpicture}
+ 
+ Now, when you place a node at a certain coordinate, you can ask \tikzname\ to
+@@ -2905,6 +2905,13 @@ Let us have a look at the effect of these options.
+ 
+ Let us now have a look at a few examples. These examples work only if this
+ document is processed with a driver that supports picture remembering.
++
++\BlockClassSingle{warning-see-pdf}{
++For the intended rendering of the following examples, please see the \href{https://pgf-tikz.github.io/pgf/pgfmanual.pdf\#nameddest=subsubsection.17.13.1}{PDF version} of the manual.
++
++\includegraphics{standalone/pgfmanual-sec-17-13-1}
++}
++
+ \medskip
+ 
+ \noindent%
+@@ -2951,6 +2958,7 @@ part of the picture.
+ 
+ \subsubsection{Referencing the Current Page Node -- Absolute Positioning}
+ 
++\begin{BlockClass}{section-absolute-positioning}
+ There is a special node called |current page| that can be used to access the
+ current page. It is a node of shape rectangle whose |south west| anchor is the
+ lower left corner of the page and whose |north east| anchor is the upper right
+@@ -2962,7 +2970,7 @@ options to a picture, you can position nodes \emph{absolutely} on a page.
+ The first example places some text in the lower left corner of the current
+ page:
+ %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{BlockClass}{example-absolute-positioning-bottom-left}},post={\end{BlockClass}}]
+ \begin{tikzpicture}[remember picture,overlay]
+   \node [xshift=1cm,yshift=1cm] at (current page.south west)
+         [text width=7cm,fill=red!20,rounded corners,above right]
+@@ -2975,7 +2983,7 @@ page:
+ 
+ The next example adds a circle in the middle of the page.
+ %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{BlockClass}{example-absolute-positioning-center}},post={\end{BlockClass}}]
+ \begin{tikzpicture}[remember picture,overlay]
+   \draw [line width=1mm,opacity=.25]
+     (current page.center) circle [radius=3cm];
+@@ -2985,13 +2993,13 @@ The next example adds a circle in the middle of the page.
+ The final example overlays some text over the page (depending on where this
+ example is found on the page, the text may also be behind the page).
+ %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{BlockClass}{example-absolute-positioning-center}},post={\end{BlockClass}}]
+ \begin{tikzpicture}[remember picture,overlay]
+   \node [rotate=60,scale=10,text opacity=0.2]
+     at (current page.center) {Example};
+ \end{tikzpicture}
+ \end{codeexample}
+-
++\end{BlockClass}
+ 
+ \subsection{Late Code and Late Options}
+ \label{section-node-also}

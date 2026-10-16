@@ -1,0 +1,318 @@
+diff --git a/doc/latex/pgfplots/pgfplots-macros.tex b/doc/latex/pgfplots/pgfplots-macros.tex
+--- a/doc/latex/pgfplots/pgfplots-macros.tex
++++ b/doc/latex/pgfplots/pgfplots-macros.tex
+@@ -3,23 +3,59 @@
+ 
+ \input{pgfmanual-en-macros.tex}
+ 
++\makeatletter
++\input{pgfplotsoldpgfsupp_pgfmanual.prettyprinter.code.tex}
++\input{pgfplotsoldpgfsupp_pgfmanual.pdflinks.code.tex}
++\makeatother
++\def\pgfmanual@warning#1{\immediate\write16{! Package pgfmanual Warning: #1}}%
++
++
++\pgfkeys{
++	% set this to 'false' to disable auto reference generation.
++	% However, a little bit runtime overhead will still remain
++	% (and the \pgfmanualpdflabel commands will still be used)
++	/pdflinks/codeexample links=true,
++	%
++	/codeexample/prettyprint/cs arguments/tikzset/.initial=1,
++	/codeexample/prettyprint/cs/tikzset/.code 2 args={\pgfmanualpdfref{#1}{#1}\{\pgfmanualprettyprintpgfkeys{#2}\pgfmanualclosebrace},
++	/codeexample/prettyprint/cs arguments/usetikzlibrary/.initial=1,
++	/codeexample/prettyprint/cs/usetikzlibrary/.code 2 args={\pgfmanualpdfref{#1}{#1}\{\pgfmanualpdfref{#2}{#2}\pgfmanualclosebrace},
++	/codeexample/prettyprint/cs arguments/usepgflibrary/.initial=1,
++	/codeexample/prettyprint/cs/usepgflibrary/.code 2 args={\pgfmanualpdfref{#1}{#1}\{\pgfmanualpdfref{#2}{#2}\pgfmanualclosebrace},
++	%
++	%
++	%
++	% whenever an unqualified key is found, the following key prefix
++	% list is tried to find a match.
++	/pdflinks/search key prefixes in={/tikz/,/pgf/},
++	%
++	% the link prefix written to the pdf file:
++	/pdflinks/internal link prefix=pgf,
++	%
++	/pdflinks/warnings=false,
++	% for debugging:
++	/pdflinks/show labels=false,
++}%
++
+ 
+ \def\pgfplotsifdocpackageuptodate#1#2{%
+     \pgfkeysifdefined{/codeexample/prettyprint/word/.@cmd}{#1}{#2}
+ }%
+ 
+-\pgfplotsiffileexists{pgfmanual.sty}{%
+-    \RequirePackage{pgfmanual}
+-    \pgfplotsifdocpackageuptodate{}{%
+-        \makeatletter
+-        \input{pgfplotsoldpgfsupp_pgfmanual.code.tex}
+-        \makeatother
+-    }%
+-}{%
+-    \makeatletter
+-    \input{pgfplotsoldpgfsupp_pgfmanual.code.tex}
+-    \makeatother
+-}%
++
++
++% \pgfplotsiffileexists{pgfmanual.sty}{%
++%     \RequirePackage{pgfmanual}
++%     \pgfplotsifdocpackageuptodate{}{%
++%         \makeatletter
++%         \input{pgfplotsoldpgfsupp_pgfmanual.code.tex}
++%         \makeatother
++%     }%
++% }{%
++%     \makeatletter
++%     \input{pgfplotsoldpgfsupp_pgfmanual.code.tex}
++%     \makeatother
++% }%
+ 
+ \makeatletter
+ \def\pgfplotsmakefilelinkifuseful#1#2{%
+@@ -307,15 +343,15 @@
+     \def\oarg##1{{\normalfont\ltxdoc@oarg{##1}}}%
+     \def\parg##1{{\normalfont\ltxdoc@parg{##1}}}%
+     \def\meta##1{{\normalfont\ltxdoc@meta{##1}}}%
+-    \pgfmanualentryheadline{\textcolor{gray}{{\ttfamily\char`\\addplot\ }}%
+-      \declare{\texttt{#2}} \texttt{#3;}}%
++    \pgfmanualentryheadline{\definitionspan{\textcolor{gray}{\texttt{\char`\\addplot\ }}%
++      \declare{\texttt{#2}} \texttt{#3;}}}%
+       \unskip
+      \nobreak
+-    \pgfmanualentryheadline{\textcolor{gray}{\texttt{\char`\\addplot}\oarg{options} }%
+-      \declare{\texttt{#2}} \texttt{#3} \textcolor{gray}{\meta{trailing path commands}}\texttt{;}}%
++    \pgfmanualentryheadline{\definitionspan{\textcolor{gray}{\texttt{\char`\\addplot}\oarg{options} }%
++      \declare{\texttt{#2}} \texttt{#3} \textcolor{gray}{\meta{trailing path commands}}\texttt{;}}}%
+       \unskip
+      \nobreak
+-    \pgfmanualentryheadline{\textcolor{gray}{{\ttfamily\char`\\addplot3}} $\dotsc$}%
++    \pgfmanualentryheadline{\definitionspan{\textcolor{gray}{\texttt{\char`\\addplot3}} \dots}}%
+     \def\pgfmanualtest{#1}%
+     \ifx\pgfmanualtest\@empty%
+       \index{#2@\protect\textcolor{gray}{\protect\texttt{plot}}\protect\texttt{ #2}}%
+@@ -342,7 +378,7 @@
+     \def\oarg##1{{\normalfont\ltxdoc@oarg{##1}}}%
+     \def\parg##1{{\normalfont\ltxdoc@parg{##1}}}%
+     \def\meta##1{{\normalfont\ltxdoc@meta{##1}}}%
+-    \pgfmanualentryheadline{{\ttfamily\declare{\char`\\addplot+}\oarg{options} \textcolor{gray}{\dots};}}%
++    \pgfmanualentryheadline{\definitionspan{\texttt{\declare{\char`\\addplot+}\oarg{options} \textcolor{gray}{\dots};}}}%
+     \index{addplot+@\protect\texttt{\protect\textbackslash addplot+}}%
+     \pgfmanualpdflabel{\textbackslash addplot+}{}%
+     }%
+@@ -362,7 +398,7 @@
+     \def\oarg##1{{\normalfont\ltxdoc@oarg{##1}}}%
+     \def\parg##1{{\normalfont\ltxdoc@parg{##1}}}%
+     \def\meta##1{{\normalfont\ltxdoc@meta{##1}}}%
+-    \pgfmanualentryheadline{{\ttfamily\declare{\char`\\addplot3}\oarg{options} \meta{input data} \meta{trailing path commands};}}%
++    \pgfmanualentryheadline{\definitionspan{\texttt{\declare{\char`\\addplot3}\oarg{options} \meta{input data} \meta{trailing path commands};}}}%
+     \index{addplot3@\protect\texttt{\protect\textbackslash addplot3}}%
+     \pgfmanualpdflabel{\textbackslash addplot3}{}%
+     }%
+@@ -382,12 +418,12 @@
+     \def\oarg##1{{\normalfont\ltxdoc@oarg{##1}}}%
+     \def\parg##1{{\normalfont\ltxdoc@parg{##1}}}%
+     \def\meta##1{{\normalfont\ltxdoc@meta{##1}}}%
+-    \pgfmanualentryheadline{\textcolor{gray}{{\ttfamily\char`\\addplot3\ }}%
+-      \declare{\texttt{#2}} \texttt{#3;}}%
++    \pgfmanualentryheadline{\definitionspan{\textcolor{gray}{\texttt{\char`\\addplot3\ }}%
++      \declare{\texttt{#2}} \texttt{#3;}}}%
+       \unskip
+      \nobreak
+-    \pgfmanualentryheadline{\textcolor{gray}{\texttt{\char`\\addplot3}\oarg{options} }%
+-      \declare{\texttt{#2}} \texttt{#3} \textcolor{gray}{\meta{trailing path commands}}\texttt{;}}%
++    \pgfmanualentryheadline{\definitionspan{\textcolor{gray}{\texttt{\char`\\addplot3}\oarg{options} }%
++      \declare{\texttt{#2}} \texttt{#3} \textcolor{gray}{\meta{trailing path commands}}\texttt{;}}}%
+     \def\pgfmanualtest{#1}%
+     \ifx\pgfmanualtest\@empty%
+       \index{#2@\protect\texttt{#2}}%
+@@ -404,7 +440,7 @@
+ 
+ \newenvironment{codekey}[1]{%
+   \begin{pgfmanualentry}
+-     \pgfmanualentryheadline{{\ttfamily\declarekey{#1}\textcolor{gray}{/\pgfmanualpdfref{/handlers/.code}{.code}}=\marg{...}}\hfill}%
++     \pgfmanualentryheadline{\definitionspan{\texttt{\declarekey{#1}\textcolor{gray}{/\pgfmanualpdfref{/handlers/.code}{.code}}=\marg{...}}\hfill}}%
+     \def\mykey{#1}%
+     \def\mypath{}%
+     \def\myname{}%
+@@ -421,7 +457,7 @@
+       \xdef\argpattern{\the\toks0 }%
+     }%
+       \pgfmanual@command@to@string\argpattern\argpattern
+-     \pgfmanualentryheadline{{\ttfamily\declarekey{#1}\textcolor{gray}{/\pgfmanualpdfref{/handlers/.code}{.code args}}=\texttt{\{\argpattern\}}\marg{...}}\hfill}%
++     \pgfmanualentryheadline{\definitionspan{\texttt{\declarekey{#1}\textcolor{gray}{/\pgfmanualpdfref{/handlers/.code}{.code args}}=\texttt{\{\argpattern\}}\marg{...}}\hfill}}%
+     \def\mykey{#1}%
+     \def\mypath{}%
+     \def\myname{}%
+@@ -448,7 +484,7 @@
+ }
+ \newenvironment{pgfplotscodetwokey}[1]{%
+   \begin{pgfmanualentry}
+-     \pgfmanualentryheadline{{\ttfamily\declarekey{/pgfplots/#1}\textcolor{gray}{/\pgfmanualpdfref{/handlers/.code 2 args}{.code 2 args}}=\marg{...}}\hfill}%
++     \pgfmanualentryheadline{\definitionspan{\texttt{\declarekey{/pgfplots/#1}\textcolor{gray}{/\pgfmanualpdfref{/handlers/.code 2 args}{.code 2 args}}=\marg{...}}\hfill}}%
+     \def\mykey{/pgfplots/#1}%
+     \def\mypath{}%
+     \def\myname{}%
+@@ -467,7 +503,7 @@
+         \pgfmanualentryheadline@##1\pgfplots@EOI
+     }%
+     \def\pgfmanualentryheadline@##1\hfill##2\pgfplots@EOI{%
+-        \oldpgfmanualentryheadline{{\ttfamily\declarekey{##1}\textcolor{gray}{/\pgfmanualpdfref{/handlers/.code}{.code}}=\marg{...}}\hfill}%
++        \oldpgfmanualentryheadline{\definitionspan{\texttt{\declarekey{##1}\textcolor{gray}{/\pgfmanualpdfref{/handlers/.code}{.code}}=\marg{...}}\hfill}}%
+     }
+     \begin{pgfplotsxykeylist}{#1}%
+ }
+@@ -483,7 +519,7 @@
+         \pgfmanualentryheadline@##1\pgfplots@EOI
+     }%
+     \def\pgfmanualentryheadline@##1\hfill##2\pgfplots@EOI{%
+-        \oldpgfmanualentryheadline{{\ttfamily\declarekey{##1}\textcolor{gray}{/.expression}=\marg{math expression}}\hfill}%
++        \oldpgfmanualentryheadline{\definitionspan{\texttt{\declarekey{##1}\textcolor{gray}{/.expression}=\marg{math expression}}\hfill}}%
+     }
+     \begin{pgfplotsxykeylist}{#1}%
+ }
+@@ -498,7 +534,7 @@
+         \pgfmanualentryheadline@##1\pgfplots@EOI
+     }%
+     \def\pgfmanualentryheadline@##1\hfill##2\pgfplots@EOI{%
+-        \oldpgfmanualentryheadline{{\ttfamily\declarekey{##1}\textcolor{gray}{/.append expression}=\marg{math expression}}\hfill}%
++        \oldpgfmanualentryheadline{\definitionspan{\texttt{\declarekey{##1}\textcolor{gray}{/.append expression}=\marg{math expression}}\hfill}}%
+     }
+     \begin{pgfplotsxykeylist}{#1}%
+ }
+@@ -640,7 +676,7 @@
+ \newenvironment{anchorlist}[1]{
+   \begin{pgfmanualentry}
+       \foreach \xx in {#1} {%
+-        \pgfmanualentryheadline{Anchor {\ttfamily\declare{\xx}}}%
++        \pgfmanualentryheadline{\definitionspan{Anchor \texttt{\declare{\xx}}}}%
+         \index{\xx @\protect\texttt{\xx} anchor}%
+         \index{Anchors!\xx @\protect\texttt{\xx}}
+         \expandafter\pgfmanualpdflabel\expandafter{\xx}{}
+@@ -654,7 +690,7 @@
+ \newenvironment{coordinatesystemlist}[1]{
+   \begin{pgfmanualentry}
+       \foreach \xx in {#1} {%
+-        \pgfmanualentryheadline{Coordinate system {\ttfamily\declare{\xx}}}%
++        \pgfmanualentryheadline{\definitionspan{Coordinate system \texttt{\declare{\xx}}}}%
+         \index{\xx @\protect\texttt{\xx} coordinate system}%
+         \index{Coordinate systems!\xx @\protect\texttt{\xx}}
+         \expandafter\pgfmanualpdflabel\expandafter{\xx}{}
+@@ -666,7 +702,7 @@
+ }
+ \renewenvironment{coordinatesystem}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{Coordinate system {\ttfamily\declare{#1}}}%
++    \pgfmanualentryheadline{\definitionspan{Coordinate system \texttt{\declare{#1}}}}%
+     \index{#1@\protect\texttt{#1} coordinate system}%
+     \index{Coordinate systems!#1@\protect\texttt{#1}}
+     \pgfmanualpdflabel{#1}{}
+@@ -712,7 +748,7 @@
+ 
+ \newenvironment{texif}[1]{%
+     \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{\declare{\texttt{\textbackslash if#1}}\meta{true code}\texttt{\textbackslash else}\meta{else code}\texttt{\textbackslash fi}}%
++    \pgfmanualentryheadline{\definitionspan{\declare{\texttt{\textbackslash if#1}}\meta{true code}\texttt{\textbackslash else}\meta{else code}\texttt{\textbackslash fi}}}%
+     \index{if#1}%
+     \pgfmanualpdflabel{\\if#1}{}%
+     \pgfmanualbody
+@@ -798,7 +834,7 @@
+     \begin{keylist}[#1]{#2}%
+     \end{keylist}
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{\textcolor{gray}{{\ttfamily\char`\\addplot+[\declare{#2}]}}}%
++    \pgfmanualentryheadline{\definitionspan{\textcolor{gray}{\texttt{\char`\\addplot+[\declare{#2}]}}}}%
+     \pgfmanualbody
+ }
+ {
+@@ -810,7 +846,7 @@
+ 
+ \newenvironment{pgfplotstablecolumnkey}{%
+   \begin{pgfmanualentry}
+-     \pgfmanualentryheadline{{\ttfamily\textcolor{gray}{/pgfplots/table/}\declare{columns/\meta{column name}}\textcolor{gray}{/.style}=\marg{key-value-list}}\hfill}%
++     \pgfmanualentryheadline{\definitionspan{\texttt{\textcolor{gray}{/pgfplots/table/}\declare{columns/\meta{column name}}\textcolor{gray}{/.style}=\marg{key-value-list}}\hfill}}%
+     \pgfplotsmanualkeyindex{/pgfplots/table/columns}%
+     \pgfmanualbody
+ }
+@@ -819,7 +855,7 @@
+ }
+ \newenvironment{pgfplotstabledisplaycolumnkey}{%
+   \begin{pgfmanualentry}
+-     \pgfmanualentryheadline{{\ttfamily\textcolor{gray}{/pgfplots/table/}\declare{display columns/\meta{index}}\textcolor{gray}{/.style}=\marg{key-value-list}}\hfill}%
++     \pgfmanualentryheadline{\definitionspan{\texttt{\textcolor{gray}{/pgfplots/table/}\declare{display columns/\meta{index}}\textcolor{gray}{/.style}=\marg{key-value-list}}\hfill}}%
+     \pgfplotsmanualkeyindex{/pgfplots/table/display columns}%
+     \pgfmanualbody
+ }
+@@ -828,7 +864,7 @@
+ }
+ \newenvironment{pgfplotstablealiaskey}{%
+   \begin{pgfmanualentry}
+-     \pgfmanualentryheadline{{\ttfamily\textcolor{gray}{/pgfplots/table/}\declare{alias/\meta{col name}}\textcolor{gray}{/.initial}=\marg{real col name}}\hfill}%
++     \pgfmanualentryheadline{\definitionspan{\texttt{\textcolor{gray}{/pgfplots/table/}\declare{alias/\meta{col name}}\textcolor{gray}{/.initial}=\marg{real col name}}\hfill}}%
+     \pgfplotsmanualkeyindex{/pgfplots/table/alias}%
+     \pgfmanualbody
+ }
+@@ -845,7 +881,7 @@
+ }
+ \newenvironment{pgfplotstablecreateonusekey}{%
+   \begin{pgfmanualentry}
+-     \pgfmanualentryheadline{{\ttfamily\textcolor{gray}{/pgfplots/table/}\declare{create on use/\meta{col name}}\textcolor{gray}{/.style}=\marg{create options}}\hfill}%
++     \pgfmanualentryheadline{\definitionspan{\texttt{\textcolor{gray}{/pgfplots/table/}\declare{create on use/\meta{col name}}\textcolor{gray}{/.style}=\marg{create options}}\hfill}}%
+     \def\mykey{/pgfplots/table/create on use}%
+     \pgfmanualbody
+     \pgfplotsmanualkeyindex{/pgfplots/table/create on use}%
+@@ -928,12 +964,12 @@
+ %
+ \newenvironment{pgfplotslibrary}[1]{%
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usepgfplotslibrary\char`\{\declare{#1}\char`\}\space\space \char`\%\space\space  \LaTeX\space and plain \TeX}}%
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usepgfplotslibrary\char`\{\declare{#1}\char`\}\space\space \char`\%\space\space  \LaTeX\space and plain \TeX}}}%
+     \index{#1@\protect\texttt{#1} library}%
+     \index{Libraries!#1@\protect\texttt{#1}}%
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usepgfplotslibrary[\declare{#1}]\space \char`\%\space\space Con\TeX t}}%
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usetikzlibrary\char`\{\declare{pgfplots.#1}\char`\}\space\space \char`\%\space\space \LaTeX\space and plain \TeX}}%
+-    \pgfmanualentryheadline{{\ttfamily\char`\\usetikzlibrary[\declare{pgfplots.#1}]\space \char`\%\space\space Con\TeX t}}%
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usepgfplotslibrary[\declare{#1}]\space \char`\%\space\space Con\TeX t}}}%
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usetikzlibrary\char`\{\declare{pgfplots.#1}\char`\}\space\space \char`\%\space\space \LaTeX\space and plain \TeX}}}%
++    \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\usetikzlibrary[\declare{pgfplots.#1}]\space \char`\%\space\space Con\TeX t}}}%
+     \pgfmanualpdflabel{#1}{}%
+     \pgfmanualbody
+ }
+@@ -1001,28 +1037,28 @@
+   \fi%
+ }
+ \def\extracthandler#1#2\@nil{%
+-  \pgfmanualentryheadline{Key handler \meta{key}{\ttfamily/\declare{#1}}#2}%
++  \pgfmanualentryheadline{\definitionspan{Key handler \meta{key}\texttt{/\declare{#1}}#2}}%
+   \index{\gobble#1@\protect\texttt{#1} handler}%
+   \index{Key handlers!#1@\protect\texttt{#1}}
+   \pgfmanualpdflabel{/handlers/#1}{}%
+ }
+ \def\extractcommand#1#2\@@{%
+-  \pgfmanualentryheadline{\declare{\texttt{\string#1}}#2}%
++  \pgfmanualentryheadline{\definitionspan{\declare{\texttt{\string#1}}#2}}%
+   \removeats{#1}%
+   \index{\strippedat @\protect\myprintocmmand{\strippedat}}%
+   \pgfmanualpdflabel{\textbackslash\strippedat}{}%
+ }
+ \def\extractenvironement#1#2\@@{%
+-  \pgfmanualentryheadline{{\ttfamily\char`\\begin\char`\{\declare{#1}\char`\}}#2}%
+-  \pgfmanualentryheadline{{\ttfamily\ \ }\meta{environment contents}}%
+-  \pgfmanualentryheadline{{\ttfamily\char`\\end\char`\{\declare{#1}\char`\}}}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\begin\char`\{\declare{#1}\char`\}}#2}}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\ \ }\meta{environment contents}}}%
++  \pgfmanualentryheadline{\definitionspan{\texttt{\char`\\end\char`\{\declare{#1}\char`\}}}}%
+   \index{#1@\protect\texttt{#1} environment}%
+   \index{Environments!#1@\protect\texttt{#1}}%
+   \pgfmanualpdflabel{#1}{}%
+ }
+ \renewenvironment{predefinednode}[1]{
+   \begin{pgfmanualentry}
+-    \pgfmanualentryheadline{Predefined node {\ttfamily\declare{#1}}}%
++    \pgfmanualentryheadline{\definitionspan{Predefined node \texttt{\declare{#1}}}}%
+     \index{#1@\protect\texttt{#1} node}%
+     \index{Predefined node!#1@\protect\texttt{#1}}
+     \pgfmanualpdflabel{#1}{}%

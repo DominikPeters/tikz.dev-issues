@@ -1,0 +1,34 @@
+diff --git a/doc/latex/pgfplots/pgfplots.resources.tex b/doc/latex/pgfplots/pgfplots.resources.tex
+--- a/doc/latex/pgfplots/pgfplots.resources.tex
++++ b/doc/latex/pgfplots/pgfplots.resources.tex
+@@ -1,10 +1,10 @@
+ 
+-\chapter{Memory and Speed considerations}
++\part[resources]{Memory and Speed considerations}
+ 
+ {
+ \tikzset{external/figure name/.add={}{memspeed_}}
+ 
+-\section{Memory Limits of \TeX{}}
++\section[optimization]{Memory Limits of \TeX{}}
+ \label{sec:pgfplots:optimization}
+ 
+ \PGFPlots{} can typeset plots with several thousand points if memory limits of
+@@ -75,7 +75,7 @@ However, for large scale plots with a lot of points, limitations of \TeX's
+ capacities are reached easily.
+ 
+ 
+-\section{Memory Limitations}
++\section[memorylimits]{Memory Limitations}
+ 
+ The default settings of most \TeX{} distributions are quite restrictive, so it
+ may be necessary to adjust them.
+@@ -232,7 +232,7 @@ Unfortunately, \TeX{} does not allow arbitrary memory limits, there is an upper
+ bound hard coded in the executables.
+ 
+ 
+-\section{Reducing Typesetting Time}
++\section[faster]{Reducing Typesetting Time}
+ 
+ \PGFPlots{} does a lot of computations ranging from abstract coordinate
+ computations to low level |.pdf| drawing commands (implemented by \PGF{}). For

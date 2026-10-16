@@ -1,0 +1,64 @@
+diff --git a/doc/latex/pgfplots/pgfplots.preliminaries.tex b/doc/latex/pgfplots/pgfplots.preliminaries.tex
+--- a/doc/latex/pgfplots/pgfplots.preliminaries.tex
++++ b/doc/latex/pgfplots/pgfplots.preliminaries.tex
+@@ -1,5 +1,5 @@
+ 
+-\chapter[About PGFPlots: Preliminaries]{About {\normalfont\PGFPlots{}}: Preliminaries}
++\part[preliminaries]{About PGFPlots: Preliminaries}
+ 
+ This section contains information about upgrades, the team, the installation
+ (in case you need to do it manually) and troubleshooting. You may skip it
+@@ -8,7 +8,7 @@ completely except for the upgrade remarks.
+ \PGFPlots{} is built completely on \Tikz{}/\PGF{}. Knowledge of \Tikz{} will
+ simplify the work with \PGFPlots{}, although it is not required.
+ 
+-\section{Components}
++\section[preliminaries.components]{Components}
+ 
+ \PGFPlots{} comes with two components:
+ %
+@@ -17,11 +17,11 @@ simplify the work with \PGFPlots{}, although it is not required.
+     \item the \PGFPlotstable{} component which simplifies number formatting
+         and postprocessing of numerical tables. It comes as a separate
+         package and has its own manual
+-        \href{file:pgfplotstable.pdf}{pgfplotstable.pdf}.
++        \href{https://pgfplots.sourceforge.net/pgfplotstable.pdf}{pgfplotstable.pdf}.
+ \end{enumerate}
+ 
+ 
+-\section{Upgrade remarks}
++\section[preliminaries.upgrade]{Upgrade remarks}
+ 
+ This release provides a lot of improvements which can be found in all detail in
+ \texttt{ChangeLog} for interested readers. However, some attention is useful
+@@ -298,7 +298,7 @@ I apologize for any inconvenience caused by these changes.
+ \end{pgfplotskey}
+ 
+ 
+-\section{The Team}
++\section[preliminaries.team]{The Team}
+ 
+ \PGFPlots{} has been written mainly by Christian Feuersänger with many
+ improvements of Pascal Wolkotte and Nick Papior Andersen as a spare time
+@@ -306,18 +306,18 @@ project. We hope it is useful and provides valuable plots.
+ 
+ If you are interested in writing something but don't know how, consider reading
+ the auxiliary manual
+-\href{file:TeX-programming-notes.pdf}{TeX-programming-notes.pdf} which comes
++\href{https://pgfplots.sourceforge.net/TeX-programming-notes.pdf}{TeX-programming-notes.pdf} which comes
+ with \PGFPlots{}. It is far from complete, but maybe it is a good starting
+ point (at least for more literature).
+ 
+ 
+-\section{Acknowledgements}
++\section[preliminaries.acknowledgements]{Acknowledgements}
+ 
+ I thank God for all hours of enjoyed programming. I thank Pascal Wolkotte and
+ Nick Papior Andersen for their programming efforts and contributions as part of
+ the development team. My thanks go to Francesco Poli for implementing the |lua| algorithm for |contour lua|.
+ I thank Jürnjakob Dugge for his contribution of
+-|hist/density|, matlab scripts for \verbpdfref{\addplot3} |graphics|, excellent
++|hist/density|, matlab scripts for |graphics|, excellent
+ user forum help and helpful bug reports. I thank Stefan Tibus, who contributed
+ the |\addplot shell| feature. I thank Tom Cashman for the contribution of the
+ |reverse legend| feature. Special thanks go to Stefan Pinnow for his continuous

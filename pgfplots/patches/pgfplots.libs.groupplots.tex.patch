@@ -1,0 +1,10 @@
+diff --git a/doc/latex/pgfplots/pgfplots.libs.groupplots.tex b/doc/latex/pgfplots/pgfplots.libs.groupplots.tex
+--- a/doc/latex/pgfplots/pgfplots.libs.groupplots.tex
++++ b/doc/latex/pgfplots/pgfplots.libs.groupplots.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Grouping plots}
++\section[libs.groupplots]{Grouping plots}
+ \label{sec:group:plot}
+ 
+ {

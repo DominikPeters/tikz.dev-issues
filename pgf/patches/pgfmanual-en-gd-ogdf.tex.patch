@@ -1,0 +1,12 @@
+diff --git a/doc/generic/pgf/pgfmanual-en-gd-ogdf.tex b/doc/generic/pgf/pgfmanual-en-gd-ogdf.tex
+--- a/doc/generic/pgf/pgfmanual-en-gd-ogdf.tex
++++ b/doc/generic/pgf/pgfmanual-en-gd-ogdf.tex
+@@ -7,7 +7,7 @@
+ %
+ % See the file doc/generic/pgf/licenses/LICENSE for more details.
+ 
+-\section[gd-ogdf]{Graph Drawing Algorithms:\\ The Open Graph Drawing Framework}
++\section[Graph Drawing Algorithms: The Open Graph Drawing Framework]{Graph Drawing Algorithms:\\ The Open Graph Drawing Framework}
+ 
+ % TODO:{
+ % ATTENTION: this label is ALSO present in the previous algorithm.

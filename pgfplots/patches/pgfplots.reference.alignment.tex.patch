@@ -1,0 +1,47 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.alignment.tex b/doc/latex/pgfplots/pgfplots.reference.alignment.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.alignment.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.alignment.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Alignment Options}
++\section[reference.alignment]{Alignment Options}
+ \label{sec:pgfplots:sec:align}
+ 
+ \subsection{Basic Alignment}
+@@ -15,7 +15,7 @@ unless one needs more than one axis in the same picture environment.
+ \begin{pgfplotskey}{at=\marg{coordinate expression}}
+     Assigns a position for the complete axis image. This option works similarly
+     to the |at| option of |\node[at=|\marg{coordinate expression}|]|,
+-    see~\cite{tikz}. The common syntax is |at={|\parg{x,y}|}|.
++    see~\href{https://tikz.dev/}{the PGF/TikZ manual}. The common syntax is |at={|\parg{x,y}|}|.
+ 
+     The idea is to provide an \meta{coordinate expression} where the axis will
+     be placed. The axis' anchor will be placed at \meta{coordinate expression}.
+@@ -32,7 +32,7 @@ unless one needs more than one axis in the same picture environment.
+     position the lower left corner of the axis at $(0,0)$.
+ 
+     For users who are familiar with \Tikz{}: an axis is actually a very special
+-    node, so anchors work as in~\cite{tikz}.
++    node, so anchors work as in~\href{https://tikz.dev/}{the PGF/TikZ manual}.
+ 
+     Anchors are useful in conjunction with horizontal or vertical alignment of
+     plots, see the examples below.
+@@ -431,7 +431,8 @@ here \tikz[baseline]\fill [red] (0,10pt) circle(3pt); another one.
+     Restrictions''. Here is just a small example for array alignment by means
+     of |tabular|, |baseline| and the |trim left|/|trim right| features:
+     %
+-\begin{codeexample}[vbox]
++%\begin{codeexample}[vbox] % Dominik: vbox trips up lwarp (makes a big image)
++\begin{codeexample}[]
+ \pgfplotsset{
+     small,
+     title=Trimmed bounding boxes
+@@ -504,7 +505,7 @@ here \tikz[baseline]\fill [red] (0,10pt) circle(3pt); another one.
+     \emph{single} picture.
+ 
+     The complete documentation of a \Tikz{} matrix is beyond the scope of this
+-    manual, please refer to \cite{tikz} for details. But we provide an example
++    manual, please refer to \href{https://tikz.dev/}{the PGF/TikZ manual} for details. But we provide an example
+     here:
+     %
+ \pgfmanualpdflabel{/tikz/matrix}{}%

@@ -1,0 +1,10 @@
+diff --git a/doc/latex/pgfplots/pgfplots.tutorial4.tex b/doc/latex/pgfplots/pgfplots.tutorial4.tex
+--- a/doc/latex/pgfplots/pgfplots.tutorial4.tex
++++ b/doc/latex/pgfplots/pgfplots.tutorial4.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Solving a Real Use Case: Functions of Two Variables}
++\section[tutorial4]{Solving a Real Use Case: Functions of Two Variables}
+ 
+ In this tutorial, we assume that we have two functions for which we seek a
+ plot: the first is a sampled function given by a huge data file and the second

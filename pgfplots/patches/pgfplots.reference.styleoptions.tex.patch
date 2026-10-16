@@ -1,0 +1,10 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.styleoptions.tex b/doc/latex/pgfplots/pgfplots.reference.styleoptions.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.styleoptions.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.styleoptions.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Style Options}
++\section[reference.styleoptions]{Style Options}
+ \label{sec:styles}
+ 
+ 

@@ -1,0 +1,52 @@
+diff --git a/doc/latex/pgfplots/pgfplots.preamble.tex b/doc/latex/pgfplots/pgfplots.preamble.tex
+--- a/doc/latex/pgfplots/pgfplots.preamble.tex
++++ b/doc/latex/pgfplots/pgfplots.preamble.tex
+@@ -91,6 +91,8 @@
+ 
+ \usepackage{textcomp}
+ \usepackage{booktabs}
++\usepackage[table]{xcolor} % fix for lwarp 0.912
++\usepackage{colortbl}
+ 
+ \usepackage{calc}
+ \usepackage[formats]{listings}
+@@ -117,13 +119,13 @@
+ \usepackage{pgfplots}
+ \usepackage{pgfplotstable}
+ 
+-\ifpdf
+-    % this allows to disable the clickable lib from command line using
+-    % \pdflatex '\def\pgfplotsclickabledisabled{1}\input{pgfplots.tex}'
+-    \expandafter\ifx\csname pgfplotsclickabledisabled\endcsname\relax
+-        \usepgfplotslibrary{clickable}
+-    \fi
+-\fi
++% \ifpdf
++%     % this allows to disable the clickable lib from command line using
++%     % \pdflatex '\def\pgfplotsclickabledisabled{1}\input{pgfplots.tex}'
++%     \expandafter\ifx\csname pgfplotsclickabledisabled\endcsname\relax
++%         \usepgfplotslibrary{clickable}
++%     \fi
++% \fi
+ 
+ %\usepackage{fp}
+ % ATTENTION:
+@@ -138,7 +140,6 @@
+ 
+ \usepackage[a4paper,left=2.25cm,right=2.25cm,top=2.5cm,bottom=2.5cm]{geometry}
+ \usepackage{amsmath,amssymb}
+-\usepackage{xxcolor}
+ 
+ \usepackage{ifluatex}
+ 
+@@ -271,8 +272,8 @@
+ 
+ \newcommand\Tikz{Ti\textit kZ}
+ \newcommand\PGF{\textsc{pgf}}
+-\newcommand\PGFPlots{\pgfplotsmakefilelinkifuseful{pgfplots}{\textsc{pgfplots}}}
+-\newcommand\PGFPlotstable{\pgfplotsmakefilelinkifuseful{pgfplotstable}{\textsc{PgfplotsTable}}}
++\newcommand\PGFPlots{\textsc{pgfplots}}
++\newcommand\PGFPlotstable{\textsc{PgfplotsTable}}
+ 
+ \makeindex
+ 

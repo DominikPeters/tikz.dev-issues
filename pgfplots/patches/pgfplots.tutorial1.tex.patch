@@ -1,0 +1,32 @@
+diff --git a/doc/latex/pgfplots/pgfplots.tutorial1.tex b/doc/latex/pgfplots/pgfplots.tutorial1.tex
+--- a/doc/latex/pgfplots/pgfplots.tutorial1.tex
++++ b/doc/latex/pgfplots/pgfplots.tutorial1.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Solving a Real Use Case: Function Visualization}
++\section[tutorial1]{Solving a Real Use Case: Function Visualization}
+ 
+ In this section, we assume that you want to visualize two functions. The first
+ function is given by means of a data table. The second function is given by
+@@ -511,9 +511,9 @@ options like rotation, alignment (the |anchor| option), and number printing
+ options. The precise details of these individual options is beyond the scope of
+ this tutorial. The keys actually belong to \Tikz{} -- and the \Tikz{} manual is
+ the reference for these keys (although \PGFPlots{} also covers most of the
+-topics). The complete set of number printing options is available in both the
+-\Tikz{} manual~\cite{tikz} and the manual for \PGFPlotstable{} which is shipped
+-with \PGFPlots{}. A brief extract can be found in
++topics). The complete set of number printing options is available in both 
++\href{https://tikz.dev/}{the TikZ manual} and the \href{https://tikz.dev/pgfplots/pgfplotstable}{manual for \PGFPlotstable{}}. 
++A brief extract can be found in
+ Section~\ref{sec:number:printing}.
+ 
+ 
+@@ -567,7 +567,7 @@ PC).
+ 
+ Details of the |external| library can be found in
+ Section~\ref{sec:pgfplots:export} (but only a brief survey) and, in all depth,
+-in the \Tikz{} reference manual~\cite{tikz}.
++in the \href{https://tikz.dev/library-external}{the PGF/TikZ manual}.
+ 
+ 
+ \subsection{Summary}

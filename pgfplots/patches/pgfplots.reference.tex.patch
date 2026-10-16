@@ -1,0 +1,20 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.tex b/doc/latex/pgfplots/pgfplots.reference.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.tex
+@@ -1,6 +1,6 @@
+ % main=manual.tex
+ 
+-\chapter{The Reference}
++\part[reference]{The Reference}
+ \label{cha:pgfplots:reference}
+ 
+ {
+@@ -10,7 +10,7 @@
+ \input{pgfplots.reference.axis-addplot.tex}
+ \input{pgfplots.reference.preliminaryoptions.tex}
+ \input{pgfplots.reference.2dplots.tex}
+-\input{pgfplots.reference.3dplots.tex}
++\input{pgfplots.reference.3dplots.tex} 
+ \input{pgfplots.reference.markers-meta.tex}
+ \input{pgfplots.reference.axisdescription.tex}
+ \input{pgfplots.reference.scaling.tex}

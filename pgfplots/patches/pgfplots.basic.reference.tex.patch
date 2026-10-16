@@ -1,0 +1,145 @@
+diff --git a/doc/latex/pgfplots/pgfplots.basic.reference.tex b/doc/latex/pgfplots/pgfplots.basic.reference.tex
+--- a/doc/latex/pgfplots/pgfplots.basic.reference.tex
++++ b/doc/latex/pgfplots/pgfplots.basic.reference.tex
+@@ -1,5 +1,5 @@
+ 
+-\chapter{Utilities and Basic Level Commands}
++\part[lowlevel]{Utilities and Basic Level Commands}
+ \label{cha:pgfplots:lowlevel}
+ 
+ This chapter documents commands which provide access to more basic elements of
+@@ -11,11 +11,10 @@ However, most elements in this section are only interesting for advanced users
+ -- and perhaps only for special cases.
+ 
+ 
+-\section{Utility Commands}
++\section[utility-commands]{Utility Commands}
+ 
+ \begin{command}{\foreach \meta{variables} |in| \meta{list} \marg{commands}}
+-    A powerful loop command provided by \Tikz{}, see~\cite[Section
+-    ``Utilities'']{tikz}.
++    A powerful loop command provided by \Tikz{}, see \href{https://tikz.dev/utilities}{the TikZ manual} for details.
+     %
+ \begin{codeexample}[]
+ \foreach \x in {1,2,...,4} {Iterating \x. }%
+@@ -89,7 +88,7 @@ All collected = \allcollected.
+     The result no longer contains either |\i| or |\j| (since these have been
+     expanded). Then, it invokes the resulting macro. Details about the \TeX{}
+     command |\edef| and expansion control can be found in the document
+-    \href{file:TeX-programming-notes.pdf}{TeX-programming-notes.pdf} which
++    \href{https://pgfplots.sourceforge.net/TeX-programming-notes.pdf}{TeX-programming-notes.pdf} which
+     comes with \PGFPlots{}.
+ \end{command}
+ 
+@@ -177,7 +176,7 @@ The result is `\pgfmathprintnumber{\pgfmathresult}'.
+     Note that results of the |fpu| are typically not in human-readable format,
+     so |\pgfmathprintnumber| is the preferred way to typeset such numbers.
+ 
+-    Please refer to \cite{tikz} for more details.
++    Please refer to \href{https://tikz.dev/}{the PGF/TikZ manual} for more details.
+ \end{command}
+ 
+ \begin{pgfplotskey}{use fpu=\mchoice{true,false} (initially true)}
+@@ -218,7 +217,7 @@ The result is `\pgfmathprintnumber{\pgfmathresult}'.
+     comma-separated-list of arguments like |\t| or |\t,\a,\b|. The
+     \meta{definition} is a math expression which makes use of these arguments.
+ 
+-    Please refer to \cite{tikz} for more details.
++    Please refer to \href{https://tikz.dev/}{the PGF/TikZ manual} for more details.
+ \end{key}
+ 
+ \begin{command}{\pgfplotstableread\marg{file}}
+@@ -249,8 +248,7 @@ The result is `\pgfmathprintnumber{\pgfmathresult}'.
+     wrapper around |\pgfkeys|.
+ 
+     A short introduction into |\pgfkeys| can be found in~\cite{keyvalintro}
+-    whereas the complete reference is, of course, the \Tikz{}
+-    manual~\cite{tikz}.
++    whereas the complete reference is, of course, \href{https://tikz.dev/}{the PGF/TikZ manual}.
+ 
+     The key |\pgfkeysvalueof|\marg{key name} expands to the value of a key;
+     |\pgfkeysgetvalue|\marg{key name}\marg{\textbackslash macro} stores the
+@@ -260,7 +258,7 @@ The result is `\pgfmathprintnumber{\pgfmathresult}'.
+ \end{commandlist}
+ 
+ 
+-\section[Commands Inside Of PGFPlots Axes]
++\section[commands-inside-axes]
+         {Commands Inside Of {\normalfont\PGFPlots{}} Axes}
+ 
+ \begin{command}{\autoplotspeclist}
+@@ -317,11 +315,11 @@ The result is `\pgfmathprintnumber{\pgfmathresult}'.
+ \end{command}
+ 
+ 
+-\section{Path Operations}
++\section[path-operations]{Path Operations}
+ 
+ \begin{commandlist}{\path,\draw,\fill,\node,\matrix}
+     These commands are \Tikz{} drawing commands all of which are documented
+-    in~\cite{tikz}. They are used to draw or fill paths, generate text nodes or
++    in \href{https://tikz.dev/}{the PGF/TikZ manual}. They are used to draw or fill paths, generate text nodes or
+     aligned text matrices. They are equivalent to
+     \pgfmanualpdflabel{/tikz/draw}{}|\path[draw]|,
+     \pgfmanualpdflabel{/tikz/fill}{}|\path[fill]|,
+@@ -337,14 +335,14 @@ The result is `\pgfmathprintnumber{\pgfmathresult}'.
+ 
+ {\catcode`\|=12
+ \begin{pathoperation}[noindex]{|-}{\meta{coordinate}}
+-\pgfmanualpdflabel[\catcode`\|=12 ]{|-}{}%
++% \pgfmanualpdflabel[\catcode`\|=12 ]{|-}{}%
+     A \Tikz{} path operation which connects the current point and
+     \meta{coordinate} with \emph{two} straight lines: first vertical, then
+     horizontal.
+ \end{pathoperation}
+ 
+ \begin{pathoperation}[noindex]{-|}{\meta{coordinate}}
+-\pgfmanualpdflabel[\catcode`\|=12 ]{-|}{}%
++% \pgfmanualpdflabel[\catcode`\|=12 ]{-|}{}%
+     A \Tikz{} path operation which connects the current point and
+     \meta{coordinate} with \emph{two} straight lines: first horizontal, then
+     vertical.
+@@ -389,7 +387,7 @@ The result is `\pgfmathprintnumber{\pgfmathresult}'.
+ \end{command}
+ 
+ 
+-\section{Specifying Basic Coordinates}
++\section[basic-coordinates]{Specifying Basic Coordinates}
+ \label{sec:basic:coordinates}
+ 
+ \begin{commandlist}{%
+@@ -629,7 +627,7 @@ The result is `\pgfmathprintnumber{\pgfmathresult}'.
+     third character is for the third dimension, the $z$-axis. It should be left
+     at `|0|' for two dimensional plots. However, \emph{one} of the three
+     characters should be `|v|', meaning the axis \underline varies. For
+-    example, |v01| denotes $\{ (x,y_{\min},z_{\max}) \vert x \in \R \}$.
++    example, |v01| denotes $\{ (x,y_{\min},z_{\max}) \vert x \in \mathbb{R} \}$.
+ 
+     The second argument, \meta{coordinate} is the logical coordinate on that
+     axis. Since two coordinates of the axis are fixed, \meta{coordinate} refers
+@@ -716,14 +714,14 @@ The result is `\pgfmathprintnumber{\pgfmathresult}'.
+ \end{texif}
+ 
+ 
+-\section{Accessing Axis Limits}
++\section[access-axis-limits]{Accessing Axis Limits}
+ 
+ It is also possible to access axis limits during the visualization phase,
+ i.e.\@ during |\end{axis}|. Please refer to the reference documentation for
+ |xmin| on page~\pageref{page:access:limits}.
+ 
+ 
+-\section{Accessing Point Coordinate Values}
++\section[access-values]{Accessing Point Coordinate Values}
+ 
+ During the visualization phase, \PGFPlots{} provides access to the currently
+ processed coordinate and its values.
+@@ -937,7 +935,7 @@ current point's $x$, $y$, $z$, and color data can be accessed.
+ \end{command}
+ 
+ 
+-\section{Layer Access}
++\section[layer-access]{Layer Access}
+ 
+ \begin{command}{\pgfplotsonlayer\marg{layer name}}
+     A low-level command which will check if the current axis has layer support

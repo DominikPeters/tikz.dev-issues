@@ -1,0 +1,30 @@
+diff --git a/doc/generic/pgf/pgfmanual-en-tikz-paths.tex b/doc/generic/pgf/pgfmanual-en-tikz-paths.tex
+--- a/doc/generic/pgf/pgfmanual-en-tikz-paths.tex
++++ b/doc/generic/pgf/pgfmanual-en-tikz-paths.tex
+@@ -278,7 +278,7 @@ operations.
+ \begin{pathoperation}[noindex]{-|}{\meta{coordinate or cycle}}
+     \index{--1@\protect\texttt{-\protect\pgfmanualbar} path operation}%
+     \index{Path operations!--1@\protect\texttt{-\protect\pgfmanualbar}}%
+-    \pgfmanualpdflabel[\catcode`\|=12 ]{-|}{}%
++    \pgfmanualpdflabel[\catcode`\|=12 ]{-bar/}{}%
+     This operation means ``first horizontal, then vertical''.
+     %
+ \begin{codeexample}[]
+@@ -301,7 +301,7 @@ operations.
+ \begin{pathoperation}[noindex]{|-}{\meta{coordinate or cycle}}
+     \index{--2@\protect\texttt{\protect\pgfmanualbar-} path operation}%
+     \index{Path operations!--2@\protect\texttt{\protect\pgfmanualbar-}}%
+-    \pgfmanualpdflabel[\catcode`\|=12 ]{|-}{}%
++    \pgfmanualpdflabel[\catcode`\|=12 ]{bar/-}{}%
+     This operation means ``first vertical, then horizontal''.
+ \end{pathoperation}
+ }
+@@ -1343,7 +1343,7 @@ to the |node| operation and discussed in detail in Section~\ref{section-pics}.
+     This causes an animation of \meta{animate attribute} to be added to the
+     current path, see Section~\ref{section-tikz-animations} for details.
+     %
+-\begin{codeexample}[width=2cm,preamble={\usetikzlibrary{animations}}]
++\begin{codeexample}[imagesource={standalone/pgfmanual-en-tikz-paths-animation-1.svg}]
+ \tikz \draw :xshift = {0s = "0cm", 30s = "-3cm", repeats} (0,0) circle [radius=5mm];
+ \end{codeexample}
+     %

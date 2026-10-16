@@ -1,0 +1,32 @@
+diff --git a/doc/generic/pgf/pgfmanual-en-tutorial.tex b/doc/generic/pgf/pgfmanual-en-tutorial.tex
+--- a/doc/generic/pgf/pgfmanual-en-tutorial.tex
++++ b/doc/generic/pgf/pgfmanual-en-tutorial.tex
+@@ -43,7 +43,7 @@ language''.
+ Karl wants to put a graphic on the next worksheet for his students. He is
+ currently teaching his students about sine and cosine. What he would like to
+ have is something that looks like this (ideally):
+-%
++
+ \noindent
+ \begin{tikzpicture}
+   [scale=3,line cap=round,
+@@ -1050,7 +1050,7 @@ independently of \tikzname, but \tikzname\ includes it automatically.
+ 
+ In its basic form, the |\foreach| command is easy to use:
+ %
+-\begin{codeexample}[]
++\begin{codeexample}[pre={\begin{lateximage}},post={\end{lateximage}}]
+ \foreach \x in {1,2,3} {$x =\x$, }
+ \end{codeexample}
+ 
+@@ -1152,8 +1152,8 @@ completely drawn/filled/shaded/clipped/whatever.
+ \begin{tikzpicture}
+   \draw (0,0) rectangle (2,2);
+   \draw (0.5,0.5) node [fill=yellow!80!black]
+-                       {Text at \verb!node 1!}
+-     -- (1.5,1.5) node {Text at \verb!node 2!};
++                       {Text at \texttt{node 1}}
++     -- (1.5,1.5) node {Text at \texttt{node 2}};
+ \end{tikzpicture}
+ \end{codeexample}
+ 

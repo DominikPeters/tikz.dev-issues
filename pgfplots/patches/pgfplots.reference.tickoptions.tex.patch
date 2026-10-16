@@ -1,0 +1,21 @@
+diff --git a/doc/latex/pgfplots/pgfplots.reference.tickoptions.tex b/doc/latex/pgfplots/pgfplots.reference.tickoptions.tex
+--- a/doc/latex/pgfplots/pgfplots.reference.tickoptions.tex
++++ b/doc/latex/pgfplots/pgfplots.reference.tickoptions.tex
+@@ -1,5 +1,5 @@
+ 
+-\section{Tick Options}
++\section[reference.tickoptions]{Tick Options}
+ \label{sec:pgfplots:ticks}
+ 
+ \subsection{Tick Coordinates and Label Texts}
+@@ -340,8 +340,8 @@
+ 
+ \begin{pgfplotsxykey}{\x tickten=\marg{exponent base 10 list}}
+         \index{Tick Labels!Placement of log tick labels: xtickten}%
+-    These options allow to place ticks at selected positions $10^k, k \in
+-    \text{\marg{exponent base 10 list}}$. They are only used for log plots. The
++    These options allow to place ticks at selected positions $10^k$, $k \in$
++    \marg{exponent base 10 list}. They are only used for log plots. The
+     syntax for \marg{exponent base 10 list} is the same as above for
+     |xtick=|\marg{list} or |ytick=|\marg{list}.
+ 

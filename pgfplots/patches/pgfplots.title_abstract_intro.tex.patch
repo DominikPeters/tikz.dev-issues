@@ -1,0 +1,36 @@
+diff --git a/doc/latex/pgfplots/pgfplots.title_abstract_intro.tex b/doc/latex/pgfplots/pgfplots.title_abstract_intro.tex
+--- a/doc/latex/pgfplots/pgfplots.title_abstract_intro.tex
++++ b/doc/latex/pgfplots/pgfplots.title_abstract_intro.tex
+@@ -1,5 +1,31 @@
+ 
+-\chapter{Introduction}
++\part[index]{Introduction}
++
++\BlockClassSingle{manual-title-block}{%
++\BlockClassSingle{manual-title}{Manual for Package \PGFPlots{}}
++\BlockClassSingle{manual-version}{2D/3D Plots in \LaTeX{}, Version \pgfplotsversion\ -- \the\year{}}
++\BlockClassSingle{manual-html-title}{Unofficial HTML Version}
++\BlockClassSingle{manual-html-explanation}{%
++This HTML version of the documentation is maintained by Dominik Peters, 
++and is produced using the \href{https://ctan.org/pkg/lwarp?lang=en}{\texttt{lwarp}} package.}
++\BlockClassSingle{manual-authorship-explanation}{%
++Author of the \PGFPlots{} manual: Dr. Christian Feuersänger.}
++\BlockClassSingle{manual-authorship-explanation}{%
++\href{https://github.com/pgf-tikz/pgfplots}{https://github.com/pgf-tikz/pgfplots}}
++}
++
++\BlockClassSingle{abstract-block}{%
++\BlockClassSingle{abstract-heading}{Abstract}
++\PGFPlots{} draws high-quality function plots in normal or logarithmic
++        scaling with a user-friendly interface directly in \TeX{}. The user
++        supplies axis labels, legend entries and the plot coordinates for one or
++        more plots and \PGFPlots{} applies axis scaling, computes any logarithms
++        and axis ticks and draws the plots. It supports line plots, scatter
++        plots, piecewise constant plots, bar plots, area plots, mesh and surface
++        plots, patch plots, contour plots, quiver plots, histogram plots, box
++        plots, polar axes, ternary diagrams, smith charts and some more. It is
++        based on Till Tantau's package \PGF{}/\Tikz{}.%
++}
+ 
+ This package provides tools to generate plots and labeled axes easily. It draws
+ normal plots, log plots and semi-log plots, in two and three dimensions. Axis

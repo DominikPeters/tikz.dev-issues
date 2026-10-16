@@ -1,0 +1,12 @@
+diff --git a/doc/generic/pgf/pgfmanual-en-pages.tex b/doc/generic/pgf/pgfmanual-en-pages.tex
+--- a/doc/generic/pgf/pgfmanual-en-pages.tex
++++ b/doc/generic/pgf/pgfmanual-en-pages.tex
+@@ -571,7 +571,7 @@ are used to define the layout:
+             %
+         \item \declare{|corner width|=\meta{size}} adds black ``rounded
+             corners'' to the page. See the description of the predefined layout
+-            |rounded corners| on page~\pageref{layout-rounded-corners}.
++            |rounded corners| in section~\ref{layout-rounded-corners}.
+     \end{itemize}
+ \end{command}
+ 

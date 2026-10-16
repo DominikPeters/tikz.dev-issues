@@ -1,0 +1,102 @@
+diff --git a/doc/latex/pgfplots/pgfplots.importexport.tex b/doc/latex/pgfplots/pgfplots.importexport.tex
+--- a/doc/latex/pgfplots/pgfplots.importexport.tex
++++ b/doc/latex/pgfplots/pgfplots.importexport.tex
+@@ -1,5 +1,5 @@
+ 
+-\chapter{Import/Export From Other Formats}
++\part[importexport]{Import/Export From Other Formats}
+ \label{cha:pgfplots:importexport}
+ 
+ {
+@@ -7,11 +7,11 @@
+ 
+ This chapter contains information of how to single pictures into separate
+ \pdf{} graphics files (or \eps{} graphics files). Furthermore, it explains a
+-Matlab$^\text{\textregistered}$ script which allows to convert from Matlab to
++Matlab\textregistered{} script which allows to convert from Matlab to
+ \PGFPlots{}.
+ 
+ 
+-\section[Export to PDF/EPS]{Export to {\normalfont\pdf{}/\eps{}}}
++\section[export-pdf-eps]{Export to {\normalfont\pdf{}/\eps{}}}
+ \label{sec:pgfplots:export}
+ 
+ It is possible to export images to single \pdf{}-documents using routines of
+@@ -36,7 +36,7 @@ It is possible to export images to single \pdf{}-documents using routines of
+     The |external| library has been written by Christian Feuersänger (author
+     of \PGFPlots). It has been contributed to \Tikz{} as general purpose
+     library, so the reference documentation along with all tweaks can be found
+-    in~\cite[Section ``Externalization Library'']{tikz}. The command
++    in \href{https://tikz.dev/library-external}{the PGF/TikZ manual (Section ``Externalization Library'')}. The command
+     |\usepgfplotslibrary{external}| is actually just a wrapper which loads
+     |\usetikzlibrary{external}| or, if this library does not yet exist because
+     the installed \pgfname{} has at most version $2.00$, it will load a copy
+@@ -389,7 +389,7 @@ pdflatex -shell-escape main
+     \begin{key}{/tikz/external/mode=\mchoice{convert with system call,list and make,$\dotsc$} (initially convert with system call)}
+         This allows to change the default operation mode. There are a handful
+         of choices possible, all of them are described in detail
+-        in~\cite[Section ``Externalization Library'']{tikz}. The most useful
++        in \href{https://tikz.dev/library-external}{the PGF/TikZ manual (Section ``Externalization Library'')}. The most useful
+         ones are probably the initial configuration |convert with system call|
+         and the specialized choice |list and make|.
+ 
+@@ -431,7 +431,7 @@ pdflatex -shell-escape main
+     \end{key}
+ 
+     The complete reference documentation and remaining options are documented
+-    in~\cite[``Externalization Library'']{tikz}. This reference also contains
++    in \href{https://tikz.dev/library-external}{the PGF/TikZ manual (Section ``Externalization Library'')}. This reference also contains
+     information about
+     %
+     \begin{itemize}
+@@ -599,7 +599,7 @@ environment. Please note that it is absolutely necessary to use the syntax
+ above, \emph{not} |\begin{pgfgraphicnamed}|.
+ 
+ These steps are explained in much more detail in Section``Externalizing
+-Graphics'' of~\cite{tikz}.
++Graphics'' of \href{https://tikz.dev/}{the PGF/TikZ manual}.
+ 
+ 
+ \paragraph{Attention:}
+@@ -649,10 +649,10 @@ and use
+ instead. This will include the generated graphics files (and it will respect
+ the |baseline| information stored in |.dpth| files). Consequently, you won't
+ need \pgfname{} or \PGFPlots{} installed. See Section``Externalizing Graphics''
+-of~\cite{tikz} for details.
++of~\href{https://tikz.dev/base-external}{the PGF/TikZ manual} for details.
+ 
+ 
+-\section{Importing From Matlab}
++\section[import-matlab]{Importing From Matlab}
+ 
+ \subsection{Importing Mesh Data From Matlab To PGFPlots}
+ \label{sec:pgfplots:import:matlab}
+@@ -709,7 +709,7 @@ save P.dat data -ASCII
+ 
+ \subsection{matlab2pgfplots.m}
+ 
+-This is a Matlab$^\text{\textregistered}$ script which attempts to convert a
++This is a Matlab\textregistered{} script which attempts to convert a
+ Matlab figure to \PGFPlots{}. It requires Matlab version 7.4 (or higher).
+ 
+ 
+@@ -779,15 +779,15 @@ TeXstring = [ ...
+ \end{codeexample}
+ 
+ 
+-\section{SVG Output}
++\section[export-svg]{SVG Output}
+ 
+ It is possible to write every single \Tikz{} picture into a scalable vector
+ graphics (\texttt{.svg}) file. This has nothing to do with \PGFPlots{}, it is a
+-separate driver of \PGF{}. Please refer to~\cite[Section ``Producing HTML / SVG
+-Output'']{tikz}.
++separate driver of \PGF{}. Please refer to \href{https://tikz.dev/drivers#sec-10.2.4}{the PGF/TikZ manual (Section ``Producing HTML / SVG
++Output'')}.
+ 
+ 
+-\section{Generate \PGFPlots{} Graphics Within Python}
++\section[python]{Generate PGFPlots Graphics Within Python}
+ 
+ Mario Orne DÍAZ ANADÓN contributed a small python script |pgfplots.py| which
+ provides a simple interface to generate \PGFPlots{} figures from within python.
