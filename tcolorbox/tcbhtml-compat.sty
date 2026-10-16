@@ -1,0 +1,27 @@
+% tcbhtml-compat.sty -- lets tcolorbox >= 6.9 run on LaTeX kernels older than
+% 2025-06-01 (e.g. an un-updated TeX Live 2025), for the HTML build only.
+% The tagging sockets used by tcolorbox are emulated with tagging switched
+% off: a socket with arguments just executes its last argument.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tcbhtml-compat}[2026/10/16]
+
+\ifdefined\NewTaggingSocket\else
+  \providecommand\NewStructureName[1]{}
+  \providecommand\AssignStructureRole[2]{}
+  \def\NewTaggingSocket#1#2{\expandafter\gdef\csname tcbhtml@sock@#1\endcsname{#2}}
+  \long\def\NewTaggingSocketPlug#1#2#3{}
+  \def\AssignTaggingSocketPlug#1#2{}
+  \@namedef{tcbhtml@arity0}{}
+  \@namedef{tcbhtml@arity1}{\@firstofone}
+  \@namedef{tcbhtml@arity2}{\@secondoftwo}
+  \let\tcbhtml@UseTaggingSocket\UseTaggingSocket
+  \def\UseTaggingSocket#1{%
+    \ifcsname tcbhtml@sock@#1\endcsname
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+    {\csname tcbhtml@arity\csname tcbhtml@sock@#1\endcsname\endcsname}%
+    {\tcbhtml@UseTaggingSocket{#1}}}
+\fi
+\endinput
