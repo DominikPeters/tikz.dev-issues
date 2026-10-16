@@ -773,7 +773,7 @@ header a:hover {
   transition: transform 0.15s;
 }
 
-header .pkg-menu-list {
+header ul.pkg-menu-list {
   display: none;
   position: absolute;
   /* the menu is centred vertically in the header: open below the header */
