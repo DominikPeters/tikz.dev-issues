@@ -130,6 +130,35 @@ document.addEventListener("DOMContentLoaded", (event) => {
   }
   hamburger.addEventListener("click", toggleMenu);
 
+  // package menus in the header: open on hover (CSS) or click
+  const packageMenus = document.querySelectorAll(".pkg-menu");
+  function closePackageMenus(except) {
+    for (const menu of packageMenus) {
+      if (menu !== except) {
+        menu.classList.remove("open");
+        menu.querySelector(".pkg-menu-button").setAttribute("aria-expanded", "false");
+      }
+    }
+  }
+  for (const menu of packageMenus) {
+    const button = menu.querySelector(".pkg-menu-button");
+    button.addEventListener("click", () => {
+      const open = menu.classList.toggle("open");
+      button.setAttribute("aria-expanded", String(open));
+      if (!open) button.blur(); // otherwise :focus-within keeps it open
+      closePackageMenus(menu);
+    });
+  }
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".pkg-menu")) closePackageMenus(null);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closePackageMenus(null);
+      if (document.activeElement.closest(".pkg-menu")) document.activeElement.blur();
+    }
+  });
+
   initClipboardButtons();
 
   makeAnchorButtons();

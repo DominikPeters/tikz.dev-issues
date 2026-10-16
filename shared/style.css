@@ -750,6 +750,96 @@ header a:hover {
   text-decoration: none;
 }
 
+/* package menus in the header (markup from navbar.py) */
+.pkg-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.pkg-menu-button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.pkg-menu-caret {
+  width: 0.6em;
+  height: 0.36em;
+  margin-left: 0.35em;
+  vertical-align: 0.18em;
+  transition: transform 0.15s;
+}
+
+header .pkg-menu-list {
+  display: none;
+  position: absolute;
+  /* the menu is centred vertically in the header: open below the header */
+  top: calc(50% + var(--header-height) / 2);
+  left: -0.6rem;
+  margin: 0;
+  padding: 0.35rem 0;
+  list-style: none;
+  font-size: 1rem;
+  line-height: 1.3;
+  font-weight: normal;
+  white-space: nowrap;
+  min-width: 10rem;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  z-index: 20;
+}
+
+/* invisible bridge, so that the mouse can move from the title to the list */
+.pkg-menu-list::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: calc(var(--header-height) / 2);
+}
+
+header .pkg-menu-list li {
+  margin: 0;
+  padding: 0;
+}
+
+header .pkg-menu.open .pkg-menu-list,
+header .pkg-menu:focus-within .pkg-menu-list {
+  display: block;
+}
+
+.pkg-menu.open .pkg-menu-caret {
+  transform: rotate(180deg);
+}
+
+@media (hover: hover) {
+  header .pkg-menu:hover .pkg-menu-list {
+    display: block;
+  }
+}
+
+header .pkg-menu-list a,
+header .pkg-menu-list a:visited {
+  display: block;
+  padding: 0.4rem 1rem;
+  color: #222 !important;
+}
+
+header .pkg-menu-list a:hover,
+header .pkg-menu-list a:focus {
+  background: #eceef6;
+}
+
+header .pkg-menu-list a[aria-current] {
+  font-weight: bold;
+}
+
 #hamburger-button {
   font-family: "Linux Libertine O", "Hoefler Text", "Garamond", "Bembo",
     "Janson", "TeX Gyre Pagella", "Palatino", "Liberation Serif",

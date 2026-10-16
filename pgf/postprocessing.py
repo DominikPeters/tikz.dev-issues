@@ -9,6 +9,7 @@ import sys
 import datetime
 import subprocess
 import requests
+from navbar import other_packages_menu  # shared/navbar.py
 
 def kilobytes(filename):
     st = os.stat(filename)
@@ -775,9 +776,9 @@ def add_quicklinks(filename):
 def add_header_links_to_other_sites(filename):
     with open("processed/"+filename, "r") as f:
         html = f.read()
-        html = html.replace('<div id="search"></div>', """
+        html = html.replace('<div id="search"></div>', f"""
         <span class="other-header-links">
-          | <a href="/pgfplots/">PGFplots</a>
+          | {other_packages_menu("pgf")}
           | <a href="/editor/">TikZ Editor</a>
         </span>
         <div id="search"></div>""")

@@ -7,6 +7,7 @@ import re
 import os
 import datetime
 import subprocess
+from navbar import home_url, title_menu  # shared/navbar.py
 
 def kilobytes(filename):
     st = os.stat(filename)
@@ -389,14 +390,11 @@ def add_header(soup):
     header.append(hamburger)
 
     h1 = soup.new_tag('strong')
-    tikzdevlink = soup.new_tag('a', href="https://tikz.dev")
+    tikzdevlink = soup.new_tag('a', href=home_url("pgfplots", "pgf"))
     tikzdevlink.append("tikz.dev / ")
     tikzdevlink['style'] = "font-weight: normal;"
     h1.append(tikzdevlink)
-    link = soup.new_tag('a', href="https://tikz.dev/pgfplots/")
-    h1.append(link)
-    link.append("PGFplots")
-    link.append(" Manual")
+    h1.append(BeautifulSoup(title_menu("pgfplots", "PGFplots Manual"), "html.parser"))
     header.append(h1)
     soup.find(class_="bodyandsidetoc").insert(0, header)
 

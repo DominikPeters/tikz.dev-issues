@@ -31,6 +31,9 @@ from collections import Counter, defaultdict
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 SHARED = os.path.join(ROOT, "shared")
+sys.path.insert(0, SHARED)
+from navbar import home_url, title_menu  # noqa: E402
+
 # checkout of the tcolorbox repository at the pinned commit (scripts/fetch.sh tcolorbox)
 UPSTREAM = os.environ.get("UPSTREAM", os.path.join(ROOT, ".upstream", "tcolorbox"))
 DOC = os.path.join(UPSTREAM, "doc", "latex", "tcolorbox")
@@ -2111,7 +2114,7 @@ This file may be distributed and/or modified under the LaTeX Project Public Lice
 <div class="bodyandsidetoc grid-container">
 <header>
 <div id="hamburger-button">☰</div>
-<strong><a href="https://tikz.dev" style="font-weight: normal">tikz.dev / </a><a href="./">tcolorbox Manual</a></strong>
+<strong><a href="{home_url("tcolorbox", "pgf")}" style="font-weight: normal">tikz.dev / </a>{title_menu("tcolorbox", "tcolorbox Manual")}</strong>
 <div id="search"></div>
 </header>
 <div class="sidetoccontainer" id="local-toc-container">
