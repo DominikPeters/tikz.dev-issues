@@ -4,3 +4,4 @@ repo=https://github.com/pgf-tikz/pgfplots.git
 commit=f40faa5864936890736461a2b410dcef8968e97f
 watch=doc/latex/pgfplots tex/generic/pgfplots
 docdir=doc/latex/pgfplots
+sitepath=/pgfplots/

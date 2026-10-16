@@ -1,0 +1,87 @@
+# Try one new upstream commit for one manual (called by upstream.yml).
+name: upstream package
+
+on:
+  workflow_call:
+    inputs:
+      package:
+        required: true
+        type: string
+      commit:
+        required: true
+        type: string
+
+concurrency:
+  group: upstream-${{ inputs.package }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-package.yml
+    with:
+      package: ${{ inputs.package }}
+      ref: ${{ inputs.commit }}
+      deploy: true
+    secrets: inherit
+
+  record:
+    needs: build
+    if: always() && needs.build.result != 'cancelled'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PKG: ${{ inputs.package }}
+      NEW: ${{ inputs.commit }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Summarize upstream changes
+        run: |
+          lock="$PKG/upstream.lock"
+          repo=$(sed -n 's/^repo=//p' "$lock")
+          old=$(sed -n 's/^commit=//p' "$lock")
+          read -ra watch <<< "$(sed -n 's/^watch=//p' "$lock")"
+          git clone --quiet --filter=blob:none --no-checkout "$repo" /tmp/upstream
+          {
+            echo "OLD=$old"
+            echo "REPO_URL=${repo%.git}"
+            echo "CHANGES<<EOF"
+            git -C /tmp/upstream log --format="- %s (%h)" "$old..$NEW" -- "${watch[@]}"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+      - name: Record new upstream commit
+        if: needs.build.result == 'success'
+        run: |
+          sed -i "s/^commit=.*/commit=$NEW/" "$PKG/upstream.lock"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -am "$PKG: upstream ${OLD:0:8}..${NEW:0:8}
+
+          $CHANGES"
+          for i in 1 2 3; do git pull -q --rebase && git push -q && break; sleep 5; done
+          # close the failure issue, if any
+          for n in $(gh issue list --state open --search "in:title \"[$PKG] upstream build failing\"" --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "Fixed: upstream ${NEW:0:8} built and deployed ($RUN_URL)."
+          done
+
+      - name: Report failure
+        if: needs.build.result == 'failure'
+        run: |
+          title="[$PKG] upstream build failing"
+          body="Building $PKG at upstream [${NEW:0:8}]($REPO_URL/commit/$NEW) failed: $RUN_URL
+          The site stays at ${OLD:0:8}. Upstream changes since then:
+
+          $CHANGES
+
+          To debug locally: \`scripts/fetch.sh $PKG $NEW && scripts/build.sh $PKG\`"
+          n=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty')
+          if [[ -z $n ]]; then
+            gh issue create --title "$title" --body "$body"
+          elif ! gh issue view "$n" --json body,comments --jq '.body, .comments[].body' | grep -q "$NEW"; then
+            gh issue comment "$n" --body "$body"
+          fi

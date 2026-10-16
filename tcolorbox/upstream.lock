@@ -4,3 +4,4 @@ repo=https://github.com/T-F-S/tcolorbox.git
 commit=057ff62f77aeef399251ac4fca98d1a20c36ab32
 watch=doc/latex/tcolorbox tex/latex/tcolorbox
 docdir=doc/latex/tcolorbox
+sitepath=/tcolorbox/

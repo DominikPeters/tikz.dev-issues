@@ -3,6 +3,7 @@
 
     scripts/prepare.py <package>                   -> build/<package>/src
     scripts/prepare.py <package> --dest DIR
+    scripts/prepare.py <package> --reject           (apply failing patches partially)
     scripts/prepare.py <package> --refresh-patches DIR
 
 The tree is: the upstream sources (from .upstream/<package>, see fetch.sh) at
@@ -67,17 +68,21 @@ def patch_files(pkg):
     return sorted(os.path.join(d, p) for p in os.listdir(d) if p.endswith(".patch")) if os.path.isdir(d) else []
 
 
-def apply_patches(pkg, tree):
+def apply_patches(pkg, tree, reject=False):
     failed = []
     for patch in patch_files(pkg):
         # GIT_CEILING_DIRECTORIES: treat the tree as plain files even inside a
         # repository (otherwise git apply silently skips paths "outside" it)
         env = dict(os.environ, GIT_CEILING_DIRECTORIES=os.path.dirname(tree))
-        res = subprocess.run(["git", "apply", "--verbose", "--whitespace=nowarn", "-p1", patch],
-                             cwd=tree, capture_output=True, text=True, env=env)
+        cmd = ["git", "apply", "--verbose", "--whitespace=nowarn", "-p1"] + (["--reject"] if reject else [])
+        res = subprocess.run(cmd + [patch], cwd=tree, capture_output=True, text=True, env=env)
         if res.returncode or "Skipped patch" in res.stderr:
             failed.append((os.path.basename(patch), res.stderr.strip()))
-    if failed:
+    if failed and reject:
+        rejects = [os.path.relpath(os.path.join(d, f), tree)
+                   for d, _, fs in os.walk(tree) for f in fs if f.endswith(".rej")]
+        print(f"{len(failed)} patches applied partially; resolve by hand:", *sorted(rejects), sep="\n  ")
+    elif failed:
         for name, err in failed:
             print(f"patch {name} does not apply:\n  {err}", file=sys.stderr)
         sys.exit(f"{len(failed)} patches failed; see 'Fixing a patch' in README.md")
@@ -98,14 +103,14 @@ def overlay(pkg, tree, docdir):
         shutil.copy2(os.path.join(SHARED, name), target)
 
 
-def prepare(pkg, dest, patches=True):
+def prepare(pkg, dest, patches=True, reject=False):
     lock = read_lock(pkg)
     if os.path.exists(dest):
         shutil.rmtree(dest)
     export_upstream(pkg, dest)
     preprocess(pkg, dest)
     if patches:
-        apply_patches(pkg, dest)
+        apply_patches(pkg, dest, reject)
     overlay(pkg, dest, lock["docdir"])
 
 
@@ -151,13 +156,15 @@ def main():
     ap.add_argument("package")
     ap.add_argument("--dest")
     ap.add_argument("--no-patches", action="store_true")
+    ap.add_argument("--reject", action="store_true",
+                    help="apply what applies of failing patches, leave .rej files and continue")
     ap.add_argument("--refresh-patches", metavar="DIR")
     args = ap.parse_args()
     if args.refresh_patches:
         refresh_patches(args.package, os.path.abspath(args.refresh_patches))
     else:
         dest = os.path.abspath(args.dest or os.path.join(ROOT, "build", args.package, "src"))
-        prepare(args.package, dest, patches=not args.no_patches)
+        prepare(args.package, dest, patches=not args.no_patches, reject=args.reject)
         print(f"{args.package}: source tree in {os.path.relpath(dest, ROOT)}")
 
 

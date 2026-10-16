@@ -1,0 +1,68 @@
+# Build one manual (and optionally deploy it). Called by build.yml and upstream.yml.
+name: build package
+
+on:
+  workflow_call:
+    inputs:
+      package:
+        required: true
+        type: string
+      ref:
+        description: "upstream commit to build (default: the one in upstream.lock)"
+        required: false
+        type: string
+        default: ""
+      deploy:
+        required: false
+        type: boolean
+        default: false
+    outputs:
+      commit:
+        description: the upstream commit that was built
+        value: ${{ jobs.build.outputs.commit }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    # TeX Live updated weekly; the manuals track current upstream code, which
+    # often needs a recent LaTeX kernel. Replace by a TLxxxx-historic tag to freeze.
+    container: texlive/texlive:latest
+    outputs:
+      commit: ${{ steps.fetch.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends \
+            git python3-pip python3-venv mupdf-tools poppler-utils ghostscript \
+            imagemagick pngquant librsvg2-bin nodejs npm rsync openssh-client
+          npm install -g svgo
+          python3 -m venv /opt/venv
+          /opt/venv/bin/pip install -q beautifulsoup4 lxml requests numpy pillow
+          echo /opt/venv/bin >> "$GITHUB_PATH"
+
+      - name: Fetch upstream
+        id: fetch
+        run: |
+          git config --global --add safe.directory '*'
+          scripts/fetch.sh "${{ inputs.package }}" ${{ inputs.ref }}
+          echo "commit=$(git -C .upstream/${{ inputs.package }} rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        run: scripts/build.sh "${{ inputs.package }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site-${{ inputs.package }}
+          path: build/${{ inputs.package }}/site
+          retention-days: 30
+
+      - name: Deploy
+        if: inputs.deploy
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_TARGET: ${{ secrets.DEPLOY_TARGET }}
+        run: scripts/deploy.sh "${{ inputs.package }}"

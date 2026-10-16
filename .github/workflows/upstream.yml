@@ -1,0 +1,47 @@
+# Every few hours: for each manual whose upstream repository has new commits
+# touching the documentation (the `watch` paths in upstream.lock), build and
+# deploy that commit; on success, record it in upstream.lock (a commit on main),
+# on failure open or update an issue and keep the site as it is.
+name: upstream
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      updates: ${{ steps.check.outputs.updates }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        run: |
+          updates=()
+          for lock in */upstream.lock; do
+            pkg=${lock%%/*}
+            repo=$(sed -n 's/^repo=//p' "$lock")
+            old=$(sed -n 's/^commit=//p' "$lock")
+            read -ra watch <<< "$(sed -n 's/^watch=//p' "$lock")"
+            new=$(git ls-remote "$repo" HEAD | cut -f1)
+            [[ $new == "$old" ]] && { echo "$pkg: up to date"; continue; }
+            git clone --quiet --filter=blob:none --no-checkout "$repo" "/tmp/$pkg"
+            n=$(git -C "/tmp/$pkg" rev-list --count "$old..$new" -- "${watch[@]}")
+            echo "$pkg: $n relevant new commits"
+            [[ $n -gt 0 ]] && updates+=("{\"package\":\"$pkg\",\"commit\":\"$new\"}")
+          done
+          echo "updates=[$(IFS=,; echo "${updates[*]}")]" >> "$GITHUB_OUTPUT"
+
+  update:
+    needs: check
+    if: needs.check.outputs.updates != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.check.outputs.updates) }}
+    uses: ./.github/workflows/upstream-package.yml
+    with:
+      package: ${{ matrix.package }}
+      commit: ${{ matrix.commit }}
+    secrets: inherit

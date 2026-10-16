@@ -5,3 +5,4 @@ commit=1d6234878836bc50b5e5a15ae266d74911466e7a
 # upstream paths whose changes trigger a rebuild
 watch=doc/generic/pgf tex/generic/pgf
 docdir=doc/generic/pgf
+sitepath=/

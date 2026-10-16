@@ -1,0 +1,58 @@
+# On pushes to main: rebuild and deploy the manuals whose files changed, from
+# the upstream commit pinned in their upstream.lock. Also runnable by hand.
+name: build
+
+on:
+  push:
+    branches: [main]
+    paths: [pgf/**, pgfplots/**, tcolorbox/**, shared/**, scripts/**, .github/workflows/build*.yml]
+  workflow_dispatch:
+    inputs:
+      package:
+        description: package to build (empty = all)
+        required: false
+        default: ""
+      deploy:
+        type: boolean
+        default: true
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.pick.outputs.packages }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: pick
+        run: |
+          all='["pgf","pgfplots","tcolorbox"]'
+          if [[ "${{ github.event_name }}" == workflow_dispatch ]]; then
+            p="${{ inputs.package }}"
+            [[ -z $p ]] && echo "packages=$all" >> "$GITHUB_OUTPUT" || echo "packages=[\"$p\"]" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          changed=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" 2>/dev/null || echo shared/)
+          if grep -qE '^(shared|scripts|\.github)/' <<< "$changed"; then
+            echo "packages=$all" >> "$GITHUB_OUTPUT"
+          else
+            echo "packages=$(grep -oE '^(pgf|pgfplots|tcolorbox)/' <<< "$changed" | tr -d / | sort -u | jq -R . | jq -sc .)" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    needs: changes
+    if: needs.changes.outputs.packages != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.changes.outputs.packages) }}
+    uses: ./.github/workflows/build-package.yml
+    with:
+      package: ${{ matrix.package }}
+      deploy: ${{ github.event_name == 'push' || inputs.deploy }}
+    secrets: inherit
