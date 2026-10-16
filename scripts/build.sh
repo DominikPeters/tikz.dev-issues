@@ -34,6 +34,10 @@ case $pkg in
     ;;
 esac
 
+if [[ ! -f $site/index.html ]]; then
+  echo "$pkg: no index.html in ${site#$root/}, not a complete site" >&2
+  exit 1
+fi
 rm -rf "$out"
 mkdir -p "$(dirname "$out")"
 cp -R "$site" "$out"
