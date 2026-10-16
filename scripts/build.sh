@@ -17,10 +17,14 @@ case $pkg in
   *)
     # lwarp-based manuals: build in the prepared upstream tree
     python3 "$root/scripts/prepare.py" "$pkg"
-    (cd "$root/build/$pkg/src/$docdir" && ./build.sh)
+    # compile with the package's own code from the same upstream commit, not
+    # the release in TeX Live (or a local install), which may predate the docs
+    tex="$root/build/$pkg/src/tex"
+    (cd "$root/build/$pkg/src/$docdir" &&
+      TEXINPUTS="$tex//:${TEXINPUTS:-}" LUAINPUTS="$tex//:${LUAINPUTS:-}" ./build.sh)
     # build.sh carries on after LaTeX errors; don't publish a half-built site
     for log in "$root/build/$pkg/src/$docdir"/*_html.log; do
-      if grep -q "Fatal error occurred" "$log"; then
+      if grep -q "Fatal error occurred" "$log" || ! grep -q "^Output written on" "$log"; then
         grep -m1 -A3 "^! " "$log" || true
         echo "$pkg: LaTeX failed, see ${log#$root/}" >&2
         exit 1
