@@ -18,6 +18,14 @@ case $pkg in
     # lwarp-based manuals: build in the prepared upstream tree
     python3 "$root/scripts/prepare.py" "$pkg"
     (cd "$root/build/$pkg/src/$docdir" && ./build.sh)
+    # build.sh carries on after LaTeX errors; don't publish a half-built site
+    for log in "$root/build/$pkg/src/$docdir"/*_html.log; do
+      if grep -q "Fatal error occurred" "$log"; then
+        grep -m1 -A3 "^! " "$log" || true
+        echo "$pkg: LaTeX failed, see ${log#$root/}" >&2
+        exit 1
+      fi
+    done
     site="$root/build/$pkg/src/$docdir/processed"
     ;;
 esac
