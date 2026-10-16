@@ -1,17 +1,30 @@
 # Every few hours: for each manual whose upstream repository has new commits
 # touching the documentation (the `watch` paths in upstream.lock), build and
 # deploy that commit; on success, record it in upstream.lock (a commit on main),
-# on failure open or update an issue and keep the site as it is.
+# on failure open or update an issue and keep the site as it is. A commit that
+# failed is not tried again until upstream moves on or the build files here
+# change (scripts/build-key.sh).
 name: upstream
 
 on:
   schedule:
     - cron: "17 */6 * * *"
   workflow_dispatch:
+    inputs:
+      retry:
+        description: also retry upstream commits that failed before
+        type: boolean
+        default: false
 
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RETRY: ${{ inputs.retry || false }}
     outputs:
       updates: ${{ steps.check.outputs.updates }}
     steps:
@@ -29,7 +42,16 @@ jobs:
             git clone --quiet --filter=blob:none --no-checkout "$repo" "/tmp/$pkg"
             n=$(git -C "/tmp/$pkg" rev-list --count "$old..$new" -- "${watch[@]}")
             echo "$pkg: $n relevant new commits"
-            [[ $n -gt 0 ]] && updates+=("{\"package\":\"$pkg\",\"commit\":\"$new\"}")
+            [[ $n -gt 0 ]] || continue
+            # same upstream commit and same build files as a recorded failure?
+            marker="upstream-failed: $new $(scripts/build-key.sh "$pkg")"
+            issue=$(gh issue list --state open --search "in:title \"[$pkg] upstream build failing\"" --json number --jq '.[0].number // empty')
+            if [[ $RETRY != true && -n $issue ]] &&
+               gh issue view "$issue" --json body,comments --jq '.body, .comments[].body' | grep -qF "$marker"; then
+              echo "$pkg: ${new:0:8} already failed with these build files (#$issue), skipping"
+              continue
+            fi
+            updates+=("{\"package\":\"$pkg\",\"commit\":\"$new\"}")
           done
           echo "updates=[$(IFS=,; echo "${updates[*]}")]" >> "$GITHUB_OUTPUT"
 

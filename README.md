@@ -55,12 +55,18 @@ class on `<html>` that each build sets: `.pkg-pgf`, `.pkg-pgfplots`,
     a commit to `main` listing the upstream changes;
   * on failure an issue "[package] upstream build failing" is opened (or
     updated); the site stays as it is. The issue is closed automatically after
-    the next successful build.
+    the next successful build. A failed upstream commit is not built again
+    until upstream has a newer relevant commit or the files here that the
+    build uses change (`scripts/build-key.sh`); running the workflow by hand
+    with "retry" forces another attempt.
 
 Deployment uses `scripts/deploy.sh` (FTP with TLS, via lftp) with the
 repository variables `FTP_HOST`, `FTP_USER`, `FTP_ROOT` (folder of the site,
 relative to the FTP login), optionally `DEPLOY_PREFIX` (e.g. `/monorepo` for
-testing), and the secret `FTP_PASSWORD`. It never deletes files on the server.
+testing), and the secret `FTP_PASSWORD`. It never deletes files on the server,
+and uploads only the files whose contents changed since the last deploy (it
+keeps a list of checksums, `.deploy-manifest`, in each manual's folder on the
+server; `FULL_DEPLOY=1` uploads everything).
 
 ## Fixing a patch
 

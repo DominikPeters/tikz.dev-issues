@@ -78,10 +78,13 @@ jobs:
 
           $CHANGES
 
-          To debug locally: \`scripts/fetch.sh $PKG $NEW && scripts/build.sh $PKG\`"
+          To debug locally: \`scripts/fetch.sh $PKG $NEW && scripts/build.sh $PKG\`
+
+          This commit is not tried again until upstream moves on or the build files change.
+          <!-- upstream-failed: $NEW $(scripts/build-key.sh "$PKG") -->"
           n=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty')
           if [[ -z $n ]]; then
             gh issue create --title "$title" --body "$body"
-          elif ! gh issue view "$n" --json body,comments --jq '.body, .comments[].body' | grep -q "$NEW"; then
+          else
             gh issue comment "$n" --body "$body"
           fi
