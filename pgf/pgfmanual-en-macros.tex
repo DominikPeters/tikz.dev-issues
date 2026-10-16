@@ -1824,10 +1824,10 @@
         \obeylines
         \everypar \expandafter{\the\everypar \unpenalty}%
         \ifx\code@preamble\pgfutil@empty\else
-          \pgfutil@tempdima=\hsize
+          % This is HTML text. A raw \vbox here makes lwarp's paragraph
+          % hooks loop when the box closes (\par is redefined above).
           \InlineClass{codepreamble}{%
-            \vbox{\hsize=\pgfutil@tempdima
-                \raggedright\scriptsize\detokenize\expandafter{\code@preamble}}%
+            \scriptsize\detokenize\expandafter{\code@preamble}%
           }%
         \fi
         \pgfkeysvalueof{/codeexample/typeset listing/.@cmd}{#1}\pgfeov
