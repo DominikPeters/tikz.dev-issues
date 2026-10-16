@@ -27,7 +27,10 @@ jobs:
     timeout-minutes: 300
     # TeX Live updated weekly; the manuals track current upstream code, which
     # often needs a recent LaTeX kernel. Replace by a TLxxxx-historic tag to freeze.
-    container: texlive/texlive:latest
+    # TeX Live 2026 (texlive:latest, LuaTeX 1.24, lwarp 0.922) hangs in the pgf
+    # manual's HTML pass at the first `name intersections` example (tutorial,
+    # ~page 120) until it runs out of memory; TL 2025 builds it.
+    container: texlive/texlive:TL2025-historic
     outputs:
       commit: ${{ steps.fetch.outputs.commit }}
     steps:
