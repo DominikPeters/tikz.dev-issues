@@ -1,0 +1,104 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tikz-dev-illustration-cache}[2026/10/16 Reuse audited illustrations between passes]
+
+% Only explicitly reviewed, unchanged codeexamples receive a render cache key.
+% All setup, listings, and code outside pictures continue to execute each pass.
+\begin{warpHTML}
+\newif\ifTDC@disabled
+\directlua{
+  local path = kpse.find_file("tikz_render_cache.lua", "lua")
+    or kpse.find_file("tikz_render_cache.lua", "tex")
+  assert(path, "Cannot find tikz_render_cache.lua")
+  tikz_render_cache = dofile(path)
+  if os.getenv("TIKZ_RENDER_CACHE") == "0" then
+    tex.print("\string\\TDC@disabledtrue")
+  end
+}
+\newwrite\TDC@pending
+\newwrite\TDC@used
+\newcount\TDC@hits
+\newcount\TDC@misses
+
+\def\TDC@prepare{%
+  % Rewrite the already collected *raw source*, before scantokens. Collecting
+  % tikzpicture with +b would tokenize tables before PGFplots changes catcodes.
+  \directlua{tikz_render_cache.prepare(
+    "\luaescapestring{\code@temp}", "\TDC@id", "\luaescapestring{\jobname}")}%
+}
+
+\def\TikzDevCacheBegin#1{%
+  \def\TDC@key{#1}%
+  \edef\TDC@beforeids{\the\pgf@picture@serial@count}%
+  \edef\TDC@beforeimages{\number\value{LWR@lateximagenumber}}%
+  \global\let\TDC@page\@empty
+  \let\TDC@originallabel\LWR@orig@label
+  \def\LWR@orig@label##1{%
+    \ifnum\value{LWR@lateximagedepth}=1\relax
+      \xdef\TDC@page{\number\numexpr\ReadonlyShipoutCounter+1\relax}%
+    \fi
+    \TDC@originallabel{##1}%
+  }%
+}
+
+\def\TikzDevCacheEnd{%
+  \let\LWR@orig@label\TDC@originallabel
+  % Unusual wrappers producing several outer images remain uncached.
+  \ifnum\value{LWR@lateximagenumber}=\numexpr\TDC@beforeimages+1\relax
+    \ifx\TDC@page\@empty\else
+      \edef\TDC@ids{\number\numexpr\pgf@picture@serial@count-\TDC@beforeids\relax}%
+      \ifnum\TDC@ids>0\relax
+        \immediate\write\TDC@pending{\string{"key":"\TDC@key","page":\TDC@page,"pgf_ids":\TDC@ids\string}}%
+        \global\advance\TDC@misses by1\relax
+      \fi
+    \fi
+  \fi
+}
+
+\def\TikzDevCacheUse#1{%
+  \begingroup
+  \def\TDC@key{#1}%
+  \edef\TDC@path{\jobname.render-cache/\TDC@key}%
+  \input{\TDC@path.tex}% generated numeric metadata, never example source
+  \global\advance\pgf@picture@serial@count by\TDC@pgfids\relax
+  \global\advance\TDC@hits by1\relax
+  % Keep lwarp's image envelope: it owns HTML, labels and image counters.
+  \begin{lateximage}[-tikz-~\PackageDiagramAltText]?%
+    % Preserve drawing text inside the HTML comment extracted by pdftotext.
+    % The converter reads the original page, avoiding PDF-import rounding.
+    \saveimageresource page 1 mediabox {\TDC@path.pdf}%
+    \edef\TDC@ship{%
+      \noexpand\AddToHookNext{shipout/background}{%
+        % Lists in lwarp disable hss, which put normally uses for its zero-width
+        % box. Primitive stretch/shrink keeps this overlay independent of that.
+        \noexpand\hbox to0pt{\noexpand\lower\the\paperheight\noexpand\hbox{%
+          \noexpand\useimageresource\number\lastsavedimageresourceindex\relax}%
+          \noexpand\hskip0pt plus1fil minus1fil}}}%
+    \TDC@ship
+    \leavevmode\vrule width0pt height1sp depth0pt\relax
+    \immediate\write\TDC@used{\string{"name":"\LWR@ImagesName\arabic{LWR@externalfilecnt}","key":"\TDC@key"\string}}%
+  \end{lateximage}%
+  \endgroup
+}
+
+\def\TDC@enable#1{%
+  \ifTDC@disabled\else
+    \def\TDC@id{#1}%
+    % The annotation is the last codeexample option, after any pre= hook.
+    % This wrapper is local to the example. Its original pre/post still run.
+    \let\TDC@originalpre\code@pre
+    \def\code@pre{\TDC@prepare\TDC@originalpre}%
+  \fi
+}
+
+\AddToHook{begindocument/end}{%
+  \pgfkeys{/codeexample/render cache/.code={\TDC@enable{#1}}}%
+  \immediate\openout\TDC@pending=\jobname.render-cache-pending.jsonl\relax
+  \immediate\openout\TDC@used=\jobname.render-cache-used.jsonl\relax
+}
+\AddToHook{enddocument/afterlastpage}{%
+  \immediate\closeout\TDC@pending
+  \immediate\closeout\TDC@used
+  \typeout{Illustration drawing cache: \the\TDC@hits\space reused, \the\TDC@misses\space recorded.}%
+}
+\end{warpHTML}
+\endinput

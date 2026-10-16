@@ -41,8 +41,12 @@ jobs:
             imagemagick pngquant librsvg2-bin nodejs npm lftp gnuplot-nox
           npm install -g svgo prettier
           python3 -m venv /opt/venv
-          /opt/venv/bin/pip install -q beautifulsoup4 html5lib lxml requests numpy pillow
+          /opt/venv/bin/pip install -q beautifulsoup4 html5lib lxml requests numpy pillow "pypdf>=6,<7"
           echo /opt/venv/bin >> "$GITHUB_PATH"
+
+      - name: Test build helpers
+        if: inputs.package != 'tcolorbox'
+        run: python3 -m unittest discover -s tests -v
 
       - name: Show FTP folders
         if: inputs.deploy
@@ -58,6 +62,15 @@ jobs:
           git config --global --add safe.directory '*'
           scripts/fetch.sh "${{ inputs.package }}" ${{ inputs.ref }}
           echo "commit=$(git -C .upstream/${{ inputs.package }} rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore illustration cache
+        if: inputs.package != 'tcolorbox'
+        uses: actions/cache@v4
+        with:
+          path: build/image-cache
+          key: illustrations-v1-${{ runner.os }}-${{ inputs.package }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            illustrations-v1-${{ runner.os }}-${{ inputs.package }}-
 
       - name: Build
         run: scripts/build.sh "${{ inputs.package }}"

@@ -7,6 +7,8 @@ root=$(cd "$(dirname "$0")/.." && pwd)
 pkg=${1:?usage: scripts/build.sh <package>}
 docdir=$(sed -n 's/^docdir=//p' "$root/$pkg/upstream.lock")
 out="$root/build/$pkg/site"
+# Outside the disposable prepared source trees; also restored by CI.
+export TIKZ_IMAGE_CACHE="${TIKZ_IMAGE_CACHE:-$root/build/image-cache}"
 
 case $pkg in
   tcolorbox)

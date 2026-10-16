@@ -1,0 +1,1652 @@
+{
+  "format": 1,
+  "package": "pgf",
+  "scope": "Drawing payloads only, between LaTeX passes of a freshly prepared build. Code outside pictures, pre/post hooks and listings always execute.",
+  "default": "uncached",
+  "review": "Luna agents inspected sources for side effects and dependencies. Unflagged examples are not proven pure. Only exact source matches with eligible status may use the cache; changed files lose eligibility until reviewed again.",
+  "examples": [
+    {
+      "file": "pgfmanual-en-base-animations.tex",
+      "line": 68,
+      "source_sha256": "54ec596932b9efe4015cf477890e74b1d01ca187a2c1d43e1e57e9b2519287c5",
+      "source_span_sha256": "d9882de575c8cdbb0c45d2244d573ed8c0522a135c557222e1f63f6257dd1f0a",
+      "status": "unsafe",
+      "reason": "Example-specific preamble defines \\pgfname globally; if preambles execute as part of cache miss and are skipped on hit, later content may see different definition."
+    },
+    {
+      "file": "pgfmanual-en-base-arrows.tex",
+      "line": 570,
+      "source_sha256": "5e96af83e858e9afaa6857ec7b7ca871d475fd559eebe85c580679daa631d649",
+      "source_span_sha256": "82413d487a6d2d42ad521807322c70de7988bad78191edf1ed570c06bc5a4224",
+      "status": "unsafe",
+      "reason": "The pre hook declares arrow kind foo in the document PGF registry; cached rendering can omit this declaration, changing later uses or duplicate-definition behavior."
+    },
+    {
+      "file": "pgfmanual-en-base-arrows.tex",
+      "line": 601,
+      "source_sha256": "5e96af83e858e9afaa6857ec7b7ca871d475fd559eebe85c580679daa631d649",
+      "source_span_sha256": "92cc541204d51f3600fe7823cfda1e316dd93c8b4d3855edae89ec2a0633081d",
+      "status": "unsafe",
+      "reason": "The pre hook redeclares foo with bending support; this mutates the arrow registry and prepares options used by the example."
+    },
+    {
+      "file": "pgfmanual-en-base-decorations.tex",
+      "line": 258,
+      "source_sha256": "039ba98abe95787097ed1506bd7ce27d75bdb0a5b219f37ca019d06a61cb8a5a",
+      "source_span_sha256": "c4745492c7e8ebf7e4eddc72275ba72d947c2f052b1cfb445d00a805d1d945e0",
+      "status": "unsafe",
+      "reason": "Defines named decoration `example` with `\\pgfdeclaredecoration`; skipping the body leaves that decoration unavailable to later examples if codeexample execution shares the document TeX state."
+    },
+    {
+      "file": "pgfmanual-en-base-decorations.tex",
+      "line": 288,
+      "source_sha256": "039ba98abe95787097ed1506bd7ce27d75bdb0a5b219f37ca019d06a61cb8a5a",
+      "source_span_sha256": "973cda876710e6b613b1129a571d5317dfb26a9c1757406f20711103fe0f172d",
+      "status": "unsafe",
+      "reason": "Pre-option seeds PGF RNG; decoration state uses `rnd` during actual drawing. Reusing the rendered result skips RNG consumption and leaves the random stream at a different position for subsequent examples."
+    },
+    {
+      "file": "pgfmanual-en-base-decorations.tex",
+      "line": 476,
+      "source_sha256": "039ba98abe95787097ed1506bd7ce27d75bdb0a5b219f37ca019d06a61cb8a5a",
+      "source_span_sha256": "ac2a63bbcf3328fcac4aaf0f8deb20a74b99cc9f0dd43d083720dd6210578c20",
+      "status": "unsafe",
+      "reason": "Declares named decoration `complicated example decoration`; later examples may depend on its registration if execution state is shared."
+    },
+    {
+      "file": "pgfmanual-en-base-decorations.tex",
+      "line": 909,
+      "source_sha256": "039ba98abe95787097ed1506bd7ce27d75bdb0a5b219f37ca019d06a61cb8a5a",
+      "source_span_sha256": "3eceb18ea4b0e53061275cacabbbd91c3ac852a17813837d45f669cef27bf1e6",
+      "status": "unsafe",
+      "reason": "Declares named metadecoration `arrows`; skipped body omits this registration from shared TeX state."
+    },
+    {
+      "file": "pgfmanual-en-base-design.tex",
+      "line": 58,
+      "source_sha256": "cd989120cd279f2d3ff44ef0b8636285b2f8ab7243de365409ebd5ebee74a5bb",
+      "source_span_sha256": "4b31f10d25d349aab14722bd1e85fb79664fe533eebdc1e1f3dbb7ef61d112de",
+      "status": "unsafe",
+      "reason": "Allocates `\\myypos` and mutates the dimension while drawing the picture. Duplicate execution can collide; result reuse skips the demonstrated register setup."
+    },
+    {
+      "file": "pgfmanual-en-base-external.tex",
+      "line": 90,
+      "source_sha256": "139471c7daba313d87fe300f6bbdef82d4ebf06c9b3c98f51961e54796739f43",
+      "source_span_sha256": "ff5da39a95782d303ea3433467dcb2a5dc8dbcee6db302ebee9310c26246a31d",
+      "status": "unsafe",
+      "reason": "The example is marked `code only`, but contains `\\label{fig1}` and surrounding prose references it. If code-only bodies are not executed in this cache model, the aux label can disappear or stale aux state can affect references."
+    },
+    {
+      "file": "pgfmanual-en-base-images.tex",
+      "line": 104,
+      "source_sha256": "817c19074f8ac7e6e30058cc09558ffe0637c1d8b01b421b24fe0d61af05d73a",
+      "source_span_sha256": "29d14c400e55e7ac6827a214567c4abb70970e92e8ad1d48109b5926a3ab45a8",
+      "status": "unsafe",
+      "reason": "Declares named images in PGF global image registry; later examples may use/overwrite these names."
+    },
+    {
+      "file": "pgfmanual-en-base-images.tex",
+      "line": 142,
+      "source_sha256": "817c19074f8ac7e6e30058cc09558ffe0637c1d8b01b421b24fe0d61af05d73a",
+      "source_span_sha256": "4e99cf4c4a0152c26029630ff25d867da59bc90f71ff2a88bf5dfc872ed23c1e",
+      "status": "unsafe",
+      "reason": "Declares named images; declaration persists outside this picture and names are reused by neighboring examples."
+    },
+    {
+      "file": "pgfmanual-en-base-images.tex",
+      "line": 162,
+      "source_sha256": "817c19074f8ac7e6e30058cc09558ffe0637c1d8b01b421b24fe0d61af05d73a",
+      "source_span_sha256": "708f951bdf97eac1b888970bfce32a6be98f55cc9c88d170ccf380a503045908",
+      "status": "unsafe",
+      "reason": "Declares named color-variant images into PGF registry."
+    },
+    {
+      "file": "pgfmanual-en-base-images.tex",
+      "line": 255,
+      "source_sha256": "817c19074f8ac7e6e30058cc09558ffe0637c1d8b01b421b24fe0d61af05d73a",
+      "source_span_sha256": "83ec89202c91c4492231bfd7516ddf4d65220d413063066273b67603a373210e",
+      "status": "unsafe",
+      "reason": "Declares a named shading and mask used in the same example; registry changes survive the picture."
+    },
+    {
+      "file": "pgfmanual-en-base-internalregisters.tex",
+      "line": 93,
+      "source_sha256": "2195bf071e26f2b41b913ef5cc6b90162d706f909c3861f67a4ebd1986e040be",
+      "source_span_sha256": "8406100728be252fbc3682b04b58aec1f55847efc9357a602344235f30cf3a26",
+      "status": "unsafe",
+      "reason": "The example opens/writes/closes myfile.dat; skipping replay suppresses a build artifact and may affect later consumers."
+    },
+    {
+      "file": "pgfmanual-en-base-layers.tex",
+      "line": 97,
+      "source_sha256": "362a7215bb60ce7e794d96846de52935eae1f6a52fd31c7103397be98f8b46f0",
+      "source_span_sha256": "fce2ab96c928624d9f349c2ef4b3c1428352f9518c02bea1c5f2d7a73716e044",
+      "status": "unsafe",
+      "reason": "Declares a PGF layer and sets the global layer ordering used by subsequent pictures."
+    },
+    {
+      "file": "pgfmanual-en-base-nodes.tex",
+      "line": 455,
+      "source_sha256": "00c6726dfa69a6eed6471a65329c26c5e71c78bad7422fa32f9526fd4eb11e6e",
+      "source_span_sha256": "351af3f2524ef8d0697f382642a866c2e061d0445869527b5213d50110f34077",
+      "status": "unsafe",
+      "reason": "Example explicitly makes macro definition global; its meaning can leak to later examples."
+    },
+    {
+      "file": "pgfmanual-en-base-nodes.tex",
+      "line": 555,
+      "source_sha256": "00c6726dfa69a6eed6471a65329c26c5e71c78bad7422fa32f9526fd4eb11e6e",
+      "source_span_sha256": "1a53c4672a9f76ee9f7e23f430e03b2c8b3b47184a2fbb93eb2beac14aa14d09",
+      "status": "unsafe",
+      "reason": "Expands and stores a global definition; execution affects subsequent document state."
+    },
+    {
+      "file": "pgfmanual-en-base-nodes.tex",
+      "line": 832,
+      "source_sha256": "00c6726dfa69a6eed6471a65329c26c5e71c78bad7422fa32f9526fd4eb11e6e",
+      "source_span_sha256": "d1376facbb0eaf58ecaae66df0b4bd9727375a56a40763afabaf2b0bf98bf7a0",
+      "status": "unsafe",
+      "reason": "Declares a named shape globally in PGF shape registry."
+    },
+    {
+      "file": "pgfmanual-en-base-nodes.tex",
+      "line": 851,
+      "source_sha256": "00c6726dfa69a6eed6471a65329c26c5e71c78bad7422fa32f9526fd4eb11e6e",
+      "source_span_sha256": "0cf6350cfe75ded58655dc6e1e0ae866c8d1a03003774ca140b2d4aa4e8f8e6d",
+      "status": "unsafe",
+      "reason": "Declares a named shape globally in PGF shape registry."
+    },
+    {
+      "file": "pgfmanual-en-base-nodes.tex",
+      "line": 1075,
+      "source_sha256": "00c6726dfa69a6eed6471a65329c26c5e71c78bad7422fa32f9526fd4eb11e6e",
+      "source_span_sha256": "9ed2c05f7c5499319297cd8301b3175793ac8f79d64b7b8ea5a7f68b7da461d4",
+      "status": "unsafe",
+      "reason": "Defines/declaratively registers a shape; likely leaves global shape registry changes."
+    },
+    {
+      "file": "pgfmanual-en-base-nodes.tex",
+      "line": 1257,
+      "source_sha256": "00c6726dfa69a6eed6471a65329c26c5e71c78bad7422fa32f9526fd4eb11e6e",
+      "source_span_sha256": "e7298c030c221a2fa7f5a7e167c22d4c7c57763fca0520fdc7115a89ee9ef8e8",
+      "status": "unsafe",
+      "reason": "Declares geometric shape globally."
+    },
+    {
+      "file": "pgfmanual-en-base-patterns.tex",
+      "line": 96,
+      "source_sha256": "2934adbff4df403596f692df417563280c879e1ebf59b9375030403e550830c3",
+      "source_span_sha256": "0f4890673a4ffa750b3b7257f6e387bc17c60923a077fd1b9d563643f843f94b",
+      "status": "unsafe",
+      "reason": "Declares named pattern `stars` in the body; omission can change later pattern availability."
+    },
+    {
+      "file": "pgfmanual-en-base-patterns.tex",
+      "line": 144,
+      "source_sha256": "2934adbff4df403596f692df417563280c879e1ebf59b9375030403e550830c3",
+      "source_span_sha256": "3697d36a9901ede5859fc70e2f674c95c4d7c01b9f5778133d43302a2f77d3d1",
+      "status": "unsafe",
+      "reason": "Allocates `\\thickness` and `\\size` dimensions and declares named pattern `rings`. Repeat execution can fail on duplicate allocation; skipping it can omit the pattern."
+    },
+    {
+      "file": "pgfmanual-en-base-patterns.tex",
+      "line": 184,
+      "source_sha256": "2934adbff4df403596f692df417563280c879e1ebf59b9375030403e550830c3",
+      "source_span_sha256": "b89642da16c9e4c913a381e348939879a3e8c2bde071cd551384a5341df8ff6d",
+      "status": "unsafe",
+      "reason": "Declares named pattern `green stars`; omission changes subsequent availability."
+    },
+    {
+      "file": "pgfmanual-en-base-patterns.tex",
+      "line": 217,
+      "source_sha256": "2934adbff4df403596f692df417563280c879e1ebf59b9375030403e550830c3",
+      "source_span_sha256": "0552dd4851d1cfb2d99bbf2c648234aecf52c044ed18956184996f04800bafe7",
+      "status": "unsafe",
+      "reason": "Preamble loads `patterns`; body declares several named patterns. Skipping pre/body may change later examples’ library and declaration state if state is shared."
+    },
+    {
+      "file": "pgfmanual-en-base-plots.tex",
+      "line": 502,
+      "source_sha256": "f630b40c8066a05557fbb4aaf7fc01305ca3f4d27ad897e5d58e4126396ab5b2",
+      "source_span_sha256": "d568b6e6de625933a29411ff054956d14be1f5ab696dd4c96b157e5c556739c4",
+      "status": "unsafe",
+      "reason": "Declares custom handler `myhandler` in the example body; this definition persists and is used by later example(s), so skipping execution can break downstream examples."
+    },
+    {
+      "file": "pgfmanual-en-base-plots.tex",
+      "line": 523,
+      "source_sha256": "f630b40c8066a05557fbb4aaf7fc01305ca3f4d27ad897e5d58e4126396ab5b2",
+      "source_span_sha256": "b107258a2f3ed2a849a4bd782e7264fcf0212ac30313cd80842077026e8deff6",
+      "status": "unsafe",
+      "reason": "Declares the custom plot handler `myhandler`; later examples may rely on the declaration."
+    },
+    {
+      "file": "pgfmanual-en-base-points.tex",
+      "line": 596,
+      "source_sha256": "131f225be4631823ef698ec137532d7a6b1d33363471e2965eeab35b019e64ba",
+      "source_span_sha256": "6dcefe49d1816bbd689743d662cb63083ddda11267983afb0470df273d55ddad",
+      "status": "unsafe",
+      "reason": "Code-only example allocates dimension register `\\mydim`; allocation is a document-level side effect and may conflict on rerun or be relied on later."
+    },
+    {
+      "file": "pgfmanual-en-base-points.tex",
+      "line": 642,
+      "source_sha256": "131f225be4631823ef698ec137532d7a6b1d33363471e2965eeab35b019e64ba",
+      "source_span_sha256": "57f7d4075385ba25fc78b1dcd15ed3fddc9fe7696dcd78e2882a9e477dd8c9bf",
+      "status": "unsafe",
+      "reason": "Explicit global assignments to PGF scratch coordinates `\\pgf@x` and `\\pgf@y` escape ordinary grouping and can affect later operations if execution shares TeX state."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 142,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "0d9fc3e72d3a230dc06a90021d75b8cf68cfe33fdf04f642bda6cb7763cb31c7",
+      "status": "unsafe",
+      "reason": "Declares a named shading used by this and following examples; skipping it can leave later picture execution without the declaration."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 170,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "670ef7e33a83cf5309d4141470df9752e868be77272029441accc019ef20c26d",
+      "status": "unsafe",
+      "reason": "Named shading declaration; declaration persists and later examples can depend on it."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 186,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "f8dfe060d670ee1147bb77905e77756c93f8d1d83f1123e4b5f77f2252327c1d",
+      "status": "unsafe",
+      "reason": "Named shading declaration may be used by later examples."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 209,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "bc078c05df54728bafd289bd1886336b6029b72a958bee0e46c1530743d822ad",
+      "status": "unsafe",
+      "reason": "Named shading declaration persists beyond the current picture."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 290,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "74c83e9fb9d312015875b920b24a102afcdd8fc0725e15af0815d5bc55d47fa8",
+      "status": "unsafe",
+      "reason": "Named shading declaration persists beyond the current picture."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 325,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "3c3f755d6cc20b694e6c6c9b7b931187ea406326bff2dc385f32967ee5ae01fc",
+      "status": "unsafe",
+      "reason": "Named shading declaration persists beyond the current picture."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 366,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "c4eda324cad0cf5693813f031a6c0ab7efcdae71aa8486ac0ebccb5ef1b95e11",
+      "status": "unsafe",
+      "reason": "Named shading declaration persists beyond the current picture."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 584,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "4dd0ba1dc15e415be6de655e79d8870100a943460ebfa17313aa424e3387d328",
+      "status": "unsafe",
+      "reason": "Named shading declaration persists beyond the current picture."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 641,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "e196813bae49067dd52aaeb2f3e4030cd1d4286532b160e207d55e48b4452ded",
+      "status": "unsafe",
+      "reason": "Named shading declaration persists beyond the current picture."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 668,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "2b4d9c265cf71190a531aaf36340bcb386078a9ee9fce84c198cceb2478d30e4",
+      "status": "unsafe",
+      "reason": "Named shading declaration persists beyond the current picture."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 693,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "dd69ce85ba233eeccce5f57f8eaf86ddfc5c4ed4740c4de75850f6f959b06462",
+      "status": "unsafe",
+      "reason": "Named shading declaration persists beyond the current picture."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 717,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "a5d9283d234130b54ffb75fe154147b71c4c0cae4771a296cb5e08d624325d63",
+      "status": "unsafe",
+      "reason": "Named shading declaration persists beyond the current picture."
+    },
+    {
+      "file": "pgfmanual-en-base-shadings.tex",
+      "line": 736,
+      "source_sha256": "530f5a4ca46010f7518ca31fd2f453c0491fe4073bf600a61fbb00aed5cf69e8",
+      "source_span_sha256": "96ece73acf6385d2b3b3c38343c0c9324544ac25df1913b3a4929863a310029f",
+      "status": "unsafe",
+      "reason": "Named shading declaration persists beyond the current picture."
+    },
+    {
+      "file": "pgfmanual-en-base-transparency.tex",
+      "line": 121,
+      "source_sha256": "8dca74e11867ff085cfdf80a7279bcc6f829429d7eefddbf178458627a6177eb",
+      "source_span_sha256": "08848b8ea5c5fbecb59d8c70375576958acc201e5d05d0f70cad6300aa58efeb",
+      "status": "unsafe",
+      "reason": "Declares global fading fading1; later examples in this file use registry declarations and caching can suppress a visible declaration side effect."
+    },
+    {
+      "file": "pgfmanual-en-base-transparency.tex",
+      "line": 169,
+      "source_sha256": "8dca74e11867ff085cfdf80a7279bcc6f829429d7eefddbf178458627a6177eb",
+      "source_span_sha256": "55f661e83875d6a7facefb42119a543eeb58e3d9f6f69da5b06cea76a3a423f3",
+      "status": "unsafe",
+      "reason": "Declares shading myshading and fading fading3 in PGF registries."
+    },
+    {
+      "file": "pgfmanual-en-base-transparency.tex",
+      "line": 255,
+      "source_sha256": "8dca74e11867ff085cfdf80a7279bcc6f829429d7eefddbf178458627a6177eb",
+      "source_span_sha256": "f5d2013ff86a59a42dc3dd7265463a0134b47942cb29ac7bf2838a667f964d8c",
+      "status": "unsafe",
+      "reason": "Declares globally named shading and fading; the following example’s preamble also declares the same names, demonstrating chained declaration dependence/redefinition sensitivity."
+    },
+    {
+      "file": "pgfmanual-en-base-transparency.tex",
+      "line": 289,
+      "source_sha256": "8dca74e11867ff085cfdf80a7279bcc6f829429d7eefddbf178458627a6177eb",
+      "source_span_sha256": "f4bd124be0f23ba84760428510bc0f5c2856db0d442c83572a53c3a625b6c77d",
+      "status": "unsafe",
+      "reason": "The example preamble declares shading and fading named shading/fading before drawing."
+    },
+    {
+      "file": "pgfmanual-en-drivers.tex",
+      "line": 46,
+      "source_sha256": "ec0cb2f18290a53e766d53f6f05a9ea60649be27761f3245189e634713533c9a",
+      "source_span_sha256": "1c387f98780a7a29486df68a46479741a44adfafb9cc6e48e6671e4d2dcf7ed1",
+      "status": "unsafe",
+      "reason": "Example inputs another source file, so output depends on an external file and its current contents."
+    },
+    {
+      "file": "pgfmanual-en-dv-formats.tex",
+      "line": 604,
+      "source_sha256": "cabdfd5237fc2f9ba893b5426018f5a2c45096f44ca9ee3b44fb2ef08c5c6dc8",
+      "source_span_sha256": "b4f957cdd923061b367a180d060a919df34ce0dbc3e54ba1e7189079b843c555",
+      "status": "unsafe",
+      "reason": "Registers a named datavisualization data format globally."
+    },
+    {
+      "file": "pgfmanual-en-library-calendar.tex",
+      "line": 585,
+      "source_sha256": "74f7b075a28b6413b1fa80afe6f3683543fe0a2fe88be46d810c4a0ea333b50e",
+      "source_span_sha256": "84e1a4e682328c5f8995aa65553c97881b67f1c7aa3a7303a91c0c65925e93a3",
+      "status": "unsafe",
+      "reason": "Allocates \\mycount during rendered example; repeated execution can trigger allocation/state changes and skipping it can affect subsequent examples if they reuse that name."
+    },
+    {
+      "file": "pgfmanual-en-library-calendar.tex",
+      "line": 912,
+      "source_sha256": "74f7b075a28b6413b1fa80afe6f3683543fe0a2fe88be46d810c4a0ea333b50e",
+      "source_span_sha256": "723f6a0ea6a4c955f98233a1d54b38583747bc30b02a433763551583ca69251c",
+      "status": "unsafe",
+      "reason": "Allocates the same \\mycount name and outputs \\the\\year; rendered output depends on build date/year and body establishes a register."
+    },
+    {
+      "file": "pgfmanual-en-library-decorations.tex",
+      "line": 202,
+      "source_sha256": "982fc19d1e5e7244dea233532e658f866da8729cba11e14e4dabae75460a5262",
+      "source_span_sha256": "b9940ec833156a6ba7367cc54fac3d055e2b780cd3b1ec10d6ec9ca75cacc9ad",
+      "status": "unsafe",
+      "reason": "The pre hook seeds PGF’s random generator and the random-steps decoration consumes it. Skipping this example changes subsequent random output; replay must account for both seed and consumption."
+    },
+    {
+      "file": "pgfmanual-en-library-external.tex",
+      "line": 340,
+      "source_sha256": "5882513252e6531aa702542973e678c1c2aafb2dae5e8e8034b63e4e82f136b1",
+      "source_span_sha256": "4932da537fdd2b75c03dc854c8af03de44ea69267d562939f3d7e7d8ccb0e465",
+      "status": "unsafe",
+      "reason": "`code only`; demonstrates external library setup and names exports (`trees`, `simple`). If actually executed under shell escape this can invoke external compilation and filesystem output; if code only truly suppresses execution it is listing-only."
+    },
+    {
+      "file": "pgfmanual-en-library-external.tex",
+      "line": 389,
+      "source_sha256": "5882513252e6531aa702542973e678c1c2aafb2dae5e8e8034b63e4e82f136b1",
+      "source_span_sha256": "7e6ea564e68094e8be65ec6fa1d9ff545b29d4c60be75b8d8a13c4eea347238a",
+      "status": "unsafe",
+      "reason": "`code only`; configures externalization names/prefix and exports; execution can write external files and affect later picture handling."
+    },
+    {
+      "file": "pgfmanual-en-library-external.tex",
+      "line": 483,
+      "source_sha256": "5882513252e6531aa702542973e678c1c2aafb2dae5e8e8034b63e4e82f136b1",
+      "source_span_sha256": "8ea91085cc48b4d29106408f6992c7089ac6598ace2094990586761611af2628",
+      "status": "unsafe",
+      "reason": "`code only`; sets persistent external/force remake state affecting following pictures if setup code is executed."
+    },
+    {
+      "file": "pgfmanual-en-library-external.tex",
+      "line": 493,
+      "source_sha256": "5882513252e6531aa702542973e678c1c2aafb2dae5e8e8034b63e4e82f136b1",
+      "source_span_sha256": "128a217ab3e78340c8312b1a692f0ee67a143e5f4c03b8254d4610b9e584dcb0",
+      "status": "unsafe",
+      "reason": "`code only`; sets persistent external/force remake state affecting following pictures if setup code is executed."
+    },
+    {
+      "file": "pgfmanual-en-library-external.tex",
+      "line": 637,
+      "source_sha256": "5882513252e6531aa702542973e678c1c2aafb2dae5e8e8034b63e4e82f136b1",
+      "source_span_sha256": "af7f62d9ec0dee53362abadca164c8db02cd07b65dfdf6421173320a9319a230",
+      "status": "unsafe",
+      "reason": "`code only`; configures externalization and named figure outputs, with potential external compilation/file writes if executed."
+    },
+    {
+      "file": "pgfmanual-en-library-folding.tex",
+      "line": 21,
+      "source_sha256": "b5635dbc55c86352257c3d4a835fcedc5b18561477aa96aceae22396813fef6e",
+      "source_span_sha256": "56b97904eb16e3f09b910740018e7a6694a30deeab97d057470ec7177c9ba893",
+      "status": "unsafe",
+      "reason": "Calendar dates are computed from `\\the\\year` and month lengths at execution time. A cached image can be stale when the build year changes; include the resolved year in the cache key or keep this illustration uncached."
+    },
+    {
+      "file": "pgfmanual-en-library-lsystems.tex",
+      "line": 28,
+      "source_sha256": "64101282123e285432f0c75d47df26148671ec374d4da7a06342259805e9d608",
+      "source_span_sha256": "1f583241f3949f4761b09a564bed67c5eb093e1b17e8d90c20376ddf3ed86f71",
+      "status": "unsafe",
+      "reason": "Declares named L-system `Koch curve` in the body. `pre` explicitly resets its internal definition first, suggesting repeated execution is expected; skipping the body may leave downstream uses without it."
+    },
+    {
+      "file": "pgfmanual-en-library-lsystems.tex",
+      "line": 45,
+      "source_sha256": "64101282123e285432f0c75d47df26148671ec374d4da7a06342259805e9d608",
+      "source_span_sha256": "b258d38424932fc620dafa8b53d015c02b08b835412138dcd99790af8a44535f",
+      "status": "unsafe",
+      "reason": "The rendered L-system requests randomized step and angle; it may consume PGF/TikZ random state and outputs can differ if random state is not replayed or seeded."
+    },
+    {
+      "file": "pgfmanual-en-library-lsystems.tex",
+      "line": 245,
+      "source_sha256": "64101282123e285432f0c75d47df26148671ec374d4da7a06342259805e9d608",
+      "source_span_sha256": "41038a0d3968e16ae53782a42b1437688f21d808d586dddfa2c3cd24626251ca",
+      "status": "unsafe",
+      "reason": "Declares named L-system `Hilbert curve`; pre resets the internal definition explicitly, so declaration is relied on per execution."
+    },
+    {
+      "file": "pgfmanual-en-library-lsystems.tex",
+      "line": 374,
+      "source_sha256": "64101282123e285432f0c75d47df26148671ec374d4da7a06342259805e9d608",
+      "source_span_sha256": "00fd83b4bd6876cfc9c9aec6dcf20eb9dc35364058e2ee788bf515dceb245c42",
+      "status": "unsafe",
+      "reason": "Declares named L-system `Sierpinski triangle`, which persists and can be used subsequently."
+    },
+    {
+      "file": "pgfmanual-en-library-math.tex",
+      "line": 118,
+      "source_sha256": "b2e73e02d72b721330e720bbea95015f3bc51a65129aaf28c8787d9f9b728be8",
+      "source_span_sha256": "2ac790b91dbf33789f7669945623f2fcd225445b4ac723c1593bf517c3a35e37",
+      "status": "unsafe",
+      "reason": "Allocates `\\mycount` and `\\mydimen` as part of the math illustration; repeated execution can fail or alter shared TeX setup."
+    },
+    {
+      "file": "pgfmanual-en-library-math.tex",
+      "line": 309,
+      "source_sha256": "b2e73e02d72b721330e720bbea95015f3bc51a65129aaf28c8787d9f9b728be8",
+      "source_span_sha256": "f619a3c9f1fe29b7eb9c2e9e5965cc770dbc222be7a00cb6d45ae1e9597dac9f",
+      "status": "unsafe",
+      "reason": "Consumes PGF random values without setting a seed in this example, so the rendered value depends on prior random-stream state/pass order."
+    },
+    {
+      "file": "pgfmanual-en-library-math.tex",
+      "line": 407,
+      "source_sha256": "b2e73e02d72b721330e720bbea95015f3bc51a65129aaf28c8787d9f9b728be8",
+      "source_span_sha256": "cf6f14a8cf918cb90743df257c32ff3da2a4398d0903321a144dfbe3b176e4b1",
+      "status": "unsafe",
+      "reason": "Consumes two unseeded PGF random values; cached replay can change downstream random-stream state."
+    },
+    {
+      "file": "pgfmanual-en-library-math.tex",
+      "line": 440,
+      "source_sha256": "b2e73e02d72b721330e720bbea95015f3bc51a65129aaf28c8787d9f9b728be8",
+      "source_span_sha256": "6c4b8706b73be79cd652c5ab8fb5479d9a78ef99ef3030b0eeb81717ef290346",
+      "status": "unsafe",
+      "reason": "Consumes an unseeded PGF random value."
+    },
+    {
+      "file": "pgfmanual-en-library-patterns.tex",
+      "line": 172,
+      "source_sha256": "3a9985faf7b026db5f80de6f000d3c01312c5af151744c45be536f674173fc22",
+      "source_span_sha256": "fd10b16e1fdb06d9deeb50b7c71adb7a98c5818900a8a30d83ee70a87bd74e1a",
+      "status": "unsafe",
+      "reason": "Declares named pattern hatch and globally defines hatch parameter keys/defaults, affecting later pictures/examples."
+    },
+    {
+      "file": "pgfmanual-en-library-patterns.tex",
+      "line": 475,
+      "source_sha256": "3a9985faf7b026db5f80de6f000d3c01312c5af151744c45be536f674173fc22",
+      "source_span_sha256": "235e65bc6e58cc136f6df16ebba91cbe87a16a623b07ff47493e6d6c58285290",
+      "status": "unsafe",
+      "reason": "Declares custom pattern `flower` inside the codeexample body; this is persistent library state if examples share TeX execution context."
+    },
+    {
+      "file": "pgfmanual-en-library-patterns.tex",
+      "line": 498,
+      "source_sha256": "3a9985faf7b026db5f80de6f000d3c01312c5af151744c45be536f674173fc22",
+      "source_span_sha256": "0c76bbefd9686ad521832add16687495a4d3748a14224578eb3c4c5e08bd5f7a",
+      "status": "unsafe",
+      "reason": "Declares custom pattern `mystars` inside the body."
+    },
+    {
+      "file": "pgfmanual-en-library-patterns.tex",
+      "line": 531,
+      "source_sha256": "3a9985faf7b026db5f80de6f000d3c01312c5af151744c45be536f674173fc22",
+      "source_span_sha256": "2314286fbc7b84514f56937e3faae255f25d47e08f7c07b3618ad85bec6c1d59",
+      "status": "unsafe",
+      "reason": "Declares custom pattern `mylines` inside the body."
+    },
+    {
+      "file": "pgfmanual-en-library-plot-handlers.tex",
+      "line": 665,
+      "source_sha256": "d72b3d4bdaf0130d201175af6d4fbf97ee746f8ddcbc8b5e5bc383a4a514e296",
+      "source_span_sha256": "d4286494d0a2be3275eceeaab870c17694316073b7294604e3887f0c6ac87fda",
+      "status": "unsafe",
+      "reason": "Declares plot mark `my plot mark` in the example body and then uses it. Skipping drawing body omits the declaration for later examples if execution state is shared."
+    },
+    {
+      "file": "pgfmanual-en-library-shapes.tex",
+      "line": 1872,
+      "source_sha256": "053974dd38a609271e2163bc9e84e3631bcd4a262185b8a1984b2c1dfdb8f0ec",
+      "source_span_sha256": "f67cb4e25381f2d5b6f667044a7cbe02b26f6e5a1e1f7de4757fd9a02803e846",
+      "status": "unsafe",
+      "reason": "Creates remembered node `(hallo)` in a picture. The next example (line 1888) refers to `hallo.south` across pictures. Reusing this picture result skips node registration and may break the dependent callout."
+    },
+    {
+      "file": "pgfmanual-en-library-shapes.tex",
+      "line": 1888,
+      "source_sha256": "053974dd38a609271e2163bc9e84e3631bcd4a262185b8a1984b2c1dfdb8f0ec",
+      "source_span_sha256": "a2e4687eb3fa7981eff2cb58ffe011a7f198797017cc047b26104dda2f8bdbe3",
+      "status": "unsafe",
+      "reason": "Uses a remembered node `(hallo.south)` created in the immediately preceding codeexample; body must execute for cross-picture node resolution."
+    },
+    {
+      "file": "pgfmanual-en-main-body.tex",
+      "line": 460,
+      "source_sha256": "c46d0d3acdeb35c0d570e597e5661af0f5e977404b93a7639daf58727ac2f120",
+      "source_span_sha256": "9f644315f3d5840203560c7190bd65b859534e6b43bdeb75e29ce55475b9719a",
+      "status": "unsafe",
+      "reason": "Sets the global PGF random seed, then consumes random values in several pictures; omission changes stream for later examples."
+    },
+    {
+      "file": "pgfmanual-en-math-algorithms.tex",
+      "line": 51,
+      "source_sha256": "3f7b657de8bf357f4e191095c1196474d20d1e414a850f634b7caa31d672797f",
+      "source_span_sha256": "4a9987871f9dbdfa4c92a1312c292a2e3c64e59b15c9d2924765927e521d3bbb",
+      "status": "unsafe",
+      "reason": "Registers global PGF math function double."
+    },
+    {
+      "file": "pgfmanual-en-math-algorithms.tex",
+      "line": 129,
+      "source_sha256": "3f7b657de8bf357f4e191095c1196474d20d1e414a850f634b7caa31d672797f",
+      "source_span_sha256": "e7746eea5d9e2b7dcfcfeaeed9df4e0100065eb74b3e8f7ff3551f8ffc37acf9",
+      "status": "unsafe",
+      "reason": "Registers then redefines a global PGF math function foo."
+    },
+    {
+      "file": "pgfmanual-en-math-algorithms.tex",
+      "line": 191,
+      "source_sha256": "3f7b657de8bf357f4e191095c1196474d20d1e414a850f634b7caa31d672797f",
+      "source_span_sha256": "129491279b4f494517b611fedf2d6bf8fe88bae629ea0ddcd2bbdf8e3b2d169b",
+      "status": "unsafe",
+      "reason": "The plotted function defines noise with `rnd`; evaluating the picture consumes PGF random state. Reusing the picture result skips that consumption, potentially changing later random illustrations."
+    },
+    {
+      "file": "pgfmanual-en-math-commands.tex",
+      "line": 62,
+      "source_sha256": "cf20f604183260fa38072dfab0b0f74e0f2ee4b151ba96aaf8c2ae8689785a4c",
+      "source_span_sha256": "a1ed3561a18d933330aad6447027cc2f62ff3e035e077919134edd898c612fa4",
+      "status": "unsafe",
+      "reason": "Consumes many random integers without setting a seed, so output depends on and advances global PGF random state."
+    },
+    {
+      "file": "pgfmanual-en-math-commands.tex",
+      "line": 86,
+      "source_sha256": "cf20f604183260fa38072dfab0b0f74e0f2ee4b151ba96aaf8c2ae8689785a4c",
+      "source_span_sha256": "1ec4651f8584a6c09dd11aa1feccf1027df9ff24794bc4c071af1a8552e6f4b0",
+      "status": "unsafe",
+      "reason": "Declares list color and consumes random integers/items repeatedly; this changes the random stream and creates named random-list state."
+    },
+    {
+      "file": "pgfmanual-en-math-parsing.tex",
+      "line": 1184,
+      "source_sha256": "9a916f8a8e8193bb7d8b676ada59fb67a87ee03b407887828af3daac03e88b83",
+      "source_span_sha256": "4e65c9a87e985c983f782376ac92276a29a2760b2265679a60776466574fbaa8",
+      "status": "unsafe",
+      "reason": "The example explicitly seeds RNG in the pre option, then evaluates `rnd` ten times in the body. Seed setup runs, but reusing the rendered body skips the ten draws and shifts subsequent RNG use."
+    },
+    {
+      "file": "pgfmanual-en-math-parsing.tex",
+      "line": 1195,
+      "source_sha256": "9a916f8a8e8193bb7d8b676ada59fb67a87ee03b407887828af3daac03e88b83",
+      "source_span_sha256": "8922f30dbb7c1f28976a83cd4ef5b44f1177829345a5c2c7fbb95d4b955c7667",
+      "status": "unsafe",
+      "reason": "Same as the adjacent `rnd` example: the pre option resets RNG and body consumes ten `rand` draws, skipped on result reuse."
+    },
+    {
+      "file": "pgfmanual-en-math-parsing.tex",
+      "line": 1210,
+      "source_sha256": "9a916f8a8e8193bb7d8b676ada59fb67a87ee03b407887828af3daac03e88b83",
+      "source_span_sha256": "2e6f45c1d848687f9e1d6c43f9ef2ff8c24d64a832c77d13586ad46234d63b69",
+      "status": "unsafe",
+      "reason": "Consumes PGF random state repeatedly; output changes with stream position."
+    },
+    {
+      "file": "pgfmanual-en-math-parsing.tex",
+      "line": 1214,
+      "source_sha256": "9a916f8a8e8193bb7d8b676ada59fb67a87ee03b407887828af3daac03e88b83",
+      "source_span_sha256": "74515945529b4ed4967d9f5cd8dcbf2c8ff8ae7a57fa2c751e2ced9f711603df",
+      "status": "unsafe",
+      "reason": "Consumes PGF random state repeatedly; output changes with stream position."
+    },
+    {
+      "file": "pgfmanual-en-math-parsing.tex",
+      "line": 1218,
+      "source_sha256": "9a916f8a8e8193bb7d8b676ada59fb67a87ee03b407887828af3daac03e88b83",
+      "source_span_sha256": "934196bddd7ec2b1adcaf322e7d881fd182901a1cf1cfe4c5a9a80d6eb680ba4",
+      "status": "unsafe",
+      "reason": "Consumes PGF random state repeatedly; output changes with stream position."
+    },
+    {
+      "file": "pgfmanual-en-module-parser.tex",
+      "line": 55,
+      "source_sha256": "9d6f5fc74a779a82e56230bcff32bf0f0d941dee7e6272fb573acd7051dfb865",
+      "source_span_sha256": "389f3413fd1c82d5dc3f75782ac7fadf2c79f818c03403a2bc5a5888b5f9863a",
+      "status": "unsafe",
+      "reason": "Allocates a count and registers parser rules under `myparser` in the body. These are shared execution-state changes, and later use can depend on them."
+    },
+    {
+      "file": "pgfmanual-en-module-parser.tex",
+      "line": 281,
+      "source_sha256": "9d6f5fc74a779a82e56230bcff32bf0f0d941dee7e6272fb573acd7051dfb865",
+      "source_span_sha256": "d9dcdd8f3c913e09d32db6b45889c47c90272b254c50e3cff69067f5b9433a88",
+      "status": "unsafe",
+      "reason": "Pre-option allocates the count (pre remains executed under proposed scheme); body registers parser definitions for `different letters`. Skipping body omits parser setup."
+    },
+    {
+      "file": "pgfmanual-en-pgfkeys.tex",
+      "line": 1405,
+      "source_sha256": "1022890480eea82ef40198f557071e0fbae3d69fea30aa61e22108bae7016ea1",
+      "source_span_sha256": "7385f4e9eee89d2e65f2d19ad95181e80e195e1aaeba230b1ce929937b64905b",
+      "status": "unsafe",
+      "reason": "Allocates conditional `\\iftheworldisflat`, registers it as a PGF key, and changes its value. This setup has TeX-state effects that may persist beyond the rendered output."
+    },
+    {
+      "file": "pgfmanual-en-pgfsys-animations.tex",
+      "line": 1285,
+      "source_sha256": "dd285729a3e28d78df9600b2ca7e6ef888ecbc8e92ce4aba2829e738dee890b3",
+      "source_span_sha256": "a0deffbde7ef5766325cbf6e9a831fb0841b4d2b3633995d07995155f5323bfa",
+      "status": "unsafe",
+      "reason": "Contains an explicit global let of animation ID after allocating and using it. Skipping this body can alter global ID state/values consumed by later animation examples."
+    },
+    {
+      "file": "pgfmanual-en-tikz-decorations.tex",
+      "line": 52,
+      "source_sha256": "339549ef92b2c8bbeb5f23f108e8b1c36ba0bfd6a68e68ef964e0fe3819e1208",
+      "source_span_sha256": "9132adcd838324ed12c2652a00ac491a4d72d8fa2cd7c735d61a712c513e17ff",
+      "status": "unsafe",
+      "reason": "The pre hook seeds PGF randomness; random-steps decoration consumes the stream."
+    },
+    {
+      "file": "pgfmanual-en-tikz-graphs.tex",
+      "line": 659,
+      "source_sha256": "c850370440c7bd478c235919c676004e02be63dc43796e9743948004f7af984a",
+      "source_span_sha256": "da73812e8899739308c5cedd901ee97c5656d1408006757c3c9603e17b8b3a93",
+      "status": "unsafe",
+      "reason": "Uses `\\xdef` repeatedly to build `\\mytext`; the expanded definition is global and persists beyond the example. Skipping execution leaves different macro state."
+    },
+    {
+      "file": "pgfmanual-en-tikz-graphs.tex",
+      "line": 2241,
+      "source_sha256": "c850370440c7bd478c235919c676004e02be63dc43796e9743948004f7af984a",
+      "source_span_sha256": "6a4423ed13afcf43dc21832215437360d968c7eeebbcd68e87b8c07a9a99678f",
+      "status": "unsafe",
+      "reason": "Allocates four count registers (`\\leftshorecount`, `\\rightshorecount`, `\\mycount`, `\\myothercount`) as part of an example setup. Repeated execution may collide; skipping it omits allocated/setup state."
+    },
+    {
+      "file": "pgfmanual-en-tikz-graphs.tex",
+      "line": 2490,
+      "source_sha256": "c850370440c7bd478c235919c676004e02be63dc43796e9743948004f7af984a",
+      "source_span_sha256": "42fee25ff7ad9d8dcab19548715f70cf6c2e215643bdbbc4f67dc3bcfb4f5f21",
+      "status": "unsafe",
+      "reason": "Allocates `\\mycount`, then defines graph declarations/macros which use it. This is persistent setup; rerunning or skipping can alter later state."
+    },
+    {
+      "file": "pgfmanual-en-tikz-graphs.tex",
+      "line": 3256,
+      "source_sha256": "c850370440c7bd478c235919c676004e02be63dc43796e9743948004f7af984a",
+      "source_span_sha256": "31c703f029ed136bba38881b4e3f00b30efa23f7ae40466d46d11edfc6becad2",
+      "status": "unsafe",
+      "reason": "Allocates `\\mycount` and globally installs graph styling logic through `\\tikzset`; shared-state execution can affect later examples."
+    },
+    {
+      "file": "pgfmanual-en-tikz-paths.tex",
+      "line": 1273,
+      "source_sha256": "a8d698446313de3651f3903b6134276358d6ccb85d62a5df7a19477b8f0f1727",
+      "source_span_sha256": "0c168edd9581cdf1297c998fb7b785d7dd246c57f8a1a3a0990cd05658d00ca8",
+      "status": "unsafe",
+      "reason": "Explicitly seeds PGF randomness and uses rnd twice for coordinates; changes generator state."
+    },
+    {
+      "file": "pgfmanual-en-tikz-paths.tex",
+      "line": 1372,
+      "source_sha256": "a8d698446313de3651f3903b6134276358d6ccb85d62a5df7a19477b8f0f1727",
+      "source_span_sha256": "8c3f248daf3a280f8c8798022c5174cb3cd431230919c3c1447422d2c8044a2b",
+      "status": "unsafe",
+      "reason": "Allocates dimension `\\mydim` in example body and changes it during path construction. Allocation can conflict on repeat execution; reuse skips allocation."
+    },
+    {
+      "file": "pgfmanual-en-tikz-paths.tex",
+      "line": 1390,
+      "source_sha256": "a8d698446313de3651f3903b6134276358d6ccb85d62a5df7a19477b8f0f1727",
+      "source_span_sha256": "67e4064495b4fbe527b36c6213605d577fe8b4e4fe76f3d375ce621c825146c2",
+      "status": "unsafe",
+      "reason": "Allocates dimension `\\mydim` in example body and changes it during path construction."
+    },
+    {
+      "file": "pgfmanual-en-tikz-paths.tex",
+      "line": 1418,
+      "source_sha256": "a8d698446313de3651f3903b6134276358d6ccb85d62a5df7a19477b8f0f1727",
+      "source_span_sha256": "7b08a6cab56949a9bf06db3e299d7f5b4ca8d04d0d166549a4a97045ade447e8",
+      "status": "unsafe",
+      "reason": "Saves two soft paths into `\\pathA` and `\\pathB` and registers named paths A/B before using them for intersections. Skipping body execution omits these path macros/registrations if TeX state is shared."
+    },
+    {
+      "file": "pgfmanual-en-tikz-pics.tex",
+      "line": 49,
+      "source_sha256": "b84223ddcf4fffede268d4de89de58cfb1b18103298d00576869ac8bf5470148",
+      "source_span_sha256": "f3da854bcca0933ad550b8a29a999abea86dfcb3fabfa81dffccd75f358af399",
+      "status": "unsafe",
+      "reason": "Pre hook installs named pic seagull via \\tikzset; this definition is needed for body invocation and may persist depending on codeexample grouping. Conservatively require replay."
+    },
+    {
+      "file": "pgfmanual-en-tikz-pics.tex",
+      "line": 315,
+      "source_sha256": "b84223ddcf4fffede268d4de89de58cfb1b18103298d00576869ac8bf5470148",
+      "source_span_sha256": "8347bd7c4deb2fef8287efece9d2c42492a6b99dded9aa70d55b7fb38cb191aa",
+      "status": "unsafe",
+      "reason": "Pre hook defines named pic my pic; body uses the declared pic."
+    },
+    {
+      "file": "pgfmanual-en-tikz-plots.tex",
+      "line": 420,
+      "source_sha256": "609ccd1d9ec99259b0ff83e01b6bc3ac43c631e73907971a62d95ea19766f220",
+      "source_span_sha256": "b3be9028c93c0b3cdf75186f84317a02cc9dd336c0ece49bccf74b9956479dae",
+      "status": "unsafe",
+      "reason": "Sets global TikZ key `every plot` to use `prefix=plots/`; this changes how later plots resolve files. Reuse that skips execution can change subsequent plot behavior."
+    },
+    {
+      "file": "pgfmanual-en-tikz-shapes.tex",
+      "line": 2922,
+      "source_sha256": "5c87134878c3806f19974f503a5d4a8d57c5bb8e2e463a712906c65e14f90a27",
+      "source_span_sha256": "20184b0eb518796ae31d872ae58fb216cf412fd25365e882f974d77fd7244617",
+      "status": "unsafe",
+      "reason": "Creates remembered node n1 used by later codeexamples; positions are aux/pass dependent and require picture side effects across passes."
+    },
+    {
+      "file": "pgfmanual-en-tikz-shapes.tex",
+      "line": 2928,
+      "source_sha256": "5c87134878c3806f19974f503a5d4a8d57c5bb8e2e463a712906c65e14f90a27",
+      "source_span_sha256": "7592e3466d0c8420748fb5ccdca758d26663c97da414867a873af4b7eaae3631",
+      "status": "unsafe",
+      "reason": "Creates remembered node n2 used by later codeexamples; picture position comes from aux data and needs multi-pass behavior."
+    },
+    {
+      "file": "pgfmanual-en-tikz-shapes.tex",
+      "line": 2936,
+      "source_sha256": "5c87134878c3806f19974f503a5d4a8d57c5bb8e2e463a712906c65e14f90a27",
+      "source_span_sha256": "f8313842e22bf3b9eb381eb8654eb4799702e3f7017660a3918dea533289e93b",
+      "status": "unsafe",
+      "reason": "References remembered nodes n1/n2 created in prior examples; relies on cross-picture recording and multi-pass position data."
+    },
+    {
+      "file": "pgfmanual-en-tikz-shapes.tex",
+      "line": 2948,
+      "source_sha256": "5c87134878c3806f19974f503a5d4a8d57c5bb8e2e463a712906c65e14f90a27",
+      "source_span_sha256": "3c30e5dfe74697af62c25108e7dc3cd867a3e45db057cb3a7dbda7141878cf7a",
+      "status": "unsafe",
+      "reason": "References n1/n2 created by prior examples and records another remembered picture; pass-dependent aux positions."
+    },
+    {
+      "file": "pgfmanual-en-tikz-shapes.tex",
+      "line": 2973,
+      "source_sha256": "5c87134878c3806f19974f503a5d4a8d57c5bb8e2e463a712906c65e14f90a27",
+      "source_span_sha256": "97aefd1a8c414192fc6ca50d6786ff7c2e9d344739f8c19d93e2d87d3a32ed2d",
+      "status": "unsafe",
+      "reason": "Uses `remember picture,overlay` and `current page.south west`; node positioning depends on page/shipout auxiliary state and the picture executes page overlay output."
+    },
+    {
+      "file": "pgfmanual-en-tikz-shapes.tex",
+      "line": 2986,
+      "source_sha256": "5c87134878c3806f19974f503a5d4a8d57c5bb8e2e463a712906c65e14f90a27",
+      "source_span_sha256": "c1ee051889d1bf7e68a5bac44f7e1fd7ddaf4c65bd71f8924fac0282bb095bd4",
+      "status": "unsafe",
+      "reason": "Uses `remember picture,overlay` and `current page.center`; result can depend on current page placement and remembered-position aux state."
+    },
+    {
+      "file": "pgfmanual-en-tikz-shapes.tex",
+      "line": 2996,
+      "source_sha256": "5c87134878c3806f19974f503a5d4a8d57c5bb8e2e463a712906c65e14f90a27",
+      "source_span_sha256": "b462f815e59309cd7d6399f48fee06ca328d38c025376d3ce785168c308b5bd9",
+      "status": "unsafe",
+      "reason": "Uses `remember picture,overlay` and `current page.center`; page-specific placement and remembered-position state make a standalone image cache incomplete."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-Euclid.tex",
+      "line": 176,
+      "source_sha256": "e9922cf7243350c30fedb1cd765d806271e8bbc8a1d1e3e9275e0209fd543ded",
+      "source_span_sha256": "b00f3de7834a3a0e32e8edcfb0433e8665c91cde3f0eb61b87bbf41735359cab",
+      "status": "unsafe",
+      "reason": "Coordinates use multiple `rand` calls without a fixed seed, so output varies with the current PGF random stream and consumes it. Cache reuse skips state advancement."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-Euclid.tex",
+      "line": 196,
+      "source_sha256": "e9922cf7243350c30fedb1cd765d806271e8bbc8a1d1e3e9275e0209fd543ded",
+      "source_span_sha256": "a17f862c288d29c3a4604b9db1120d92648b786c723679dc596de6e5de5952c3",
+      "status": "unsafe",
+      "reason": "Coordinate calculations use `rand` several times without an explicit seed; body execution advances PGF random state."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-Euclid.tex",
+      "line": 393,
+      "source_sha256": "e9922cf7243350c30fedb1cd765d806271e8bbc8a1d1e3e9275e0209fd543ded",
+      "source_span_sha256": "b326348f87a80d1e626ea21e307d21a8c7deb42355edf4a0ce6d0f5cc7586122",
+      "status": "unsafe",
+      "reason": "Seeds PGF randomness and uses randomized construction points in the body; cache skip can affect later random consumers."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-Euclid.tex",
+      "line": 654,
+      "source_sha256": "e9922cf7243350c30fedb1cd765d806271e8bbc8a1d1e3e9275e0209fd543ded",
+      "source_span_sha256": "213e866d302cca1a643090a20603a4bd3cce74b024f9fe92100c5389445c90b9",
+      "status": "unsafe",
+      "reason": "Seeds PGF randomness and uses random points in the construction; changes later generator state."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 140,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "043f2e4dda7f773eb45fef786516f4608b6f984f880ec8709a8df625e73e7f35",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 158,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "4ff90c11db29c415081bb81a0d64d7207fdc0025c8adda360a25ba7103a63da3",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 176,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "6369665ae444b963fed86170045fe4617bbaacdf88aeba50f1c9e2b4abd7d1d0",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 222,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "ec45360f525327117840960753c36537c90ab8f2265db5421844bf9c641e5964",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 271,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "1b0681efa31689cb987ab4accab3c10d6f90b6d5d4549233d63d6a22ef60901b",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 286,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "52aee1bd3ed234692c7f46e91ded473d252ede42ade34c289558b542ba5067c5",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 307,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "c19771e161a8aff341c30e5e78a62e059fb8bf0bf7b12e3c1165a143db91a201",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 325,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "5dee948bb94da7d4331f2979ce1b095ff156d7f22c459e2e262259a1b47619e3",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 347,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "eebabdf72a7844ba8eab75f3720819603513f7aedf64974731c0cfbc08c0d17d",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 374,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "951775bd141cfb1ffda7dd490a1ae44c79b28c72803575b8eb39132f86ba4bf5",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 405,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "e55c9bd66897a0ceb879b84012a340fa3151af667970b3a99e90e18e3c635f11",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 414,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "27a02b60bb87a2a142ca2e51fa4b53acb4604e44e7b36bb139141de2a693f9bf",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 436,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "58e98e0add1fa77169be0712aa19bdb4331f7def7dcfaba873f07f04a13ae004",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 457,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "71f76880e7a338fdc2309f3a99c59ba8e4ad8587b042ee4583411f4d4b35a779",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 489,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "79556df0b1849cdf26a0b8fa386db884a7da658eaa21f6b8d29af32569700764",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 513,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "ba551aed6e8ac398096afef090217c8c8060dfbf3240d265412c3db79995aa14",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 527,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "200d787956a032c884d7749460e54ae3650499a8557b372288db022b5ed42b50",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 542,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "316049c8abc3ea694d4cefd637745a23f33c2ab2980b510bc2b2e7a874615a22",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 567,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "fecca50d9cbf323a62a3f91c5b31142624d779db12623a4e6e649266d355a474",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 581,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "53dafbe7b03a03b2a690503fe2b1ad4d73642809bdb7e4be76ffc512881b7da7",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 601,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "ef379c9d9defa51e5b94f303acb723e04af3329dee8756b2b11296b33b8ebc6e",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 630,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "b952681c672fa7fd478da1aa53cef1f6b8fa635066477de0913e1c6436c5f2d8",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 646,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "db959932200cec4951dab2a52d3d0eeac3c5dea39e0ea4d4b9b5eb0108e458d6",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 668,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "ebcc00388be0fbf8f6c12d0b75848ea3927a1adea8079e0fdc0740d96dca6580",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 687,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "0b9d272e1076aa96e2dfa5cba9d5d916298ff7971a8d6a2a78a15ceeb336361a",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 719,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "8716c5249e2f60bf0d61207cc8c3a095817bcc890088a9598425ab2135fb0877",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 741,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "2e31ae49a7f6f658d7e23a5f88a9b76697d54cf5b7882f5981d197f00333aa61",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 777,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "ea487281c984490c069670e742c799cd4344fbc29ff695cda412c3ee66ea77ea",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 788,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "2e9c6453208d741c784ce785cb6b315ebdae8ad5113b7ca10ae425bc2f73ffea",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 801,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "e41649a102c6b673f6f48d7dd9d8c3e49461c741e748e291706785124a829329",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 818,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "cefa1ecf042094dbd1bb72e81d1cc5399a91eee3f82a3ac5b2e4dfab8117c2e9",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 858,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "4cf60f4513ceff03552c1f1d78b39a6a8d08979d8e4ef9cf1fb1767110349a71",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 899,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "158c740d673f19c3e99f91f3f8c30f79f273e30817c7244ac20eecb3f3f121a5",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 911,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "439b7cbb9bd28fcb220792daf3ce247dd2ea2827d1591cc7dea57045f8c83388",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 947,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "b9f6bb80b2ab6b06e5eeceafd007c05e2c9d4bab59032552d74ec88d0acdef57",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 994,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "4efeeb3df166f654122090b3a3301cfa578ab8d22f7d105d2bf89429f740b991",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial-nodes.tex",
+      "line": 1013,
+      "source_sha256": "c892833be240cf35d6c36b324f72ecb66ea6e31ecb59b092fc533b4b41018230",
+      "source_span_sha256": "f0bc9053096f09940cc1e1a6e725283adfbb96a76b0c6d19dea5d2dd3a324573",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 135,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "07e1f0a67d014af29cbac96e35d8d2855958c2e1824f0c6c223bd401698018f0",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 150,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "8aae3440a3ae6e57a0e56bd43f08baeccf0ef43341c7920d214a8e79d8421555",
+      "status": "uncertain",
+      "reason": "Inline drawing follows prose; keep it live to preserve lwarp paragraph whitespace."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 190,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "ae3a398a90901eee72b1c4010e298dc7f6c7ac0425cdc750089e191d247a9fc9",
+      "status": "unsafe",
+      "reason": "This codeexample is a plain TeX document fragment containing `\\input{tikz.tex}` and `\\bye`, outside an ordinary picture; execution has document-level input/termination effects and should not be treated as a pure render."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 220,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "5b414036fad566e33dd01ce24a3cb4b0bd10410c7cb0754492cfadce230d8a5b",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 248,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "902019c426a00667747d721eb70c2c2d446472f032f366d42d0e10401a121d57",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 278,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "3ff5a543bbe23cffd1aa090e0993d1c82f75c36b027f83b241e6bae7b9abf291",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 295,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "6cbbb8033e9d20abbd5aa2808aeca5f37605ca661f62e82c2c7d107a25c82ee1",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 315,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "a7dd21667b6d145314826f99373086f555e41255bb61a8d0aa2ed171edcf5b59",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 322,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "f8b3c4e3d2f4d1e02e159904ed14dfd06a2859a009f9d2af1b32f5381d895e87",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 336,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "c0d59db7a9b45a03d354dd30f3f0a95ed48b625eaa936e0ba990a6303c828c74",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 362,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "62d00db04f1707ff3ac7f6c527ea6aa7d5f6acb3900aecae3d37c89798e1fe7b",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 394,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "78d1665ae3947a4795866a01263b5dcd1d08f74b0ff7817bc764597457f0f9ac",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 411,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "0d7af191abd61b1581e8e7bb5fb264ce0484652ba423b18ed303f0e373d343fe",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 430,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "623d9fc330da249dacccf7e789f9f836333f619a64066764e82ca90fe53c5b54",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 445,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "0f67bd64ade5838e7c2571e5778aa58be208741ca3a95591e503b68736253dbd",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 453,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "aabbed992a645b2fa69996cdaafe3e5f078ccada8ff0e87096b02b6372b5883a",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 464,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "e6247ff339c7cd622c544c2d99d594fdbad3ae5255eb9ee3ab2d51cf83f27c9f",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 522,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "276429f1bf0bc86eecbb3e6b6dced784067f4cfc33f51385f83e31be7ae32d12",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 538,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "dec5c7f18173afc70b73633404bdf233ed6f556ad555496aed87312b11be67f4",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 551,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "f2bddb0f0844df2ba953fc6b3cb2dfb767272ca422a743c36e9184cde402b184",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 566,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "b90f7adc7469e28c635a3d568afb8551b3bd490ac52193b4342885a9ac8b186a",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 584,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "2fb523a88336751f529792f0ed71eadc1998c750f73a2a4683a88fc9c5ac23a2",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 604,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "afba5534fae97513971e4ba204a3929cd1bbe396da3d5f01cbe710452f83086e",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 610,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "a38aaa78e0352a35d35e85d1725a4ab59b8db1045d75cf96e94518d9c5cb65d4",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 618,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "dde1796468e001afa39aa4bf00bee129424949a816df0ecc41493c3fdbfe09d5",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 622,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "d617091cbbefc71bf9fa0b9cffd3b214e10444a8cdf666fbcc34860654000f5a",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 634,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "d39077e5e9f302d26cf0fa46b831994ec77ea320c77436cba5d283d48c1e2c1f",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 656,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "122ea69a9fdde6678762dcd3b8e40307419dacf30717b423e19208d3879b956e",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 665,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "f552787a3a64947e16aedde9470d9cd3e22c2bd1102e790befba82031485bea1",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 678,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "461fb7afab633aa4c58db6aeaf4898ac8896de900480326c3c0bb2c674604b7b",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 698,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "d420b6d85472a4736e28de824192c21de3d0aefd8eb013b91b2e286e7c037214",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 705,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "9b238b8c963949fbcb6ca453cd4de047636efe1222119cea7e3f9bdbbf9d055e",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 716,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "e5f15e003fcc7a772ab334074df31a5b5842101915de5e6c5aa1acaa6cc6abfc",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 757,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "e5ae6461ff7cf1fdb62bfd3fe1b927cc4181e8925fe7e29d3de756c8d7e37b0e",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 781,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "bd686dc5cf7361a475e39dc27fd9062693c9a6d0d49fa879aeabe594f1b4df74",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 805,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "3605e816878c39cafcecb7049aee76767669ae792775b2a6e26997f5f6b37ab4",
+      "status": "uncertain",
+      "reason": "The illustration body contains helper definitions, loops, or named path/intersection machinery whose state and replay behavior are not proven pure by source inspection."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 815,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "003d577ee836c4b6a42849818963baad3d954bb43ac60f947f1d375c74579672",
+      "status": "uncertain",
+      "reason": "The illustration body contains helper definitions, loops, or named path/intersection machinery whose state and replay behavior are not proven pure by source inspection."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 827,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "e69be60be91366a8df15d770fd1080e16e551526bbb61a533f9d4a125b1c57e5",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 856,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "f90ab77d692940361c11b7d3342a07f31f57ad8f77b1f7f48877687239714baa",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 877,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "041366602067f0d61b9ffd4d1ecd8fb64a8d20d5acb96bc0cdabbbe86ab052f0",
+      "status": "uncertain",
+      "reason": "The illustration body contains helper definitions, loops, or named path/intersection machinery whose state and replay behavior are not proven pure by source inspection."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 906,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "2a5951bd226db08f762ecc29dea1aafe7762313d883cb6a3c9a7b6251890b55e",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 927,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "62fef0c8169b915dcd58a22b834883c6bfba0161be6d242163b03e4817566fd3",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 962,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "eb13820f5794f84ba929f50e552d87840d59dc70a6465e74135cda6b6a2f0c50",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1008,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "c43f0d45225f968dbda0ec1b504643426e53bd056c98a987ed3317a21e44a015",
+      "status": "uncertain",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1018,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "0419a7a5a9b497967d5ba729a5112581ba30405c987e70f0b587b83dfbd84106",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1053,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "3444de39d5f3649419cc642c907cb8f5dd12aa10450fd397bb1246e0832e6ffc",
+      "status": "uncertain",
+      "reason": "The illustration body contains helper definitions, loops, or named path/intersection machinery whose state and replay behavior are not proven pure by source inspection."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1065,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "0f7a49897f07df0eeccc6d8f803fc64d3df32ed8b7310c3b7b8623cd375c2177",
+      "status": "uncertain",
+      "reason": "The illustration body contains helper definitions, loops, or named path/intersection machinery whose state and replay behavior are not proven pure by source inspection."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1086,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "7434eca2bedc069d8d060140090ff816bf4b0f481a4a617e91b7d63b73e76322",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1097,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "7a5eb9bb4d64979d307a4748bd9197fcc416f7837df2b96b55180d98a2d026f3",
+      "status": "uncertain",
+      "reason": "The illustration body contains helper definitions, loops, or named path/intersection machinery whose state and replay behavior are not proven pure by source inspection."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1106,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "b035f46db7f5dcb19a91dabf78b9277b715eede8fa1d808a85dba9489b613e24",
+      "status": "uncertain",
+      "reason": "The illustration body contains helper definitions, loops, or named path/intersection machinery whose state and replay behavior are not proven pure by source inspection."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1118,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "c1129cd1c7bb4a44a4c37ebdb4ac8f6f2a98d0376578d9a94daf89b2b3d2fb58",
+      "status": "uncertain",
+      "reason": "The illustration body contains helper definitions, loops, or named path/intersection machinery whose state and replay behavior are not proven pure by source inspection."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1151,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "b0b0b0e73c01456d92b46e13dc4ea026cfe8e31adecf4266dc107ce20ba58816",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1170,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "b8dbd2f26ab396a0601220bf1d3b23eb3645ba2ed5444ba0c83aaac20af508a5",
+      "status": "uncertain",
+      "reason": "The illustration body contains helper definitions, loops, or named path/intersection machinery whose state and replay behavior are not proven pure by source inspection."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1215,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "58a0b05f517b0864c08a3e5d2021bb3cd0398d76eb977dbfaaa2b03cea960ed1",
+      "status": "uncertain",
+      "reason": "The illustration body contains helper definitions, loops, or named path/intersection machinery whose state and replay behavior are not proven pure by source inspection."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1247,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "24fde0d4604d01a8164122d3dbccb3424a798f4a2ff953c14b6764707265efd7",
+      "status": "uncertain",
+      "reason": "The illustration body contains helper definitions, loops, or named path/intersection machinery whose state and replay behavior are not proven pure by source inspection."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1280,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "82252a2b1ad2b549fe26289869ae66bf9841030a0c24618f9fefe3f0565feb8d",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1294,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "9ceadca06aed6bdc6a862f9ee4ea3bb53da7b530fbfb4c8a79ea3ba89e98c906",
+      "status": "listing_only",
+      "reason": "This is a code-only/setup listing rather than an executed illustration body; it has no picture body eligible for memoized skipping."
+    },
+    {
+      "file": "pgfmanual-en-tutorial.tex",
+      "line": 1384,
+      "source_sha256": "e7d5af62316486e8d960f658b7b2e555960dd7a98c3198743e45ae184c28ffbf",
+      "source_span_sha256": "b73e74550e13f6c79f37a3547ef18b185d31d4e8ca8c99ffdfb15cb695cfd95d",
+      "status": "eligible",
+      "reason": "The illustration body is a self-contained drawing using built-in TikZ/PGF path, shape, node, shading, clipping, or coordinate operations. Preamble and pre/post hooks remain outside the skipped body under the stated model."
+    }
+  ],
+  "upstream_commit": "1d6234878836bc50b5e5a15ae266d74911466e7a",
+  "enabled": false,
+  "cache_policy": "Keep simple tutorial drawings live: controlled sample did not show a consistent CPU saving from page caching. Eligible entries retain the source review for future use."
+}

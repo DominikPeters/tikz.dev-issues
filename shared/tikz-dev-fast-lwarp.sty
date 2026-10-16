@@ -1,0 +1,125 @@
+% Local performance fixes for lwarp's HTML generation.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tikz-dev-fast-lwarp}[2026/10/16 Reuse lwarp argument parsers]
+\RequirePackage{lwarp}
+\begin{warpHTML}
+% This scratch counter is assigned from the previous pass immediately before
+% every image-manifest entry. Saving it in include checkpoints adds a needless
+% reference pass: its previous-pass value changes after real labels converge.
+% It is never read before being reassigned, including after includeonly skips.
+\patchcmd{\cl@@ckpt}{\@elt{LWR@LIpage}}{}{}{
+ \PackageWarningNoLine{tikz-dev-fast-lwarp}{Image scratch counter checkpoint unchanged}
+}
+
+% lwarp recompiles these fixed xparse argument parsers for every HTML span.
+% Reuse private commands; assignments stay local to each original span group.
+\let\tikzdev@candidate\LWR@nestspan
+\newif\iftikzdev@matched
+\tikzdev@matchedtrue
+\NewDocumentCommand\tikzdev@span@minipage{O{t} o O{t} m}{%
+ \LWR@spanwarnformat{minipage or \protect\parbox}}
+\NewDocumentCommand\tikzdev@span@BlockClass{o D(){} m}{%
+ \LWR@spanwarnformat{multi-paragraph object}}
+\NewDocumentCommand\tikzdev@span@BlockClassWP{m m D(){} m}{%
+ \LWR@spanwarnformat{multi-paragraph object}}
+\patchcmd{\tikzdev@candidate}{%
+ \RenewDocumentEnvironment{minipage}{O{t} o O{t} m}%
+ {\LWR@spanwarnformat{minipage or \protect\parbox}}%
+ {}%
+}{%
+ \let\minipage\tikzdev@span@minipage
+ \let\endminipage\@empty
+}{}{\tikzdev@matchedfalse}
+\patchcmd{\tikzdev@candidate}{%
+ \RenewDocumentEnvironment{BlockClass}{o D(){} m}%
+ {\LWR@spanwarnformat{multi-paragraph object}}%
+ {}%
+}{%
+ \let\BlockClass\tikzdev@span@BlockClass
+ \let\endBlockClass\@empty
+}{}{\tikzdev@matchedfalse}
+\patchcmd{\tikzdev@candidate}{%
+ \RenewDocumentEnvironment{LWR@BlockClassWP}{m m D(){} m}%
+ {\LWR@spanwarnformat{multi-paragraph object}}%
+ {}%
+}{%
+ \let\LWR@BlockClassWP\tikzdev@span@BlockClassWP
+ \let\endLWR@BlockClassWP\@empty
+}{}{\tikzdev@matchedfalse}
+
+\iftikzdev@matched
+ \let\LWR@nestspan\tikzdev@candidate
+ \PackageInfo{tikz-dev-fast-lwarp}{Reusing span argument parsers}
+\else
+ \PackageWarningNoLine{tikz-dev-fast-lwarp}{Unrecognized span setup; using stock lwarp}
+\fi
+
+% Filename sanitization is also performed repeatedly for links and headings.
+\let\tikzdev@candidate\LWR@nullfonts
+\tikzdev@matchedtrue
+\NewDocumentCommand\tikzdev@null@hspace{s m}{}
+\NewDocumentCommand\tikzdev@null@span{o D(){} m +m}{{#4}}
+\DeclareExpandableDocumentCommand\tikzdev@null@InlineClass{D{(}{)}{} o m +m}{{#4}}
+\NewDocumentCommand\tikzdev@null@dollar{s m m m}{}
+\patchcmd{\tikzdev@candidate}{\RenewDocumentCommand{\hspace}{s m}{}}%
+ {\let\hspace\tikzdev@null@hspace}{}{\tikzdev@matchedfalse}
+
+% Keep the original signature/body as two ignored arguments. Matching only
+% the command name avoids etoolbox's special handling of nested # tokens.
+\newcommand\tikzdev@null@span@install[2]{\let\LWR@htmlspanclass\tikzdev@null@span}
+\newcommand\tikzdev@null@InlineClass@install[2]{\let\InlineClass\tikzdev@null@InlineClass}
+\patchcmd{\tikzdev@candidate}{\RenewDocumentCommand{\LWR@htmlspanclass}}%
+ {\tikzdev@null@span@install}{}{\tikzdev@matchedfalse}
+\patchcmd{\tikzdev@candidate}{\DeclareExpandableDocumentCommand{\InlineClass}}%
+ {\tikzdev@null@InlineClass@install}{}{\tikzdev@matchedfalse}
+\patchcmd{\tikzdev@candidate}{\RenewDocumentCommand{\LWR@subsingledollar}{s m m m}{}}%
+ {\let\LWR@subsingledollar\tikzdev@null@dollar}{}{\tikzdev@matchedfalse}
+
+\iftikzdev@matched
+ \let\LWR@nullfonts\tikzdev@candidate
+ \PackageInfo{tikz-dev-fast-lwarp}{Reusing filename argument parsers}
+\else
+ \PackageWarningNoLine{tikz-dev-fast-lwarp}{Unrecognized filename setup; using stock lwarp}
+\fi
+% Auxiliary labels already contain filenames. Literal ASCII slugs need no
+% font-command cleanup. Classify each raw filename once; never cache label
+% resolution, so missing/changing references retain lwarp's behavior.
+\let\tikzdev@candidate\LWR@htmlrefsectionfilename
+\tikzdev@matchedtrue
+\patchcmd{\tikzdev@candidate}{\LWR@nullfonts}{\LWR@nullfonts}{}{\tikzdev@matchedfalse}
+\patchcmd{\tikzdev@candidate}{\LWR@htmlsectionfilename}{\LWR@htmlsectionfilename}{}{\tikzdev@matchedfalse}
+\iftikzdev@matched
+\let\tikzdev@original@htmlrefsectionfilename\LWR@htmlrefsectionfilename
+\ExplSyntaxOn
+\regex_const:Nn \c__tikzdev_slug_regex { \A [A-Za-z] [A-Za-z0-9._/-]* \Z }
+\cs_new_protected:Npn \tikzdev@classifyfilename {
+ \exp_args:NNV \regex_match:NnTF \c__tikzdev_slug_regex \tikzdev@filename
+  { \expandafter\gdef\csname tikzdev@slug@\detokenize\expandafter{\tikzdev@filename}\endcsname{1} }
+  { \expandafter\gdef\csname tikzdev@slug@\detokenize\expandafter{\tikzdev@filename}\endcsname{0} }
+}
+\ExplSyntaxOff
+\def\tikzdev@getfilename#1#2#3#4#5{\def\tikzdev@filename{#3}}
+\renewcommand*\LWR@htmlrefsectionfilename[1]{%
+ \begingroup
+ \ifcsundef{r@#1@lwarp}{%
+  \tikzdev@original@htmlrefsectionfilename{#1}%
+ }{%
+  \ifdefempty{\HTMLFilename}{%
+   \expandafter\expandafter\expandafter\tikzdev@getfilename\csname r@#1@lwarp\endcsname
+   \ifcsname tikzdev@slug@\detokenize\expandafter{\tikzdev@filename}\endcsname
+   \else \tikzdev@classifyfilename \fi
+   \ifnum\csname tikzdev@slug@\detokenize\expandafter{\tikzdev@filename}\endcsname=1\relax
+    \LWR@htmlsectionfilename{\tikzdev@filename}%
+   \else
+    \tikzdev@original@htmlrefsectionfilename{#1}%
+   \fi
+  }{\tikzdev@original@htmlrefsectionfilename{#1}}%
+ }%
+ \endgroup
+}
+\PackageInfo{tikz-dev-fast-lwarp}{Using plain filename links}
+\else
+ \PackageWarningNoLine{tikz-dev-fast-lwarp}{Unrecognized link setup; using stock lwarp}
+\fi
+\end{warpHTML}
+\endinput

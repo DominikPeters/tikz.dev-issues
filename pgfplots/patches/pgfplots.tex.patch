@@ -18,11 +18,13 @@ diff --git a/doc/latex/pgfplots/pgfplots.tex b/doc/latex/pgfplots/pgfplots.tex
  \AtBeginDocument{\MakeShortVerb{\|}}
  %\setlength{\textwidth}{355pt}
  %\addtolength\marginparwidth{30pt}
-@@ -46,6 +47,18 @@
+@@ -46,6 +47,20 @@
    {\ttfamily(}\meta{#1}{\ttfamily)}}
  \raggedbottom
  
 +\usepackage[latexmk,mathjax,HomeHTMLFilename=home]{lwarp}
++\usepackage{tikz-dev-fast-lwarp}
++\usepackage{tikz-dev-illustration-cache}
 +\CSSFilename{style.css}
 +\MathJaxFilename{javascript.txt}
 +\begin{warpMathJax}
@@ -37,7 +39,7 @@ diff --git a/doc/latex/pgfplots/pgfplots.tex b/doc/latex/pgfplots/pgfplots.tex
  % -----------------------------------
  \input{pgfplots.preamble.tex}
  
-@@ -58,7 +71,7 @@
+@@ -58,7 +73,7 @@
  
  %\RequirePackage[german,english,francais]{babel}
  
@@ -46,7 +48,7 @@ diff --git a/doc/latex/pgfplots/pgfplots.tex b/doc/latex/pgfplots/pgfplots.tex
  
  \IfFileExists{tikzlibraryspy.code.tex}{%
  \usetikzlibrary{spy}
-@@ -95,11 +108,20 @@
+@@ -95,11 +110,20 @@
      tabsize=4,
  }
  
@@ -68,7 +70,7 @@ diff --git a/doc/latex/pgfplots/pgfplots.tex b/doc/latex/pgfplots/pgfplots.tex
  \title{%
      Manual for Package \PGFPlots{}\\
      {\small 2D/3D Plots in \LaTeX{}, Version \pgfplotsversion}\\
-@@ -170,18 +192,24 @@
+@@ -170,18 +194,24 @@
  }%
  
  

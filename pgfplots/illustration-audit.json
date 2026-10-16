@@ -1,0 +1,1499 @@
+{
+  "format": 1,
+  "package": "pgfplots",
+  "scope": "Drawing payloads only, between LaTeX passes of a freshly prepared build. Code outside pictures, pre/post hooks and listings always execute.",
+  "default": "uncached",
+  "review": "Luna agents inspected sources for side effects and dependencies. Unflagged examples are not proven pure. Only exact source matches with eligible status may use the cache; changed files lose eligibility until reviewed again.",
+  "examples": [
+    {
+      "file": "TeX-programming-notes.tex",
+      "line": 149,
+      "source_sha256": "06c070b763da31c76d8c64922ad908ffabf31942e671e889145258cb9bd20dec",
+      "source_span_sha256": "e44fa94aac9e8c36d68f459da61a9ea37a8f7a410312ff0013b8a57284a3afb3",
+      "status": "unsafe",
+      "reason": "This executed example allocates a new dimension register with \\newdimen. Register allocation is global TeX state and is not undone by the codeexample group; replaying on every pass allocates again, while skipping it can change allocation order for later code."
+    },
+    {
+      "file": "TeX-programming-notes.tex",
+      "line": 877,
+      "source_sha256": "06c070b763da31c76d8c64922ad908ffabf31942e671e889145258cb9bd20dec",
+      "source_span_sha256": "6858d35eb2bf0dc9823a847edb413580d34930b82b6c9228fd8acdbf544ab639",
+      "status": "unsafe",
+      "reason": "This executed example declares a new count register. TeX register allocation persists globally and advances allocation state across passes."
+    },
+    {
+      "file": "pgfplots.libs.fillbetween.tex",
+      "line": 1030,
+      "source_sha256": "9a3bcad7dd496d87d44c3229869c437c5d0b20e9f6e5c6a9cbc64c082a3834d8",
+      "source_span_sha256": "1812cd84a0c91af1ab1681d37f0f8c3301ab6631b7565a6447f74797bca22e07",
+      "status": "unsafe",
+      "reason": "Declares layer `pre main` inside the picture body, changes active layer ordering, then uses it. Cached picture reuse skips shared layer registration/setup."
+    },
+    {
+      "file": "pgfplots.libs.fillbetween.tex",
+      "line": 1067,
+      "source_sha256": "9a3bcad7dd496d87d44c3229869c437c5d0b20e9f6e5c6a9cbc64c082a3834d8",
+      "source_span_sha256": "e877c2452e096bd919683bcea1421841058942fa6b92e65e2e1a5054edb1fd45",
+      "status": "unsafe",
+      "reason": "Declares layer `pre main` inside picture body and sets layer ordering, a persistent setup effect."
+    },
+    {
+      "file": "pgfplots.libs.ternary.tex",
+      "line": 267,
+      "source_sha256": "8c4f5d5a92abd90f60aa124358b3c6be76582330ead659aacc4a7f7a350f4993",
+      "source_span_sha256": "d1a2fb38132ed3fab25dffa3a5124698045042bf50888d000fbef30b4654759b",
+      "status": "unsafe",
+      "reason": "Rendered tie-line chart reads an external data file; source-only reuse misses input-file changes."
+    },
+    {
+      "file": "pgfplots.libs.ternary.tex",
+      "line": 514,
+      "source_sha256": "8c4f5d5a92abd90f60aa124358b3c6be76582330ead659aacc4a7f7a350f4993",
+      "source_span_sha256": "0693d158ca691e514dfb61f3021097e403d64fa66c55e2ffd46466054f04ce7b",
+      "status": "unsafe",
+      "reason": "Rendered tie-line chart reads an external data file; source-only reuse misses input-file changes."
+    },
+    {
+      "file": "pgfplots.libs.ternary.tex",
+      "line": 587,
+      "source_sha256": "8c4f5d5a92abd90f60aa124358b3c6be76582330ead659aacc4a7f7a350f4993",
+      "source_span_sha256": "558f4d4841e6c9f1b7cfa56edb5efff80212e25026451aa3b2af1a689fcf259c",
+      "status": "unsafe",
+      "reason": "Rendered tie-line chart reads an external data file; source-only reuse misses input-file changes."
+    },
+    {
+      "file": "pgfplots.libs.ternary.tex",
+      "line": 626,
+      "source_sha256": "8c4f5d5a92abd90f60aa124358b3c6be76582330ead659aacc4a7f7a350f4993",
+      "source_span_sha256": "34fccbf3032d04db780417501730d6768bc59f7fd5871a119d85934fee307745",
+      "status": "unsafe",
+      "reason": "This plot both reads external data and sets point metadata to rand; output depends on the file and consumes random state."
+    },
+    {
+      "file": "pgfplots.reference.2dplots.tex",
+      "line": 1867,
+      "source_sha256": "3ba488b250acc4e03f5dd170775a5accd21f07e1f20da3743abe59d8843a218e",
+      "source_span_sha256": "a1bab527de0d795fafa4befda4845950528d1c085f69457665fd0ab6338377aa",
+      "status": "unsafe",
+      "reason": "Plot expression `{rand}` generates random samples; the sample set changes with random state and advances it."
+    },
+    {
+      "file": "pgfplots.reference.2dplots.tex",
+      "line": 2089,
+      "source_sha256": "3ba488b250acc4e03f5dd170775a5accd21f07e1f20da3743abe59d8843a218e",
+      "source_span_sha256": "bc51768c63d26d598a6cf9df6a72da18716cca5b7ff986e5e7e8430329b7f514",
+      "status": "unsafe",
+      "reason": "`scatter src=rand` uses random point metadata while drawing. Cached output skips random stream consumption."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 136,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "868d789a95dbd1cbd46d7e7505428523013cc35d60d51d178729a580f0b6cd8e",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 174,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "eda7f10e5b4d86fd91e04662f7adcb77a2c37f1044179c1c632ed361aae11cd2",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 217,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "8cb02617d388efd0d0c0d8d7508b08330792cd61e4b93f0896343708913e6af0",
+      "status": "uncertain",
+      "reason": "The picture reads external plot data. It appears to be a bundled static data input, but its immutability across the target build passes was not established from this source; keep out of the opt-in set unless the build dependency is pinned."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 268,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "cead95af3193c8ded266e47b3d0bbcf94d14a7e8f7da831b21f5d9146cac2114",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 309,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "14cc8875be7fa2ffe36c04802eb7582a035319b459ad866a71a0635bbcdf861c",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 336,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "e6dd5d2acf780a07a8ac61598af7852e0233b1c54c2a6fe4a429595d04fe9378",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 381,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "5f54db71a392ad94e24858abdafb80339f54ac16f01ba3ee2e3adb2efaf9987a",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 393,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "6821da5705761b385e9d81f9b648133f80ae14784affb8c08088ec7324035184",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 444,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "75cc8c7013c5b711c45dea4f320143a7288d7425d08fefb89f87ac46d2e480d2",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 463,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "57e0e3050932af31f9c7048e5d731a99ad3def3630b9a0d43fdce98adda23ef6",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 486,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "65f1ef911aa3474ddf678f29b0680221ac90aee4784f32aa206ccef8efc73496",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 511,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "2e0f42773e504a229285a851b26b2d55e60cd38d5d1dab57f151d7f9790e6a02",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 557,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "bbfec778128c85c970e139dce433c13c446d4fdd9307cb1356714488546cec77",
+      "status": "uncertain",
+      "reason": "The picture runs `\\pgfplotstableread` to define `\\tabledata` and then plots that macro. The table is inline and used only here, but the macro assignment scope/global persistence was not established, so this is not opted in."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 610,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "dd4d6292e24527b73d7ff472e44d0b34806c4cd4c76aa4236878144cb01696af",
+      "status": "uncertain",
+      "reason": "The picture reads external plot data. It appears to be a bundled static data input, but its immutability across the target build passes was not established from this source; keep out of the opt-in set unless the build dependency is pinned."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 637,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "fd1ead5e0f79d76359ed3b8252583539741eee8870b3366baba10aae1019c6a4",
+      "status": "uncertain",
+      "reason": "The picture reads external plot data. It appears to be a bundled static data input, but its immutability across the target build passes was not established from this source; keep out of the opt-in set unless the build dependency is pinned."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 660,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "5a3c75d3e5e1669b7f22edb5515bbef7243f2d3736c052b0158235c9e5411d82",
+      "status": "uncertain",
+      "reason": "The picture reads external plot data. It appears to be a bundled static data input, but its immutability across the target build passes was not established from this source; keep out of the opt-in set unless the build dependency is pinned."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 687,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "a563d9a3828e58c4518e755d9a11505bc696e98839ab9a468d26ddc9db16216f",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 701,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "06f7208a954d061c0aae339dc26b57c2fe60ba015e1e8b536995dfcf0d3f7e00",
+      "status": "uncertain",
+      "reason": "The picture reads external plot data. It appears to be a bundled static data input, but its immutability across the target build passes was not established from this source; keep out of the opt-in set unless the build dependency is pinned."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 764,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "5d620d946c26d08cbe9acf350d40fdc1cdac4e4c5e29d52ef0d2e1a0a8240530",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 776,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "e26ae8271b7058ae04ae85e809eeb7fccaa007f652e85b9a3826bb024fe3f89e",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 793,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "5af56172016ed89bb334bcab1022b8b4512490657124e5f3e10ae51d5cce7cea",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 814,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "417d475feacd5ef8d0fa72163ca7df5cfc7199d205a472add49b89dcfa2d672f",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 854,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "70cd69d05dc130aa79e167d6a3e935259bc105dfa43b5b15f1413eff6c852dc0",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 948,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "ef930f0fcbda543147d605e9bf82f935c2e8d8cc466497144c0fd3e7f0ae9f63",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 971,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "1170970c498c1ca7822703b458bde974a76598bcdec43ed7b96b89904e755426",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 987,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "b83a408d0cba7fae49cff5f3104915698c32fcdd6a72d39d9779109a10aa6349",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 999,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "bfd2c537267f3d0f46339784df9cb82885cc2dbeb12872630e8e8565a68c568c",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1015,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "0cb9d3e948d17eb3de2cfb5d2b288e76006aafacef2e60ad8c2bf04426adfee2",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1030,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "2072c9c57e7a16349750e4736056b654b08ad353171170d25da2e475055984c7",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1067,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "0d9b36680fd1c4142c83dc0f65e938ab7bc538e76b816426c1ed11247a338469",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1108,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "19bb4a545ff713e4f8959be04eed63391c510d2d08f1bab6c9dada194984f531",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1143,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "bc9cfe4052a839cf1a89f27be0dd9f389b0b95a1e7b1e0f20625d8fe69daec98",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1163,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "3180c59408b4797bf51164f644600ac982e750d06b0a62f84de8e517f49c3307",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1250,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "2025546ad72c82cdb2a528db1552f66c1f13f05c338e1ac5a2a2ff2f48b82016",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1265,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "38a043b9156c11e31edf3cc6bca9487973dc5c890f5c313393fbbf057b17a6b3",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1308,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "c9b62543b7612a21e4360546a76075b5b7adf14750d2791683bfa439a9dc9ca9",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1348,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "5029ba21dfc87040561f56a4d640d79079c8d0b1c72ae87819d72edb0e254cbe",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1368,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "50ff436449a2549244882570d419d417d33b755e11fcc03c99d7fc0f2eccd5b7",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1400,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "838d2bd2dba63aa10d256e081da13ce25f63051cda9e071b543ef7580acf9ba0",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1529,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "a6c79a8e1eb43b9cd9d8651d02113ba25fad9c865fd36c47b4204b3679a17e78",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1575,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "d57493e49e25ffb493b5bef66075404502b1301cf9e20958cbb4609ae0f81971",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1609,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "a31c041560627de3117df0708a6737e0d3a4b40597be00a147454c35f15a9afc",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1641,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "8934a91ad1615f7f26cecc3f63a12f125936966c7b2747863b5eca257e67d12e",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1757,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "0bed5cbcb6e57054e6617b2c2487b72d65b82461465338c0f42735f1b4eb3dc7",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1763,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "f3b2a5ecea67712f94d1626d01ecf9141708e147218afc8da35aea66fd2e82ee",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1795,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "c93146f2d49d42f9f3e193f8cd2b649b2306811a098ef3a99e41d522d61acfc7",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1813,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "abdfff6cb5c1e08554e91a51405094535019d2bd2b4a2154fd8e0634676d5d60",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1846,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "d636832add2ed5d5aacb4784f239e3c5c2980a673a894f2b988af929dfb34197",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1901,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "54362fbba7f14d7924543176662da29780d8d21445bf1c27fa6ad9fc25193793",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1947,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "7424e58ac9c48d07c93bc1ec1bd47ed865608282c9018f05afa87eb1e8cebf0c",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 1988,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "9501b19999a105aede3b180ad274502dcb77d1054fbcb18c2d487dc0d221dbff",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2023,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "9178757a23a178fce9f989b9d3365fef63379171574fed58e5a6b8aad0ee0bca",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2072,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "000151f9719d7fe381ab53eb13e45645216853a7997cb4e5c8e29f1eed75f9ad",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2088,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "72bea96849238a14303ff53edd5b1f34243c282dd61d5ee12c385de8f29dc7cf",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2103,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "1097b6902a1f0e868afde2bbd46cc63e3e0485026b7fae08a682d1b375edec11",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2139,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "a0aaca7a23b400e41398bcaeb280ac6593cda36375243cd3d345ee8beab36f33",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2179,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "2264d93e1cacdde27394b9951865899d595826b9706fcc25a3a62bfa65ccd974",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2218,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "2f8e98720efad1a0dce231b5a7c8bda0a3ab385a0384773d4df987b314c6ec16",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2244,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "348393c587f728404dddb8b6246c45c5655a2e50b9bd7e6d111f4c8fa873e033",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2276,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "518a8adb93a75c50be43ba758d26207cf155e72fa83314abf86ef18f3e40be30",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2300,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "a9da6888f77b6ae58d278e04ab6b69f9b2a4a6c02f2f082d3a949dd3b30d9212",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2321,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "c5b4f147e47159eca9ef532ff85e5aaa71f7f48485d60aeefb8d27826100082a",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2356,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "2c97c9f86731533d5b5c408ee3c1ccd3a2ed953f1cdc968d246cba527a88d299",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2398,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "ab99f3704378f1fc52655445bb9a010db8b492d942f6feebf1dbd6b8de4e4076",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2427,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "0e254f76fc100d1c6546359e15b596d0a4e38ec7065d4a61bf691ead711b2bd4",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2503,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "fdd3b1cbd084020e02ce380de8c1d4d45d3937c13a9574bd808d033e6c5fafcd",
+      "status": "unsafe",
+      "reason": "`contour gnuplot` invokes the external gnuplot path and produces/uses generated contour intermediates; skipping the picture can suppress pass side effects or leave stale generated output."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2514,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "4ba73e7af0c244841aeea4f06c38fe66086782f84e01d4db3be045d2704ccd0f",
+      "status": "unsafe",
+      "reason": "`contour gnuplot` invokes the external gnuplot path and produces/uses generated contour intermediates; skipping the picture can suppress pass side effects or leave stale generated output."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2540,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "12d71c1e8df2a9ee5b33041c5eaf2ed680da190ef545fa821a3cc724fced3ec1",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2582,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "e5a49600cb88ce109a105fed5175fa3629a44ce1f730625fe1b6e4961cd79b6e",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2632,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "b316fc165de638e47523f91db9bc3c5429880312f80a006db28452049b877cdb",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2683,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "8256c7f97c95f6e1e4c80844108fc8580efbb6733ad850b132aa22dabac57f6a",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2713,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "48c8b5cd0b0022c8812299229a90729eb93bb530a0ae647cee25be130e1bdd15",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2728,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "8e2db67de60f4ddde5f5191def9a385e5c5688b1935226471b45abda3e832753",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2747,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "7890a68cd2abb6d7ca2017a1d1afaf7f892ea562f85705054c8e4eff6013c6ec",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2775,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "16697b877f2db4902a5cc25c632e952d0b534810708699450db3e6a7fecaf7fa",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2795,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "24da17260c0aec82c7c6861d03e1fa04faa6f2048e9713d1792dc2bd9ce9d3ab",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2803,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "c13d10386abcd9e959b63ce73c9afe92a81ce193723e6886918f939012729eb8",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2824,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "33663872d4d8cae4246769e764c79dec70c8356f1007552ffd788404267042e9",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 2937,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "d46838a28e42648628d7df1b5ecc7e994e373698fce58fe305a799eda33d3445",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3024,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "3a76b9a188fa1e4991d4cc86035b8f9ccc7b5acc4776fc31503671e933327f06",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3036,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "00174301ac1165c8ad62745c7b2f671cd3a2031addcbc0fb8b01eee80a36532c",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3057,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "a687263fa9e7b603fa4bf82fcfdddf51f163a5d43ff05f22d4c74ecdb4dea8fe",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3108,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "3a741cb14d61b07c26ce857f259e41b53243dcdf02cb16fc8186f52df98023fe",
+      "status": "uncertain",
+      "reason": "The picture reads external plot data. It appears to be a bundled static data input, but its immutability across the target build passes was not established from this source; keep out of the opt-in set unless the build dependency is pinned."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3169,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "03150479a5a4934069bb4b9b9b385e7b7c6f6329b8fc67f582be93ea979e76a1",
+      "status": "uncertain",
+      "reason": "This body draws a standalone colorbar directly with `\\pgfplotscolorbardrawstandalone`, without a `tikzpicture` environment; the proposed picture-body-only cache does not have a clear eligible body boundary."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3205,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "eab8e9154874297aeeb468ced24852106c7e6da6c90c07c9b7ba27cb34f56eee",
+      "status": "uncertain",
+      "reason": "This body draws a standalone colorbar directly with `\\pgfplotscolorbardrawstandalone`, without a `tikzpicture` environment; the proposed picture-body-only cache does not have a clear eligible body boundary."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3255,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "b07d740b3dd39f549b89eb2a7b6927159390035ac68750cca0fef75f432b3692",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3292,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "b51aeb1f883b1e0233fa18631eeddeff442449609b325756c26f8197e37ee0b8",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3344,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "fa25e968f07d83d2c909a7000769808e4bafa0b54d3bc36e558bbb98efdedc67",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3372,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "a90ef857ed0ef3da6e16605367384485f800d505f56679b8a8cdf62e64419b48",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3389,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "713234a772c618a2cf2a1ff0af6f61ee0601cc480a55f696ecf82b30385abc4d",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3417,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "4ddc1361959672dc6306e1f4d7433129736af927f134cb6e45039fbd19bd6406",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3462,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "41005c8e9bc71339d6e343670b1509f931fbb43dcd0ea98b51192ef12ce871d9",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3486,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "c5bc693cc0a80dc72b9f31a6492fc72217787219d182f70c35401f4c095bf9f2",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3505,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "d7dff80ae4278416aed520914518a613adbd80314f737b7e4a37489ebd0e4721",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3523,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "98e83795d9cb0f4ae4e08ae8045cb75dd7f75380abd3ba2456476d486b976df5",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3539,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "b677643278f5133dce78980cccb882dfe71eb8eb0cce7fec32f6143c5ecb451a",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3604,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "edf016814fb2b149ef9147ac83706088ac64c5969d2eb8e874e2885bc6c7dac4",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3642,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "873319f4584406c17d8e4c7913bb62bbd53d6c7d4b084f35800c9667631ddfd9",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3671,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "a4e822c8992c6568fee3dad768fec9a2e59e5402835a4d56a64d86456b3703fd",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3688,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "05d608623844d2c81c3d66d498f91361a727fbab9dc583dd0dd7162c42fd5390",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3739,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "d7a8f9ba00196dc4f39904b5a8172035e0cdd3bcfd4120f264b7f495b9e9d099",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3754,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "b327b64dbbfb071688a08ef683827eb7552bc7befc9b12779bc7f85738b674c6",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3776,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "f343006b7bcae3ce0080033a0afa2d40fcf042b20045f57a36bb2a764da412ee",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3803,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "753d7990456dd30ea1fe49ecf49b3f516f13eb217588108a29dd548b54a5d5a3",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3826,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "9ca76f43132fd582adee28d934001fc91dd4836183245912c31218d03cfbd892",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3875,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "0f2bf9ccc92f762517a037b946bf02008e74a7d3336400e046ed1abf3c8d54bb",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3882,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "c0c626e9a061d6efafd8798fb71e38df2281cbe141cf5f82695b865fc0a9240f",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3901,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "86a224c3d0f2abd8049847e0191a8e1f7ed69d23008af410db19e131b696d45c",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3947,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "3b000dd384693b87a45dda478ca2d4710205c6e3545c00c2d6ebd7c0a4f82c61",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 3975,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "8f68bc35e6fae577fedfa86ce08430dab98cdd3a88fb70b59b3765ae453d6793",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 4002,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "2bc87e999c720d84c74c1c6d1fe4d2743002e3c2a77306688d8e5dc44085e013",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 4032,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "9c2d8e162bbf00bc7b2bbd2cd81fbcdf7eb6419cb60476571332ed733945490d",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 4072,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "4c02748602121d8faa361789261be35a77aac6a7492e2a1d56a875a86a88bcc4",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 4122,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "b12573d901fc06f71aa7d840bab81b856b980616b442f91d4e6260134f44eb82",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 4157,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "c451dd5e6dcb223bd7f6214653cca37d67c060e5155d9bcf45bf5a5c4dd9bccd",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 4207,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "7d82d81a551d363e37c99b9122293242a41801c644d51eb47f3a7600722ddb4a",
+      "status": "uncertain",
+      "reason": "The picture reads external plot data. It appears to be a bundled static data input, but its immutability across the target build passes was not established from this source; keep out of the opt-in set unless the build dependency is pinned."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 4253,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "ac77499f5b05554fa3d9336382cc40a407d26624d0199ae7f8d0d4a2ec4424fc",
+      "status": "uncertain",
+      "reason": "The picture reads external plot data. It appears to be a bundled static data input, but its immutability across the target build passes was not established from this source; keep out of the opt-in set unless the build dependency is pinned."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 4293,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "a0a9a61c806f404950bddba875efe09b5be3b9e275431867602372f4fb1cb7ac",
+      "status": "uncertain",
+      "reason": "The picture reads external plot data. It appears to be a bundled static data input, but its immutability across the target build passes was not established from this source; keep out of the opt-in set unless the build dependency is pinned."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 4364,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "62b8d687267ca7736e32f0504971ab896ed69602b1b176fdf44d915fb9338d95",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 4383,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "03ada30183d317dab02448d470a1be5879d2ed2a57b4dbaffd46073c753e467e",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 4414,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "1ffb0885200bc0e06ea91fd6c993e418d5d8c4e0c0b20a7a1fe93f4595d95fae",
+      "status": "eligible",
+      "reason": "Self-contained picture(s) use inline coordinates, inline tables, or deterministic plot expressions. No cross-picture labels/references, external writes, global declarations, random input, or later-consumed named nodes were found; only picture output is skipped, while surrounding code and pre/post hooks remain executable."
+    },
+    {
+      "file": "pgfplots.reference.3dplots.tex",
+      "line": 4452,
+      "source_sha256": "f810b8bdecdf5f17d49dc0b8f34c85ccfbcdd0d62869f2a13f42a952303f42bc",
+      "source_span_sha256": "ea23b068a34054092bd2b3e189718cab01cc3038cecbb4d893fef6b530214844",
+      "status": "listing_only",
+      "reason": "`code only` disables execution in the manual codeexample environment; this body is displayed as a listing."
+    },
+    {
+      "file": "pgfplots.reference.alignment.tex",
+      "line": 320,
+      "source_sha256": "4e7741724e993cb4d92153f272f0fbabe5583f24b0e904eaaeef9c17037e89be",
+      "source_span_sha256": "db57d891d75bb5d76d1d8c5fd0fe76b8e43d9f59d16c9d38347ac21e0775a9e6",
+      "status": "unsafe",
+      "reason": "Rendered plot output depends on external plotdata files. Source-only result reuse can return stale artwork when the files differ between builds/passes."
+    },
+    {
+      "file": "pgfplots.reference.axis-addplot.tex",
+      "line": 1312,
+      "source_sha256": "95a70488aa381e1789480928efb5640094778af7062aa3c86eae351d1efef354",
+      "source_span_sha256": "d1e07f77087b3b2c9bd5f111d2d69a4a0656ef932a681f2e857628d74e21e2ef",
+      "status": "unsafe",
+      "reason": "Both table rendering and plot rendering depend on an external data file; cache validity must include that file's contents/identity."
+    },
+    {
+      "file": "pgfplots.reference.axisdescription.tex",
+      "line": 1797,
+      "source_sha256": "0f1ff4435642e9ab0f31232f1e6ad408978d07b92e934a4956a26c35ebe9560c",
+      "source_span_sha256": "f83b06f7cc406bb01f7e977da42e02097309d8eb9b3bc255ad3de3eebe0cb7f8",
+      "status": "unsafe",
+      "reason": "This executed plot writes three plot-label records to LaTeX auxiliary state and samples unseeded rand. A cache hit that skips the body can omit/reorder label writes and leaves the PGF random stream at a different position for later examples."
+    },
+    {
+      "file": "pgfplots.reference.axisdescription.tex",
+      "line": 1932,
+      "source_sha256": "0f1ff4435642e9ab0f31232f1e6ad408978d07b92e934a4956a26c35ebe9560c",
+      "source_span_sha256": "4d0c517943b0e9b43e77c2ffbc97d80ee2764afc851e3be8c8d12c5e3c322bcd",
+      "status": "unsafe",
+      "reason": "legend to name=named exports a legend through label/auxiliary machinery; the following \\ref{named} depends on the aux record and saved legend payload from this example. Reusing only rendered output must preserve/replay that state."
+    },
+    {
+      "file": "pgfplots.reference.axisdescription.tex",
+      "line": 3014,
+      "source_sha256": "0f1ff4435642e9ab0f31232f1e6ad408978d07b92e934a4956a26c35ebe9560c",
+      "source_span_sha256": "6704d052ceb2e0bafcec5c904b28a0649d15666147ce150c1fa252a5b3beeb06",
+      "status": "unsafe",
+      "reason": "Plot expression `{rand}` generates random samples and consumes PGF random state."
+    },
+    {
+      "file": "pgfplots.reference.axisdescription.tex",
+      "line": 3498,
+      "source_sha256": "0f1ff4435642e9ab0f31232f1e6ad408978d07b92e934a4956a26c35ebe9560c",
+      "source_span_sha256": "76bc509018036a7934ff76c8660d1dfe5bbd20c41fca1ba6b02cc3e6d2261ded",
+      "status": "unsafe",
+      "reason": "First picture plots `rnd` and saves a named colorbar `storedcolorbar`; subsequent pictures reuse that named colorbar. Reusing only rendered picture output can omit both RNG consumption and the named picture production needed downstream."
+    },
+    {
+      "file": "pgfplots.reference.bb-clip.tex",
+      "line": 88,
+      "source_sha256": "4a5ab988df3f87d02aeaac362eee3d6d8b7b8fc7f4a7cf0ab8850642944c3f0f",
+      "source_span_sha256": "cc4ef125b5d4f4f68b187523c3792ec992e2c1e0591a1f64afa5a3901d508e9d",
+      "status": "unsafe",
+      "reason": "Two plot expressions use `rand`; both consume random state and produce pass/build-dependent geometry."
+    },
+    {
+      "file": "pgfplots.reference.errorbars.tex",
+      "line": 223,
+      "source_sha256": "fe85d482ff2f249ffce4644f7322bcbe81c1e1ce494b8258e97fa5e49a7e256e",
+      "source_span_sha256": "83ce7926d307b8f35c3108c8f790cec741412dc7fdf3843e23a6a8946b7464e4",
+      "status": "unsafe",
+      "reason": "The example explicitly seeds and consumes the PGF random stream. Skipping it changes the state observed by later random plots (even though this plot is reproducible in isolation)."
+    },
+    {
+      "file": "pgfplots.reference.gridoptions-axiscoordinates.tex",
+      "line": 414,
+      "source_sha256": "a0aead62f78d07342dee2e792cbee95ef5b98b6332e3553472c5e150f7c51093",
+      "source_span_sha256": "185105d1cefb86a661da3cadfeef6c4867b143715435dca03f82278a3bfc2b28",
+      "status": "unsafe",
+      "reason": "Scatter coordinates `(rand,rand)` consume two random draws per sample; result depends on RNG state."
+    },
+    {
+      "file": "pgfplots.reference.linefitting.tex",
+      "line": 225,
+      "source_sha256": "4ba6eba97f4ca926e18321867cef7ad54405b94e56c8bbddaa2837feb9f2da3e",
+      "source_span_sha256": "31e67b2278318a213d7d9c934d7d69b937715f9124654f2d21c1be48155270e8",
+      "status": "unsafe",
+      "reason": "Regression plot depends on external data, which can change independently of the TeX source."
+    },
+    {
+      "file": "pgfplots.reference.linefitting.tex",
+      "line": 240,
+      "source_sha256": "4ba6eba97f4ca926e18321867cef7ad54405b94e56c8bbddaa2837feb9f2da3e",
+      "source_span_sha256": "cb48df9bc9502a9473de8d96ff06e2997d25c64b46e1de05bdc33cf2ae0f24b4",
+      "status": "unsafe",
+      "reason": "Regression plot depends on external data, which can change independently of the TeX source."
+    },
+    {
+      "file": "pgfplots.reference.markers-meta.tex",
+      "line": 191,
+      "source_sha256": "d3bcd6a3ebca905866daf06a69513a20826c91fa49b5a02be8f733cb71e94c0f",
+      "source_span_sha256": "022cc55f51ec59e31afba1307d9ca5af16cb399c926c653c8d191f162e547bc8",
+      "status": "unsafe",
+      "reason": "`scatter src=rand` assigns random metadata/color during picture execution."
+    },
+    {
+      "file": "pgfplots.reference.markers-meta.tex",
+      "line": 708,
+      "source_sha256": "d3bcd6a3ebca905866daf06a69513a20826c91fa49b5a02be8f733cb71e94c0f",
+      "source_span_sha256": "1165840b92219775de89470f3a8c7f666388f950a56fb23c762fa42efe227ab4",
+      "status": "unsafe",
+      "reason": "\\definecolor creates/redefines the document-level color name color1. This example and the next two examples reuse that same global name with different models, so execution order and cache hits can affect later state."
+    },
+    {
+      "file": "pgfplots.reference.markers-meta.tex",
+      "line": 717,
+      "source_sha256": "d3bcd6a3ebca905866daf06a69513a20826c91fa49b5a02be8f733cb71e94c0f",
+      "source_span_sha256": "3d89980dddd3d4c6bd6d14f022548ecd2b8c66c0756a480855c8cee20d0ad730",
+      "status": "unsafe",
+      "reason": "Redefines document-level color1, previously defined by the example at line 708; skipping either changes which definition is live after the pair."
+    },
+    {
+      "file": "pgfplots.reference.markers-meta.tex",
+      "line": 727,
+      "source_sha256": "d3bcd6a3ebca905866daf06a69513a20826c91fa49b5a02be8f733cb71e94c0f",
+      "source_span_sha256": "3005ddadfe4878f37621f1fa2b12bad54119cbeebb583c61ef57dd4b9769100d",
+      "status": "unsafe",
+      "reason": "Redefines document-level color1 after the two preceding examples, leaving global color state dependent on whether examples execute."
+    },
+    {
+      "file": "pgfplots.reference.miscellaneous.tex",
+      "line": 153,
+      "source_sha256": "87c14a2134582390ba76c3a005eb0ca9f784f8ab213c477ddf680e6b6e3ea234",
+      "source_span_sha256": "79f7ce8d43178cf740ceec0a6f0988ea5186c1017b904e17a81f1e602898236a",
+      "status": "unsafe",
+      "reason": "The rendered chart reads several external datasets; caching only the codeexample text cannot detect changed data."
+    },
+    {
+      "file": "pgfplots.reference.miscellaneous.tex",
+      "line": 183,
+      "source_sha256": "87c14a2134582390ba76c3a005eb0ca9f784f8ab213c477ddf680e6b6e3ea234",
+      "source_span_sha256": "651e8e8f8417f98c029c7da2e8279a55b69e1a22f40e084a67ea3764dc396ca8",
+      "status": "unsafe",
+      "reason": "The foreach loop loads external datasets; source-only cache validity misses any changed files."
+    },
+    {
+      "file": "pgfplots.reference.specifyrange.tex",
+      "line": 124,
+      "source_sha256": "c76d60d942febe72c9aac259a2d5080bfc15ef68e8f9eb5ec78c9754295a4371",
+      "source_span_sha256": "815e97e99e3e14ac3edf0df113d6efe441458674939d9fb52ddcb968d1403fdd",
+      "status": "unsafe",
+      "reason": "The plot uses unseeded PGF math rand, consuming random state; a cached drawing can hide pass-to-pass or following-example random sequence changes."
+    },
+    {
+      "file": "pgfplots.reference.symbolic-transformations.tex",
+      "line": 304,
+      "source_sha256": "b9b4df12944a28e0d17ca1a92ce2981894ea3450b2cef3e8b940d276cabd0b48",
+      "source_span_sha256": "4ce752eb1006c80e64ecc2df651774c014f1cd1dc37f3e5968716709d7996e0a",
+      "status": "unsafe",
+      "reason": "The table and plot output depend on an external account data file; cache key needs the input data dependency."
+    },
+    {
+      "file": "pgfplots.tutorial1.tex",
+      "line": 11,
+      "source_sha256": "38313dd2330d93da987841a943212936d0ab026593fbbf10afbcdfa00693cd1f",
+      "source_span_sha256": "4c973d40539b3a5ae39f8b587adafd67a6e71340281c0428e9178128451fbcb9",
+      "status": "listing_only",
+      "reason": "[code only] explicitly marks this as a listing; it has no rendered picture body to memoize."
+    },
+    {
+      "file": "pgfplots.tutorial1.tex",
+      "line": 50,
+      "source_sha256": "38313dd2330d93da987841a943212936d0ab026593fbbf10afbcdfa00693cd1f",
+      "source_span_sha256": "a45cfd4ff6fe27d74d746ca9b79eae014b149b2cd5b2a19ff3fe6e28a7bed6d7",
+      "status": "eligible",
+      "reason": "One self-contained picture; only reads the shipped invcum.dat table. No labels, global definitions, randomness, writes, or picture nodes referenced elsewhere."
+    },
+    {
+      "file": "pgfplots.tutorial1.tex",
+      "line": 145,
+      "source_sha256": "38313dd2330d93da987841a943212936d0ab026593fbbf10afbcdfa00693cd1f",
+      "source_span_sha256": "0741d72e2f3e10b00bc4db1843ac6dbdfc2c964e5d98268f8c0a149491bd22e6",
+      "status": "listing_only",
+      "reason": "[code only] explicitly marks this as a listing; it has no rendered picture body to memoize."
+    },
+    {
+      "file": "pgfplots.tutorial1.tex",
+      "line": 215,
+      "source_sha256": "38313dd2330d93da987841a943212936d0ab026593fbbf10afbcdfa00693cd1f",
+      "source_span_sha256": "23a58afbc91f201a6193db800b23ead97e76f9fc8a40b9449b8bc5470d5bbfba",
+      "status": "eligible",
+      "reason": "One self-contained picture; reads invcum.dat. No persistent effects found."
+    },
+    {
+      "file": "pgfplots.tutorial1.tex",
+      "line": 266,
+      "source_sha256": "38313dd2330d93da987841a943212936d0ab026593fbbf10afbcdfa00693cd1f",
+      "source_span_sha256": "3034b382e0e1e2fca9ab4aaa8ce5f598667a28afd4ac604ced4eadab50acd7a0",
+      "status": "eligible",
+      "reason": "One self-contained function plot. MU and SIGMA are not defined here; this picture has no global definitions or cross-picture state."
+    },
+    {
+      "file": "pgfplots.tutorial1.tex",
+      "line": 330,
+      "source_sha256": "38313dd2330d93da987841a943212936d0ab026593fbbf10afbcdfa00693cd1f",
+      "source_span_sha256": "59dde6176d5131afa5696068d2d73717743c705f9869a3094f27ea5959076199",
+      "status": "eligible",
+      "reason": "Two separate self-contained pictures. MU/SIGMA are defined locally within the second tikzpicture and used only there; the hskip between pictures remains outside the cached bodies and executes each pass."
+    },
+    {
+      "file": "pgfplots.tutorial1.tex",
+      "line": 368,
+      "source_sha256": "38313dd2330d93da987841a943212936d0ab026593fbbf10afbcdfa00693cd1f",
+      "source_span_sha256": "b48d66c875a78a8e3be4730b5ab6b35096f67d1e298664ca9926196d96df7c65",
+      "status": "listing_only",
+      "reason": "[code only] explicitly marks this as a listing; it has no rendered picture body to memoize."
+    },
+    {
+      "file": "pgfplots.tutorial1.tex",
+      "line": 409,
+      "source_sha256": "38313dd2330d93da987841a943212936d0ab026593fbbf10afbcdfa00693cd1f",
+      "source_span_sha256": "1a9e2e60cb5bde1c811baabd74a7fe9b5201627c794c989970f471da988f5a11",
+      "status": "eligible",
+      "reason": "Two separate self-contained pictures using local MU/SIGMA definitions in the second picture; no persistent effects or cross-picture node use found."
+    },
+    {
+      "file": "pgfplots.tutorial1.tex",
+      "line": 481,
+      "source_sha256": "38313dd2330d93da987841a943212936d0ab026593fbbf10afbcdfa00693cd1f",
+      "source_span_sha256": "709819c852e9c47006a8c728c5a53d21638b62ed60d616d457f0d4fdfca799df",
+      "status": "eligible",
+      "reason": "One self-contained function plot; MU/SIGMA definitions are local to tikzpicture. No persistent effects found."
+    },
+    {
+      "file": "pgfplots.tutorial1.tex",
+      "line": 540,
+      "source_sha256": "38313dd2330d93da987841a943212936d0ab026593fbbf10afbcdfa00693cd1f",
+      "source_span_sha256": "64cd960d17b466721139fa0b0e02fab306589fecf8e4cf4337e3c4e8d19ecd02",
+      "status": "listing_only",
+      "reason": "[code only] explicitly marks this as a listing; it has no rendered picture body to memoize."
+    },
+    {
+      "file": "pgfplots.tutorial1.tex",
+      "line": 552,
+      "source_sha256": "38313dd2330d93da987841a943212936d0ab026593fbbf10afbcdfa00693cd1f",
+      "source_span_sha256": "72e6833791c3f99cd1ffeef92e5065bd984b7bad68dd987640b2283f6e909c43",
+      "status": "listing_only",
+      "reason": "[code only] explicitly marks this as a listing; it has no rendered picture body to memoize."
+    },
+    {
+      "file": "pgfplots.tutorial2.tex",
+      "line": 11,
+      "source_sha256": "5457ee537c1eb00a127d641547b620bedf6f4f237046eda8ed9ba4ea7ed0e6fe",
+      "source_span_sha256": "9a83519495fdff2774bcc291ef572b6964c708c8633917155e773da3e49b47cc",
+      "status": "listing_only",
+      "reason": "[code only] explicitly marks this as a listing; it has no rendered picture body to memoize."
+    },
+    {
+      "file": "pgfplots.tutorial2.tex",
+      "line": 28,
+      "source_sha256": "5457ee537c1eb00a127d641547b620bedf6f4f237046eda8ed9ba4ea7ed0e6fe",
+      "source_span_sha256": "c6005aee03f7635c60584d177e93b68859587614389b7c1cb731155949c8b205",
+      "status": "listing_only",
+      "reason": "[code only] explicitly marks this as a listing; it has no rendered picture body to memoize."
+    },
+    {
+      "file": "pgfplots.tutorial2.tex",
+      "line": 43,
+      "source_sha256": "5457ee537c1eb00a127d641547b620bedf6f4f237046eda8ed9ba4ea7ed0e6fe",
+      "source_span_sha256": "9c147e048e88befc69e4d7780f30291de396eaad554742e7ac32c155187811e4",
+      "status": "listing_only",
+      "reason": "[code only] explicitly marks this as a listing; it has no rendered picture body to memoize."
+    },
+    {
+      "file": "pgfplots.tutorial2.tex",
+      "line": 71,
+      "source_sha256": "5457ee537c1eb00a127d641547b620bedf6f4f237046eda8ed9ba4ea7ed0e6fe",
+      "source_span_sha256": "2464a937e6dbf4db0c05b0ad49e0275ca2dd0c4ca3dbcb35814b89af6e406575",
+      "status": "eligible",
+      "reason": "One self-contained plot reading shipped data_d2.dat; no persistent effects found."
+    },
+    {
+      "file": "pgfplots.tutorial2.tex",
+      "line": 107,
+      "source_sha256": "5457ee537c1eb00a127d641547b620bedf6f4f237046eda8ed9ba4ea7ed0e6fe",
+      "source_span_sha256": "70750f0dc5dcdf0faeab7f6c0acfa602d50b5f27ce1d6cf7593ef44ca232ee1d",
+      "status": "eligible",
+      "reason": "One self-contained plot reading shipped data_d2/d3/d4.dat tables; no persistent effects found."
+    },
+    {
+      "file": "pgfplots.tutorial2.tex",
+      "line": 148,
+      "source_sha256": "5457ee537c1eb00a127d641547b620bedf6f4f237046eda8ed9ba4ea7ed0e6fe",
+      "source_span_sha256": "a26582ff3e7bf77e766737d3552900e69eb8bfff979fdeb321c0175882137430",
+      "status": "eligible",
+      "reason": "Same static table reads plus local legend; no aux label export or cross-picture references."
+    },
+    {
+      "file": "pgfplots.tutorial2.tex",
+      "line": 197,
+      "source_sha256": "5457ee537c1eb00a127d641547b620bedf6f4f237046eda8ed9ba4ea7ed0e6fe",
+      "source_span_sha256": "66ba81432c715ddd42eee11a432a3f8ea488bb798e43f77e9db9a08794ce48ad",
+      "status": "eligible",
+      "reason": "Reads static data tables and calculates a regression plot entirely within the picture; calculated values are not exported from this picture."
+    },
+    {
+      "file": "pgfplots.tutorial2.tex",
+      "line": 275,
+      "source_sha256": "5457ee537c1eb00a127d641547b620bedf6f4f237046eda8ed9ba4ea7ed0e6fe",
+      "source_span_sha256": "ad9a1988cbc24bdd93f2001df0696587d7d8bc0845bf51794d8c00827c6c6f4a",
+      "status": "unsafe",
+      "reason": "Unsafe: \\xdef\\slope{...} globally persists the calculated regression coefficient outside the picture. The value is used within this picture, and the global macro remains externally observable after it; skipping the body omits that definition."
+    },
+    {
+      "file": "pgfplots.tutorial2.tex",
+      "line": 314,
+      "source_sha256": "5457ee537c1eb00a127d641547b620bedf6f4f237046eda8ed9ba4ea7ed0e6fe",
+      "source_span_sha256": "5e9b5a197f57540de69be6bba0c48778998c3490eaaa5f96fcb3845441112f24",
+      "status": "eligible",
+      "reason": "Plot coordinates A/B are named and consumed within this same tikzpicture only; static table read, no remember picture or external node use."
+    },
+    {
+      "file": "pgfplots.tutorial2.tex",
+      "line": 350,
+      "source_sha256": "5457ee537c1eb00a127d641547b620bedf6f4f237046eda8ed9ba4ea7ed0e6fe",
+      "source_span_sha256": "d8c256ac5352ef13b3fbecd25c301f3eaca2677ddb3db54025ce7c8bc60158c2",
+      "status": "eligible",
+      "reason": "Pin node is local to this picture and attached to its plot; no persistent node or state use found."
+    },
+    {
+      "file": "pgfplots.tutorial2.tex",
+      "line": 377,
+      "source_sha256": "5457ee537c1eb00a127d641547b620bedf6f4f237046eda8ed9ba4ea7ed0e6fe",
+      "source_span_sha256": "483362399e9c13243081571a957ee31634e561b2cb6b1e11b09fe84d5fa97fe1",
+      "status": "eligible",
+      "reason": "Pin node is local to this picture and attached to its plot; no persistent node or state use found."
+    },
+    {
+      "file": "pgfplots.tutorial3.tex",
+      "line": 47,
+      "source_sha256": "220db8b6489b4615f9000010906c3af61063ad32a32f597873884872a3d88060",
+      "source_span_sha256": "9894d66edcd7356baf8eb3169cdc7d837dead4bebe59ca3251c9163f2406a999",
+      "status": "eligible",
+      "reason": "Self-contained scatter plot reading shipped concat_VV_together_grid.dat; no persistent effects found."
+    },
+    {
+      "file": "pgfplots.tutorial3.tex",
+      "line": 73,
+      "source_sha256": "220db8b6489b4615f9000010906c3af61063ad32a32f597873884872a3d88060",
+      "source_span_sha256": "4cf238bd5845224dfb2d43716132f8279f13dd42a327a48fb30e063da1688a71",
+      "status": "eligible",
+      "reason": "Self-contained scatter plot reading the same shipped data file; no persistent effects found."
+    },
+    {
+      "file": "pgfplots.tutorial3.tex",
+      "line": 100,
+      "source_sha256": "220db8b6489b4615f9000010906c3af61063ad32a32f597873884872a3d88060",
+      "source_span_sha256": "06c99677bb9bf3d279c258bc3d052c6861ef54512668513948664b254efc0a58",
+      "status": "eligible",
+      "reason": "Self-contained scatter/colorbar plot reading static table data; point-meta calculation and colorbar are contained in the picture."
+    },
+    {
+      "file": "pgfplots.tutorial3.tex",
+      "line": 175,
+      "source_sha256": "220db8b6489b4615f9000010906c3af61063ad32a32f597873884872a3d88060",
+      "source_span_sha256": "367312073af6670660286ab80a5805ccd27bf76853ea9a5b10bee80f2b46ac24",
+      "status": "eligible",
+      "reason": "Self-contained plot uses inline table data and local scatter class styles; no declarations escape the picture."
+    },
+    {
+      "file": "pgfplots.tutorial3.tex",
+      "line": 230,
+      "source_sha256": "220db8b6489b4615f9000010906c3af61063ad32a32f597873884872a3d88060",
+      "source_span_sha256": "dd57b0f0d78a87171dea6a902af167327b03789e1a8b5d701f1b0c8819b4181f",
+      "status": "eligible",
+      "reason": "Self-contained plot uses inline table data and local node labels; no labels or cross-picture dependencies."
+    },
+    {
+      "file": "pgfplots.tutorial4.tex",
+      "line": 76,
+      "source_sha256": "e7cc2d268d9a8dfdfc5791f2ba891e11062ba98adf4f1d251e8a48736f725c7d",
+      "source_span_sha256": "3ae985a183e5b3ecdc9730a2f64acc513c743cf342a863fd42d6ba5b6a19e061",
+      "status": "eligible",
+      "reason": "Self-contained surface plot reading shipped concat_VV_together.dat; no persistent effects found."
+    },
+    {
+      "file": "pgfplots.tutorial4.tex",
+      "line": 118,
+      "source_sha256": "e7cc2d268d9a8dfdfc5791f2ba891e11062ba98adf4f1d251e8a48736f725c7d",
+      "source_span_sha256": "0847f4db89d4cff66e855e0ab1a50e174d065515ee492d6418e4db1111e3e2dc",
+      "status": "eligible",
+      "reason": "Self-contained surface/colorbar plot reading static table data; no persistent effects found."
+    },
+    {
+      "file": "pgfplots.tutorial4.tex",
+      "line": 160,
+      "source_sha256": "e7cc2d268d9a8dfdfc5791f2ba891e11062ba98adf4f1d251e8a48736f725c7d",
+      "source_span_sha256": "f8175144fe10edd04451f246d0697f22b98c0dedd644d41fe02326d17a815ff9",
+      "status": "eligible",
+      "reason": "Two plots in one picture, reading shipped surface and scatter data; all state is local to that picture."
+    },
+    {
+      "file": "pgfplots.tutorial4.tex",
+      "line": 209,
+      "source_sha256": "e7cc2d268d9a8dfdfc5791f2ba891e11062ba98adf4f1d251e8a48736f725c7d",
+      "source_span_sha256": "597ddf3d2a6e4a9016014c5ddfaeb77fbbe6d9accd1c786ddbec1b9a4d8b4e3e",
+      "status": "eligible",
+      "reason": "Self-contained expression plot; no external state or inputs."
+    },
+    {
+      "file": "pgfplots.tutorial4.tex",
+      "line": 241,
+      "source_sha256": "e7cc2d268d9a8dfdfc5791f2ba891e11062ba98adf4f1d251e8a48736f725c7d",
+      "source_span_sha256": "1a8c46417503f6ae054980a354e47a476c8ae7120040b84f98834f6c52cad69c",
+      "status": "eligible",
+      "reason": "Self-contained sampled surface expression; no external state or inputs."
+    },
+    {
+      "file": "pgfplots.tutorial4.tex",
+      "line": 274,
+      "source_sha256": "e7cc2d268d9a8dfdfc5791f2ba891e11062ba98adf4f1d251e8a48736f725c7d",
+      "source_span_sha256": "2b05fbccfc2b74c6db17eb9ce9bbe538943881210b892db3c1444b748f3f2e37",
+      "status": "unsafe",
+      "reason": "Unsafe: contour lua writes temporary coordinate/script/output files during picture execution (documented at pgfplots.reference.3dplots.tex:2122+); skipping the body suppresses these writes."
+    },
+    {
+      "file": "pgfplots.tutorial4.tex",
+      "line": 300,
+      "source_sha256": "e7cc2d268d9a8dfdfc5791f2ba891e11062ba98adf4f1d251e8a48736f725c7d",
+      "source_span_sha256": "f097cb94f8b93d2b0627c2d5361b08fb90372570190b924c4ba74e58a32685cf",
+      "status": "unsafe",
+      "reason": "Unsafe: contour lua with expression data writes temporary coordinate/script/output files during picture execution; cache skip suppresses those writes."
+    },
+    {
+      "file": "pgfplotstable.tex",
+      "line": 4047,
+      "source_sha256": "e1e7ba1f0b4f7fb87779763005b8323ec2e499c84bb2dafdbf1d18de7342c8fb",
+      "source_span_sha256": "ab36425812a470c33980bc3c143068c4a7109be8f770c8abed7dd22686795fb7",
+      "status": "unsafe",
+      "reason": "The example globally defines \\slope with the calculated regression coefficient. Skipping the body omits persistent TeX state that can be observed later in the document/build."
+    }
+  ],
+  "upstream_commit": "f40faa5864936890736461a2b410dcef8968e97f",
+  "enabled": true
+}

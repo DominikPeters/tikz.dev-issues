@@ -4,9 +4,9 @@ import subprocess
 import sys
 
 
-def crop(source, destination):
+def crop(source, destination, cwd=None):
     command = ["pdfcrop", "--margins", "1", "--hires", source, destination]
-    result = subprocess.run(command, capture_output=True, text=True)
+    result = subprocess.run(command, capture_output=True, text=True, cwd=cwd)
     if result.returncode:
         sys.stderr.write(result.stdout + result.stderr)
         return result.returncode
@@ -17,6 +17,7 @@ def crop(source, destination):
         result = subprocess.run(
             ["pdfcrop", "--bbox", "0 0 1 1", "--margins", "1", source, destination],
             capture_output=True, text=True,
+            cwd=cwd,
         )
         if result.returncode:
             sys.stderr.write(result.stdout + result.stderr)

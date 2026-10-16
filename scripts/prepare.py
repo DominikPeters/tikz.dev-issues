@@ -19,6 +19,7 @@ they belong in <package>/.
 """
 import argparse
 import filecmp
+import json
 import os
 import shutil
 import subprocess
@@ -26,10 +27,12 @@ import sys
 import tarfile
 import tempfile
 
+from illustration_audit import apply_cache_tags
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHARED = os.path.join(ROOT, "shared")
 # files of <package>/ that are not copied into the build tree
-OWN_FILES = {"upstream.lock", "preprocess.py", "patches", "build", "README.md", ".gitignore"}
+OWN_FILES = {"upstream.lock", "preprocess.py", "patches", "build", "README.md", ".gitignore", "__pycache__", "illustration-audit.json"}
 
 
 def read_lock(pkg):
@@ -100,10 +103,12 @@ def overlay(pkg, tree, docdir):
         else:
             shutil.copy2(s, t)
     for name in os.listdir(SHARED):
+        if name == "__pycache__" or name.startswith("."):
+            continue
         shutil.copy2(os.path.join(SHARED, name), target)
 
 
-def prepare(pkg, dest, patches=True, reject=False):
+def prepare(pkg, dest, patches=True, reject=False, illustration_cache=True):
     lock = read_lock(pkg)
     if os.path.exists(dest):
         shutil.rmtree(dest)
@@ -112,6 +117,21 @@ def prepare(pkg, dest, patches=True, reject=False):
     if patches:
         apply_patches(pkg, dest, reject)
     overlay(pkg, dest, lock["docdir"])
+    audit = os.path.join(ROOT, pkg, "illustration-audit.json")
+    if patches and illustration_cache and os.path.isfile(audit):
+        with open(audit) as stream:
+            review = json.load(stream)
+        commit = subprocess.check_output(
+            ["git", "-C", os.path.join(ROOT, ".upstream", pkg), "rev-parse", "HEAD"],
+            text=True).strip()
+        if not review.get("enabled", True):
+            print(f"{pkg}: drawing cache disabled by illustration review policy")
+        elif review.get("upstream_commit") != commit:
+            print(f"{pkg}: upstream changed since illustration review; drawing cache disabled")
+        else:
+            counts = apply_cache_tags(os.path.join(dest, lock["docdir"]), review)
+            print(f"{pkg}: illustration review: {counts['tagged']} cache candidates, "
+                  f"{counts['stale']} changed examples left uncached")
 
 
 def refresh_patches(pkg, edited):
@@ -156,6 +176,8 @@ def main():
     ap.add_argument("package")
     ap.add_argument("--dest")
     ap.add_argument("--no-patches", action="store_true")
+    ap.add_argument("--no-illustration-cache", action="store_true",
+                    help="prepare untagged sources for illustration review")
     ap.add_argument("--reject", action="store_true",
                     help="apply what applies of failing patches, leave .rej files and continue")
     ap.add_argument("--refresh-patches", metavar="DIR")
@@ -164,7 +186,8 @@ def main():
         refresh_patches(args.package, os.path.abspath(args.refresh_patches))
     else:
         dest = os.path.abspath(args.dest or os.path.join(ROOT, "build", args.package, "src"))
-        prepare(args.package, dest, patches=not args.no_patches, reject=args.reject)
+        prepare(args.package, dest, patches=not args.no_patches, reject=args.reject,
+                illustration_cache=not args.no_illustration_cache)
         print(f"{args.package}: source tree in {os.path.relpath(dest, ROOT)}")
 
 

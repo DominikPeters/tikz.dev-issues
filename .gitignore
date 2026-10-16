@@ -1,4 +1,5 @@
 .upstream/
 build/
 __pycache__/
+.illustration-cache/
 .DS_Store

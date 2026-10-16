@@ -1,0 +1,3 @@
+# Preserve original illustration pages before the next LuaLaTeX pass overwrites
+# its PDF. This cache lives only in the disposable prepared source tree.
+$lualatex = 'python3 render_cache.py %O %S';
