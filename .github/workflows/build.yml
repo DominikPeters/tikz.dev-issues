@@ -4,7 +4,8 @@ name: build
 
 on:
   push:
-    branches: [main]
+    # monorepo: test branch, deploys below DEPLOY_PREFIX (remove after the switch)
+    branches: [main, monorepo]
     paths: [pgf/**, pgfplots/**, tcolorbox/**, shared/**, scripts/**, .github/workflows/build*.yml]
   workflow_dispatch:
     inputs:
@@ -54,5 +55,5 @@ jobs:
     uses: ./.github/workflows/build-package.yml
     with:
       package: ${{ matrix.package }}
-      deploy: ${{ github.event_name == 'push' || inputs.deploy }}
+      deploy: ${{ github.event_name == 'push' || inputs.deploy == true }}
     secrets: inherit

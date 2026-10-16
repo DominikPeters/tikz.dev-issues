@@ -57,9 +57,10 @@ class on `<html>` that each build sets: `.pkg-pgf`, `.pkg-pgfplots`,
     updated); the site stays as it is. The issue is closed automatically after
     the next successful build.
 
-Deployment uses `scripts/deploy.sh` (rsync over ssh) with the repository
-secrets `DEPLOY_TARGET` (e.g. `user@host:/path/to/tikz.dev`) and
-`DEPLOY_SSH_KEY`. It never deletes files on the server.
+Deployment uses `scripts/deploy.sh` (FTP with TLS, via lftp) with the
+repository variables `FTP_HOST`, `FTP_USER`, `FTP_ROOT` (folder of the site,
+relative to the FTP login), optionally `DEPLOY_PREFIX` (e.g. `/monorepo` for
+testing), and the secret `FTP_PASSWORD`. It never deletes files on the server.
 
 ## Fixing a patch
 
@@ -78,10 +79,15 @@ result together with the new commit in `pgf/upstream.lock`.
 
 ## License
 
-The manuals belong to their authors and keep their licenses, which also apply
-to the patches and other material derived from them in this repository and to
+The tikz.dev tooling (scripts, workflows, `shared/`, the build and
+postprocessing scripts, the tcolorbox converter) is under the MIT license
+(`LICENSE`). The manuals belong to their authors and keep their licenses, which
+also apply to the patches and other material derived from them here, and to
 the generated pages:
 
 * pgf: documentation GNU FDL 1.2 or LPPL 1.3c (code GPL 2 or LPPL 1.3c)
 * pgfplots: GPL 3 or later
 * tcolorbox: LPPL 1.3c or later
+
+`REUSE.toml` lists which files fall under which license; the texts are in
+`LICENSES/`.

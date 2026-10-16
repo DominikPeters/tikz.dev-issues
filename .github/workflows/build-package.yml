@@ -38,11 +38,19 @@ jobs:
           apt-get update -qq
           apt-get install -y -qq --no-install-recommends \
             git python3-pip python3-venv mupdf-tools poppler-utils ghostscript \
-            imagemagick pngquant librsvg2-bin nodejs npm rsync openssh-client
+            imagemagick pngquant librsvg2-bin nodejs npm lftp gnuplot-nox
           npm install -g svgo
           python3 -m venv /opt/venv
           /opt/venv/bin/pip install -q beautifulsoup4 lxml requests numpy pillow
           echo /opt/venv/bin >> "$GITHUB_PATH"
+
+      - name: Show FTP folders
+        if: inputs.deploy
+        env:
+          FTP_HOST: ${{ vars.FTP_HOST }}
+          FTP_USER: ${{ vars.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: scripts/deploy.sh --list || echo "::warning::FTP listing failed"
 
       - name: Fetch upstream
         id: fetch
@@ -63,6 +71,9 @@ jobs:
       - name: Deploy
         if: inputs.deploy
         env:
-          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          DEPLOY_TARGET: ${{ secrets.DEPLOY_TARGET }}
+          FTP_HOST: ${{ vars.FTP_HOST }}
+          FTP_USER: ${{ vars.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_ROOT: ${{ vars.FTP_ROOT }}
+          DEPLOY_PREFIX: ${{ vars.DEPLOY_PREFIX }}
         run: scripts/deploy.sh "${{ inputs.package }}"

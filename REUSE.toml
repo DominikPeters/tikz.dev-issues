@@ -1,0 +1,40 @@
+# Licenses of the files in this repository (https://reuse.software).
+# The tikz.dev tooling is MIT-licensed; material derived from the manuals keeps
+# the license of the manual it comes from. Later entries take precedence.
+version = 1
+
+[[annotations]]
+path = "**"
+SPDX-FileCopyrightText = "2021-2026 Dominik Peters"
+SPDX-License-Identifier = "MIT"
+
+# pgf documentation (doc/ of pgf-tikz/pgf): GNU FDL 1.2 or LPPL 1.3c
+[[annotations]]
+path = [
+  "pgf/patches/**",
+  "pgf/standalone/**",
+  "pgf/spotlight-tocs/**",
+  "pgf/pgfmanual.sty",
+  "pgf/pgfmanual.code.tex",
+  "pgf/pgfmanual.pdflinks.code.tex",
+  "pgf/pgfmanual.prettyprinter.code.tex",
+  "pgf/pgfmanual-en-macros.tex",
+  "pgf/brave-gnu-world-logo.eps",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "Till Tantau and the PGF/TikZ team; changes 2021-2026 Dominik Peters"
+SPDX-License-Identifier = "GFDL-1.2-only OR LPPL-1.3c"
+
+# pgfplots documentation: GPL 3 or later
+[[annotations]]
+path = ["pgfplots/patches/**", "pgfplots/pgfplotsoldpgfsupp_*.code.tex"]
+precedence = "override"
+SPDX-FileCopyrightText = "Christian Feuersänger and the pgfplots team; changes 2022-2026 Dominik Peters"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+# adapted from the tcolorbox documentation library
+[[annotations]]
+path = "tcolorbox/tcbhtml.sty"
+precedence = "override"
+SPDX-FileCopyrightText = "Thomas F. Sturm; changes 2026 Dominik Peters"
+SPDX-License-Identifier = "LPPL-1.3c+"

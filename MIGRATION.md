@@ -35,8 +35,9 @@ the tikz.dev-issues repository so that the issues are kept.
 
 * Rename this repository DominikPeters/tikz.dev-issues to DominikPeters/tikz.dev
   (GitHub redirects the old URLs) and merge the branch `monorepo` into `main`.
-* Add the secrets `DEPLOY_TARGET` and `DEPLOY_SSH_KEY` (or switch
-  `scripts/deploy.sh` to another host, e.g. GitHub Pages).
+* Test deploys go to `tikz.dev/monorepo/` (repository variable
+  `DEPLOY_PREFIX=/monorepo`, and the `monorepo` branch in `build.yml`). For the
+  switch: delete `DEPLOY_PREFIX`, remove `monorepo` from `build.yml`.
 * Run `build.yml` by hand once per package and compare the result with the
   live site before letting it deploy (`deploy: false` input).
 * The lwarp builds (`pgf/build.sh`, `pgfplots/build.sh`) have only run on the
