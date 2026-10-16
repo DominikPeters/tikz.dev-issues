@@ -1333,7 +1333,22 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfplotstablesave[
      create on use/postproc1/.style={create col/dyadic refinement rate=error1},
      columns={dof,error1,postproc1}
-@@ -4282,7 +4281,7 @@ The slope is `\slope'.
+@@ -4223,6 +4222,14 @@ The slope is `\slope'.
+     {pgfplotstable.example1.dat}
+     {pgfplotstable.example1.out.dat}
+ \end{codeexample}
++    % tikz.dev: with lwarp the code example only runs in the image pass,
++    % after the listing below has been read, so save the table here as well
++    \pgfplotstablesave[
++        create on use/postproc1/.style={create col/dyadic refinement rate=error1},
++        columns={dof,error1,postproc1}
++    ]
++        {pgfplotstable.example1.dat}
++        {pgfplotstable.example1.out.dat}%
+     %
+     Now, |pgfplotstable.example1.out.dat| is
+     %
+@@ -4282,7 +4289,7 @@ The slope is `\slope'.
  \subsection{A summary of how to define and use styles and keys}
  
  This section summarizes features of |pgfkeys|. The complete documentation can
@@ -1342,7 +1357,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  
  \begin{handler}{{.style}=\marg{key-value-list}}
      Defines or redefines a style \meta{key}. A style is a normal key which will
-@@ -4309,7 +4308,7 @@ be found in the \pgfname{} manual,~\cite{tikz}.
+@@ -4309,7 +4316,7 @@ be found in the \pgfname{} manual,~\cite{tikz}.
  \begin{handler}{{.add}=\marg{before}\marg{after}}
      Changes \meta{key} by prepending \meta{before} and appending \meta{after}.
      %
@@ -1351,7 +1366,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfplotstableset{columns={a column}}
  `\pgfkeysvalueof{/pgfplots/table/columns}';
  \pgfplotstableset{columns/.add={}{,another}}
-@@ -4329,7 +4328,7 @@ be found in the \pgfname{} manual,~\cite{tikz}.
+@@ -4329,7 +4336,7 @@ be found in the \pgfname{} manual,~\cite{tikz}.
      code}. Inside of \meta{\TeX{} code}, any command can be used. Furthermore,
      the |#1| pattern will be the argument provided to the key.
      %
@@ -1360,7 +1375,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfplotsset{
      My Code/.code={This is a pgfkeys feature. Argument=`#1'}}
  \pgfplotsset{My Code={is here}}
-@@ -4388,7 +4387,7 @@ one row is complicated and expensive.
+@@ -4388,7 +4395,7 @@ one row is complicated and expensive.
      will be executed. During \meta{code}, |\pgfplotstablecol| denotes the
      current column index (starting with 0).
      %
@@ -1369,7 +1384,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \begin{minipage}{0.8\linewidth}
  \pgfplotstableread{pgfplotstable.example1.dat}\loadedtable
  \pgfplotstableforeachcolumn\loadedtable\as\col{%
-@@ -4409,7 +4408,7 @@ one row is complicated and expensive.
+@@ -4409,7 +4416,7 @@ one row is complicated and expensive.
      cellcontent} will contain the cell's content and |\pgfplotstablerow| will
      contain the current row's index.
      %
@@ -1378,7 +1393,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \begin{minipage}{0.8\linewidth}
  \pgfplotstableread{pgfplotstable.example1.dat}\loadedtable
  \pgfplotstableforeachcolumnelement{error1}\of\loadedtable\as\cell{%
-@@ -4432,7 +4431,7 @@ one row is complicated and expensive.
+@@ -4432,7 +4439,7 @@ one row is complicated and expensive.
      changes of \meta{\textbackslash cellcontent} which might occur during
      \meta{code} will be written back into the respective cell.
      %
@@ -1387,7 +1402,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfplotstableread{pgfplotstable.example1.dat}\loadedtable
  \pgfplotstablemodifyeachcolumnelement{error1}\of\loadedtable\as\cell{%
      \edef\cell{\#\pgfplotstablerow: \cell}%
-@@ -4452,7 +4451,7 @@ one row is complicated and expensive.
+@@ -4452,7 +4459,7 @@ one row is complicated and expensive.
  
      The return value will be written to |\pgfplotsretval|.
      %
@@ -1396,7 +1411,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfplotstableread{pgfplotstable.example1.dat}{\loadedtable}
  \pgfplotstablegetelem{4}{error1}\of{\loadedtable}
  The value (4,error1) is `\pgfplotsretval'.
-@@ -4470,7 +4469,7 @@ The value (2,0) is `\pgfplotsretval'.
+@@ -4470,7 +4477,7 @@ The value (2,0) is `\pgfplotsretval'.
      Retrieves the column name at \meta{col index} from a \meta{table} and
      stores it into a \meta{macro}.
      %
@@ -1405,7 +1420,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfplotstableread{pgfplotstable.example1.dat}{\loadedtable}
  \pgfplotstablegetcolumnnamebyindex{4}\of{\loadedtable}\to\pgfplotsretval
  The name of column 4 `\pgfplotsretval'.
-@@ -4513,11 +4512,11 @@ The name of column 4 `\pgfplotsretval'.
+@@ -4513,11 +4520,11 @@ The name of column 4 `\pgfplotsretval'.
      The version with `|*|' is only interesting in conjunction with the
      |columns| option, see below.
      %
@@ -1419,7 +1434,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfplotstabletranspose\loadedtable{pgfplotstable.example3.dat}
  \pgfplotstabletypeset[string type]\loadedtable
  \end{codeexample}
-@@ -4535,7 +4534,7 @@ The name of column 4 `\pgfplotsretval'.
+@@ -4535,7 +4542,7 @@ The name of column 4 `\pgfplotsretval'.
          If \meta{colname} is not empty, it denotes an input column name whose
          cell values will make up the output column names:
          %
@@ -1428,7 +1443,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfplotstabletranspose[colnames from=c]\loadedtable{pgfplotstable.example3.dat}
  \pgfplotstabletypeset[string type]\loadedtable
  \end{codeexample}
-@@ -4551,14 +4550,14 @@ The name of column 4 `\pgfplotsretval'.
+@@ -4551,14 +4558,14 @@ The name of column 4 `\pgfplotsretval'.
          This key will create a further column named \meta{name} which will be
          filled with the input column names (as string type).
          %
@@ -1445,7 +1460,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfplotstabletranspose[input colnames to=]\loadedtable{pgfplotstable.example3.dat}
  \pgfplotstabletypeset[string type]\loadedtable
  \end{codeexample}
-@@ -4577,7 +4576,7 @@ The name of column 4 `\pgfplotsretval'.
+@@ -4577,7 +4584,7 @@ The name of column 4 `\pgfplotsretval'.
          provide column aliases or |create on use| arguments inside of
          \meta{list}.
          %
@@ -1454,7 +1469,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfplotstabletranspose[columns={a,b}]\loadedtable{pgfplotstable.example3.dat}
  \pgfplotstabletypeset[string type]\loadedtable
  \end{codeexample}
-@@ -4596,7 +4595,7 @@ The name of column 4 `\pgfplotsretval'.
+@@ -4596,7 +4603,7 @@ The name of column 4 `\pgfplotsretval'.
      Use the high level |sort| key to enable sorting automatically during
      |\pgfplotstabletypeset|.
      %
@@ -1463,7 +1478,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfplotstablesort\result{%
      a      b  c
      19     2 [a]
-@@ -4656,7 +4655,7 @@ The name of column 4 `\pgfplotsretval'.
+@@ -4656,7 +4663,7 @@ The name of column 4 `\pgfplotsretval'.
              characters.\footnote{As long as they haven't been consumed by
              \TeX's preprocessing.}
              %
@@ -1472,7 +1487,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfplotstablesort[sort cmp=string <]\result{% 'Header' is the column name:
      Header
      the
-@@ -4721,10 +4720,9 @@ The name of column 4 `\pgfplotsretval'.
+@@ -4721,10 +4728,9 @@ The name of column 4 `\pgfplotsretval'.
  \subsection{Repeating Things: Loops}
  
  \begin{command}{\foreach \meta{variables} |in| \meta{list} \marg{commands}}
@@ -1485,7 +1500,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \foreach \x in {1,2,...,4} {Iterating \x. }%
  \end{codeexample}
  
-@@ -4748,7 +4746,7 @@ The following \PGFPlots{} looping macros are an alternative.
+@@ -4748,7 +4754,7 @@ The following \PGFPlots{} looping macros are an alternative.
      invoke the math parser for (simple!)
      \meta{$x_0$}|,|\meta{$x_1$}|,...,|\meta{$x_n$} expressions.
      %
@@ -1494,7 +1509,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \def\allcollected{}
  \pgfplotsforeachungrouped \x in {1,2,...,4} {Iterating \x. \edef\allcollected{\allcollected, \x}}%
  All collected = \allcollected.
-@@ -4790,7 +4788,7 @@ All collected = \allcollected.
+@@ -4790,7 +4796,7 @@ All collected = \allcollected.
      The difference to |\foreach \x in |\meta{list}\marg{command} is subtle: the
      |\x| would \emph{not} be expanded whereas |#1| is.
      %
@@ -1503,7 +1518,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfkeys{
    otherstyle a/.code={[a]},
    otherstyle b/.code={[b]},
-@@ -4803,7 +4801,7 @@ Invoke them: \pgfkeys{key a} \pgfkeys{key b} \pgfkeys{key c} \pgfkeys{key d}
+@@ -4803,7 +4809,7 @@ Invoke them: \pgfkeys{key a} \pgfkeys{key b} \pgfkeys{key c} \pgfkeys{key d}
      %
      The counterexample would use a macro (here |\x|) as loop argument:
      %
@@ -1512,7 +1527,7 @@ diff --git a/doc/latex/pgfplots/pgfplotstable.tex b/doc/latex/pgfplots/pgfplotst
  \pgfkeys{
    otherstyle a/.code={[a]},
    otherstyle b/.code={[b]},
-@@ -4820,10 +4818,3 @@ Invoke them: \pgfkeys{key a} \pgfkeys{key b} \pgfkeys{key c} \pgfkeys{key d}
+@@ -4820,10 +4826,3 @@ Invoke them: \pgfkeys{key a} \pgfkeys{key b} \pgfkeys{key c} \pgfkeys{key d}
      scopes).
  \end{command}
  
