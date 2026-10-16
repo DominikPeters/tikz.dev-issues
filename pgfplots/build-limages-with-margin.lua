@@ -497,18 +497,33 @@ if ( pagezerowarning ) then
 end -- pagezerowarning
 end -- checklimages
 
+-- A wait in a new os.execute shell cannot wait for earlier shells' jobs.
+-- Start and wait for each bounded batch in the same shell instead.
+local uniximagecommands = {}
+local uniximagejobs = math.max(1, math.floor(tonumber(os.getenv("TIKZ_IMAGE_JOBS")) or 4))
+
+function flushuniximages ()
+    if #uniximagecommands == 0 then return end
+    local commands = {"status=0", "pids=''"}
+    for _, command in ipairs(uniximagecommands) do
+        table.insert(commands, command .. " &\npids=\"$pids $!\"")
+    end
+    table.insert(commands, 'for pid in $pids; do wait "$pid" || status=1; done')
+    table.insert(commands, 'exit "$status"')
+    executecheckerror(table.concat(commands, "\n"), "Image conversion failed; see errors above.")
+    uniximagecommands = {}
+end
+
 function createuniximage ( lwimgfullname )
---
--- Create one lateximage for Unix / Linux / Mac OS.
---
-executecheckerror (
+-- Create one lateximage, flushing complete batches before starting more.
+local command =
     cmdgroupopenname ..
     "pdfseparate -f " .. lwimgpage .. " -l " .. lwimgpage .. " " ..
         sourcename .."_html.pdf " ..
         imagesdirectory .. dirslash .."lateximagetemp-%d" .. ".pdf" ..
         seqname ..
     -- Crop the image:
-    "pdfcrop --margins 1  --hires  " .. imagesdirectory .. dirslash .. "lateximagetemp-" ..
+    "python3 crop_latex_image.py " .. imagesdirectory .. dirslash .. "lateximagetemp-" ..
         lwimgpage .. ".pdf " ..
         imagesdirectory .. dirslash .. lwimgname .. ".pdf" ..
         seqname ..
@@ -535,18 +550,10 @@ executecheckerror (
     -- Remove the temporary files:
     rmname .. " " .. imagesdirectory .. dirslash .. lwimgname .. ".pdf" .. seqname ..
     rmname .. " " .. imagesdirectory .. dirslash .. "lateximagetemp-" .. lwimgpage .. ".pdf" ..
-    cmdgroupclosename .. " >/dev/null " .. bgname
-    ,
-    "File error trying to convert " .. lwimgfullname
-)
--- Every 32 images, wait for completion at below normal priority,
---  allowing other image tasks to catch up.
-numimageprocesses = numimageprocesses + 1
-if ( numimageprocesses > 32 ) then
-    numimageprocesses = 0
-    print ( "lwarpmk: waiting" )
-    executecheckerror ( "wait" , "File error trying to wait.")
-end
+    cmdgroupclosename .. " >/dev/null "
+
+    table.insert(uniximagecommands, command)
+    if #uniximagecommands >= uniximagejobs then flushuniximages() end
 end -- createuniximage
 
 function createwindowsimage ( lwimgfullname )
@@ -649,6 +656,7 @@ pagezerowarning = false
 for line in limagesfile:lines() do
     createonelateximage ( line )
 end -- do
+if opsystem=="Unix" then flushuniximages() end
 io.close(limagesfile)
 print ( "lwarpmk limages: ===")
 print ( "lwarpmk limages: Wait a moment for the images to complete" )

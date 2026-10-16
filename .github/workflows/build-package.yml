@@ -39,9 +39,9 @@ jobs:
           apt-get install -y -qq --no-install-recommends \
             git python3-pip python3-venv mupdf-tools poppler-utils ghostscript \
             imagemagick pngquant librsvg2-bin nodejs npm lftp gnuplot-nox
-          npm install -g svgo
+          npm install -g svgo prettier
           python3 -m venv /opt/venv
-          /opt/venv/bin/pip install -q beautifulsoup4 lxml requests numpy pillow
+          /opt/venv/bin/pip install -q beautifulsoup4 html5lib lxml requests numpy pillow
           echo /opt/venv/bin >> "$GITHUB_PATH"
 
       - name: Show FTP folders

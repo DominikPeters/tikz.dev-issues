@@ -10,6 +10,7 @@ import datetime
 import subprocess
 import requests
 from navbar import other_packages_menu  # shared/navbar.py
+from lwarp_html import escape_code_angles, normalize_page_layout
 
 def kilobytes(filename):
     st = os.stat(filename)
@@ -805,7 +806,8 @@ for filename in sorted(os.listdir()):
         else:
             print(f"Processing {filename}")
             with open(filename, "r") as fp:
-                soup = BeautifulSoup(fp, 'html5lib')
+                soup = BeautifulSoup(escape_code_angles(fp.read()), 'html5lib')
+                normalize_page_layout(soup)
                 add_footer(soup)
                 shorten_sidetoc_and_add_part_header(soup, is_home=(filename == "index-0.html"))
                 rearrange_heading_anchors(soup)
@@ -843,7 +845,7 @@ for filename in sorted(os.listdir()):
 # prettify
 # run command with subprocess
 print("Prettifying")
-subprocess.run(["prettier", "--print-width", "140", "--write", "processed/*.html"])
+subprocess.run(["prettier", "--print-width", "140", "--write", "processed/*.html"], check=True)
 
 def numspace_to_spaces(filename):
     "replace numspaces by normal spaces in code blocks"
@@ -861,10 +863,6 @@ def numspace_to_spaces(filename):
     html = html.replace("&numsp;", '<span class="spaces"> </span>')
     # ugly hack to fix https://github.com/DominikPeters/tikz.dev-issues/issues/16
     html = html.replace('<a href="drivers#pgf.class">class</a>', 'class')
-    # ugly hack to fix https://github.com/DominikPeters/tikz.dev-issues/issues/46
-    if filename == 'pgfkeys.html':
-        assert '<bar></bar>' in html
-        html = html.replace('<bar></bar>','&lt;bar&gt;')
     with open("processed/"+filename, "w") as f:
         f.write(html)
 

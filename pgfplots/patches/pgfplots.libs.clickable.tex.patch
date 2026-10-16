@@ -2,16 +2,16 @@ diff --git a/doc/latex/pgfplots/pgfplots.libs.clickable.tex b/doc/latex/pgfplots
 --- a/doc/latex/pgfplots/pgfplots.libs.clickable.tex
 +++ b/doc/latex/pgfplots/pgfplots.libs.clickable.tex
 @@ -1,5 +1,5 @@
- 
+
 -\section{Clickable Plots}
 +\section[libs.clickable]{Clickable Plots}
- 
+
  \begingroup
  \def\pgfplotsmanualcurlibrary{clickable}
-@@ -53,13 +53,8 @@ where $m = (y_1-y_0) / (x_1-x_0)$ is the slope and $n$ the offset chosen such
+@@ -53,13 +53,8 @@
  that $l(x_0;\dotsc) = y_0$. For logarithmic plots, logarithms will be applied
  before computing slopes.
- 
+
 -    \noindent
 -    \hbox to \linewidth{%
 -    \hspace{-0.5cm}%
@@ -21,10 +21,10 @@ diff --git a/doc/latex/pgfplots/pgfplots.libs.clickable.tex b/doc/latex/pgfplots
 -    \end{tikzpicture}\hss}%
 +    \includegraphics[height=6cm]{figures/pgfplotsclickable-fig4.png}
 +    \includegraphics[height=6cm]{figures/pgfplotsclickable-fig3.png}
- 
+
  \nobreak These screen shots show the result of drag- and drop for
  \emph{logarithmic} axes: the end points show, again, the coordinates (without
-@@ -87,7 +82,7 @@ to load it into Acrobat Reader and simply click into a plot.
+@@ -87,7 +82,7 @@
      value by default (i.e.\@ you write just |clickable coords| without an equal
      sign).
      %
@@ -33,19 +33,43 @@ diff --git a/doc/latex/pgfplots/pgfplots.libs.clickable.tex b/doc/latex/pgfplots
  \begin{tikzpicture}
  \begin{loglogaxis}[
      clickable coords={
-@@ -125,9 +120,9 @@ to load it into Acrobat Reader and simply click into a plot.
+@@ -114,20 +109,18 @@
+     \noindent Now, clicking onto a data point yields `Level 7 (q=40)' whereas
+     clicking besides a data point results in the click coordinates as before,
+
+-        \noindent\hbox to \linewidth{\hfill
+         \includegraphics[scale=0.4]{figures/pgfplotsclickable-log-snap0}\hfill
+         \includegraphics[scale=0.4]{figures/pgfplotsclickable-log-snap2}\hfill
+         \includegraphics[scale=0.4]{figures/pgfplotsclickable-log-snap1}.\hfill
+-        }%
+
+     Note that logarithmic slopes work as before.
+
      If you want the $(x,y)$ values to be displayed, use the special placeholder
      string `|(xy)|' inside of \meta{displayed text}. As an example, we consider
      again the |scatter/classes| example of
 -    page~\pageref{pgfplots:scatterclasses}:
-+    Section~\ref{pgfplots:scatterclasses}:
-     %
+-    %
 -\begin{codeexample}[]
++    Section~\ref{pgfplots:scatterclasses}:
++    %
 +\begin{codeexample}[code only]
  \begin{tikzpicture}
  \begin{axis}[
      clickable coords={(xy): \thisrow{label}},
-@@ -229,7 +224,7 @@ to load it into Acrobat Reader and simply click into a plot.
+@@ -162,11 +155,9 @@
+     %
+     \noindent Here, we find popups like
+
+-        \noindent\hbox to \linewidth{\hfill
+         \includegraphics[scale=0.4]{figures/pgfplotsclickable-scatter1.png}\hfill
+         \includegraphics[scale=0.4]{figures/pgfplotsclickable-scatter2.png}\hfill
+         \includegraphics[scale=0.4]{figures/pgfplotsclickable-scatter0.png}.\hfill
+-        }%
+
+     The \meta{displayed text} is a richtext string displayed with
+     \emph{JavaScript}. For most purposes, it is used like an unformatted C
+@@ -229,7 +220,7 @@
      ``Number = \meta{the value}''. The following example uses it twice to
      pretty-print the data:
      %
@@ -54,3 +78,14 @@ diff --git a/doc/latex/pgfplots/pgfplots.libs.clickable.tex b/doc/latex/pgfplots
  \begin{tikzpicture}
  \begin{loglogaxis}[clickable coords code={
      \pgfmathprintnumberto[verbatim,precision=1]
+@@ -259,10 +250,8 @@
+     %
+     \noindent resulting in
+
+-        \noindent\hbox to \linewidth{\hfill
+         \includegraphics[scale=0.4]{figures/pgfplotsclickable-logcode-snap0.png}\hfill
+         \includegraphics[scale=0.4]{figures/pgfplotsclickable-logcode-snap1.png}.\hfill
+-        }%
+
+     The \meta{\TeX{} code} is evaluated inside of a local scope, all locally
+     declared variables are freed afterwards (that's why you can use any names
