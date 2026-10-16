@@ -1,7 +1,9 @@
 # HTML version of the tcolorbox manual (prototype)
 
-Converts the tcolorbox manual (`doc/latex/tcolorbox`) into HTML pages in the
-style of [tikz.dev](https://tikz.dev), intended to live at `tikz.dev/tcolorbox/`.
+Converts the tcolorbox manual (`doc/latex/tcolorbox` of
+[T-F-S/tcolorbox](https://github.com/T-F-S/tcolorbox), checked out by
+`scripts/fetch.sh tcolorbox` into `.upstream/tcolorbox`) into HTML pages in the
+style of [tikz.dev](https://tikz.dev), to live at `tikz.dev/tcolorbox/`.
 
 Unlike the PGF/TikZ and pgfplots manuals on tikz.dev, this does **not** use
 lwarp. The tcolorbox manual is built almost entirely from the macros of
@@ -11,8 +13,9 @@ and more robust:
 * `convert.py` parses the LaTeX sources directly and maps `docCommand`,
   `docTcbKey`, `dispExample`, `\refKey`, ... onto the HTML structure that the
   tikz.dev pipeline produces (`manualentry`, `entryheadline`, `example`,
-  side tables of contents, ...), so tikz.dev's `style.css` and `pgfmanual.js`
-  apply unchanged. `assets/tcolorbox.css` adds a few tcolorbox-specific bits.
+  side tables of contents, ...), so the shared `style.css` and `pgfmanual.js`
+  in `../shared/` apply (tcolorbox-specific rules there are scoped by
+  `.pkg-tcolorbox`).
   Code examples are highlighted, with every documented key, command and
   environment linked to its definition.
 * Everything visual becomes an image. `convert.py tex` writes an instrumented
@@ -26,6 +29,9 @@ and more robust:
   and soft masks wrong) or are much larger than the PNG fall back to PNG.
 
 ## Building
+
+From the repository root, `scripts/fetch.sh tcolorbox && scripts/build.sh tcolorbox`
+does everything. Inside this folder:
 
 ```bash
 ./build.sh          # full build: LaTeX (2 LuaLaTeX runs) + images + HTML
