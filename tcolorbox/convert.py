@@ -5,7 +5,7 @@ Instead of running the manual through lwarp, this script parses the LaTeX
 sources of the manual directly. It understands the macros of the
 `documentation` library of tcolorbox (docCommand, docTcbKey, dispExample,
 \\refKey, ...) and maps them onto the HTML structure produced by the tikz.dev
-pipeline, so that the same style.css and pgfmanual.js apply.
+pipeline, so that the shared tikz.dev style.css and pgfmanual.js apply.
 
 Everything that is genuinely visual (the compiled part of examples, boxes in
 running text, pictures, tables, ...) becomes an image. For that, the script
@@ -29,6 +29,8 @@ import sys
 from collections import Counter, defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+SHARED = os.path.join(ROOT, "shared")
 DOC = os.path.normpath(os.path.join(HERE, "..", "doc", "latex", "tcolorbox"))
 BUILD = os.path.join(HERE, "build")
 TEXDIR = os.path.join(BUILD, "tex")
@@ -2077,7 +2079,7 @@ def page_shell(ctx, pages, page, title, main_html, local_toc, is_home=False):
         part_h2 = f'<h2 class="inserted">{dict(PARTS)[page.part]}</h2>'
     canonical = BASE_URL + ("" if is_home else page.slug)
     return f"""<!DOCTYPE html>
-<html lang="en-US">
+<html class="pkg-tcolorbox" lang="en-US">
 <!--The tcolorbox package documentation:
 Copyright (c) 2006-2026 by Prof. Dr. Dr. Thomas F. Sturm
 
@@ -2093,7 +2095,6 @@ This file may be distributed and/or modified under the LaTeX Project Public Lice
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 <title>{esc(title)}</title>
 <link href="style.css?v={version}" rel="stylesheet" type="text/css" />
-<link href="tcolorbox.css?v={version}" rel="stylesheet" type="text/css" />
 {mathjax}
 <script src="pgfmanual.js?v={version}"></script>
 <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
@@ -2167,8 +2168,8 @@ def fix_page_refs(html_text):
 
 def write_site(ctx, pages):
     os.makedirs(SITE, exist_ok=True)
-    for name in ("style.css", "pgfmanual.js", "tcolorbox.css"):
-        shutil.copy(os.path.join(HERE, "assets", name), SITE)
+    for name in ("style.css", "pgfmanual.js"):
+        shutil.copy(os.path.join(SHARED, name), SITE)
     img_src = os.path.join(BUILD, "images")
     if os.path.isdir(img_src):
         dst = os.path.join(SITE, IMGDIR_NAME)

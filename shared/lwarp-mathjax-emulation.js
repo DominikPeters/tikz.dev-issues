@@ -1,3 +1,7 @@
+// MathJax configuration emulating lwarp, shared by the lwarp-based manuals.
+// The manual is given by the class on <html> (pkg-pgf, pkg-pgfplots).
+var TIKZDEV_MATHJAX_PGF = !/\bpkg-(?!pgf\b)/.test(document.documentElement.className);
+
 // Lwarp MathJax emulation code
 //
 // Based on code by Davide P. Cervone.
@@ -214,9 +218,28 @@ MathJax = {
             delimiter.add("\\Vvert", new Symbol("\\Vvert", "\u2980"));
         }, // ready
     }, // startup
-
+    ...(TIKZDEV_MATHJAX_PGF ? { textmacros: { packages: { '[+]': ['textcomp'] } } } : {}),
     tex: {
         packages: { "[+]": ["tagformat", "Lwarp-macros", "textmacros"] },
+        // pgf defines these here; pgfplots defines its macros in the pages
+        ...(TIKZDEV_MATHJAX_PGF ? { macros: {
+            footnotename: "footnote",
+            LWRfootnote: "1",
+            footnote: ["{}^{\\mathrm{#1}}", 2, "\\LWRfootnote "],
+            LWRorighspace: "\\hspace",
+            hspace: "\\ifstar \\LWRorighspace \\LWRorighspace ",
+            setlength: ["{}", 2],
+            directlua: ["\\text{(directlua)}", 1],
+            o: "\\unicode{x00F8}",
+            O: "\\unicode{x00D8}",
+            l: "\\unicode{x0142}",
+            L: "\\unicode{x0141}",
+            ss: "\\unicode{x00DF}",
+            P: "\\unicode{x00B6}",
+            LWRref: "\\ref",
+            ref: "\\ifstar \\LWRref\\LWRref ",
+            meta: ["\\langle \\textit{#1}\\rangle", 1]
+        } } : {}),
         processEscapes: false,
         tags: "ams",
         tagformat: {

@@ -669,6 +669,7 @@ for filename in sorted(os.listdir()):
                 add_copyright_comment_block(filename, soup)
                 handle_code_spaces(soup)
                 soup.find(class_="bodyandsidetoc")['class'].append("grid-container")
+                soup.html['class'] = "pkg-pgfplots"  # selects package-specific rules in the shared style.css / js
                 if filename == "index-0.html":
                     soup.h2.decompose() # don't need header on start page
                     soup.body['class'] = "index-page"

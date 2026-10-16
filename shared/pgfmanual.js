@@ -1,3 +1,11 @@
+// tikz.dev page scripts, shared by all manuals. The manual a page belongs to
+// is given by the class on <html> (pkg-pgf, pkg-pgfplots, pkg-tcolorbox).
+const TIKZDEV_PACKAGE = (Array.from(document.documentElement.classList)
+  .find((c) => c.startsWith("pkg-")) || "pkg-pgf").slice(4);
+const PDF_MANUAL_URLS = {
+  pgf: "https://pgf-tikz.github.io/pgf/pgfmanual.pdf",
+};
+
 let sections;
 let navLi;
 
@@ -34,9 +42,10 @@ function initClipboardButtons() {
   for (elem of document.getElementsByClassName("clipboardButton")) {
     elem.addEventListener("click", function (e) {
       var target = e.target;
-      var copyText = target.parentElement
-        .getElementsByTagName("code")[0]
-        .innerText.trim();
+      var copyText = Array.from(target.parentElement.getElementsByTagName("code"))
+        .map((code) => code.innerText)
+        .join("\n")
+        .trim();
       navigator.clipboard.writeText(copyText).then(
         function () {
           target.innerHTML = "&#x2713;";
@@ -56,7 +65,8 @@ function initClipboardButtons() {
 }
 
 function makeAnchorButtons() {
-  const pdfManualURL = "https://pgf-tikz.github.io/pgf/pgfmanual.pdf";
+  const pdfManualURL = PDF_MANUAL_URLS[TIKZDEV_PACKAGE];
+  if (!pdfManualURL) return;
   document.querySelectorAll('a.anchor-link').forEach((element) => {
     const links = [];
 

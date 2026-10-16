@@ -1,3 +1,7 @@
+/* tikz.dev style sheet, shared by all manuals.
+ * Package-specific rules are scoped by the class on <html>:
+ * .pkg-pgf, .pkg-pgfplots, .pkg-tcolorbox (set by each package's build). */
+
 /*
   CSS stylesheet for tikz.dev
   Copyright 2021-2022 Dominik Peters
@@ -1384,3 +1388,403 @@ div.warning-see-pdf img {
 }
 
 /* end temporary ad */
+
+/* ************************************************************************ */
+/* pgfplots: differences to the pgf style (selected via <html class=...>)  */
+/* ************************************************************************ */
+
+.pkg-pgfplots .bodyandsidetoc > header {
+  background-color: #623cc9;
+}
+
+.pkg-pgfplots A:hover {
+  color: #000080;
+}
+
+.pkg-pgfplots span.sectionnumber {
+  margin-right: 0.5em;
+}
+
+.pkg-pgfplots kbd {
+  padding: 0.07em 0.14em;
+  margin: 0;
+  font-size: 85%;
+  background-color: hsl(240, 100%, 97%);
+  border: 1px solid hsl(240, 100%, 94%);
+}
+
+.pkg-pgfplots .entryheadline kbd {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  font-size: 88%;
+}
+
+.pkg-pgfplots .textbody a:link,
+.pkg-pgfplots .textbody a:visited {
+  text-decoration: none;
+}
+
+/* links in code examples stay underlined (pgf's .textbody rules remove that) */
+.pkg-pgfplots .example-code a:link,
+.pkg-pgfplots .example-code a:visited {
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.6);
+}
+
+.pkg-pgfplots .example-code:hover a:link,
+.pkg-pgfplots .example-code:hover a:visited {
+  text-decoration-color: rgba(255, 255, 255, 0.8);
+}
+
+.pkg-pgfplots .example-code a:link:hover,
+.pkg-pgfplots .example-code a:visited:hover {
+  text-decoration-color: blue;
+}
+
+/* \verb is plain text in pgfplots */
+.pkg-pgfplots p span.verb {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  word-break: inherit;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+}
+
+.pkg-pgfplots h4 {
+  display: block;
+}
+
+.pkg-pgfplots h5 > .anchor-link,
+.pkg-pgfplots h6 > .anchor-link {
+  opacity: 0.4;
+}
+
+.pkg-pgfplots h5 > .anchor-link:hover,
+.pkg-pgfplots h6 > .anchor-link:hover {
+  background-color: rgb(201, 204, 243);
+  transform: none;
+}
+
+.pkg-pgfplots .example-code {
+  line-height: inherit;
+}
+
+.pkg-pgfplots .example-code code,
+.pkg-pgfplots .example-code p {
+  display: block;
+  font-family: var(--monospace-font);
+  font-size: 81.25%;
+  margin: 0;
+}
+
+.pkg-pgfplots ul {
+  padding-left: 40px;
+}
+
+.pkg-pgfplots .mobile-toc ul {
+  padding-left: 20px;
+}
+
+.pkg-pgfplots .entryheadline {
+  margin-left: -40px;
+}
+
+.pkg-pgfplots .hl-default {
+  margin-left: 0.5em;
+}
+
+.pkg-pgfplots .entryheadline p {
+  justify-content: flex-start;
+}
+
+.pkg-pgfplots .entryheadline p > a.anchor-link {
+  opacity: 0.4;
+  margin-left: auto !important;
+}
+
+.pkg-pgfplots .entryheadline p > a.anchor-link:hover {
+  transform: none;
+}
+
+.pkg-pgfplots .abstract-block {
+  margin: 0 auto;
+  padding: 1em;
+  background-color: hsl(30, 37%, 90%);
+}
+
+.pkg-pgfplots .abstract-heading {
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ************************************************************************ */
+/* tcolorbox                                                                */
+/* ************************************************************************ */
+
+
+.pkg-tcolorbox .bodyandsidetoc > header {
+  background-color: #8c2323;
+}
+
+/* images of compiled LaTeX */
+.pkg-tcolorbox img.lateximage {
+  max-width: 100%;
+  height: auto;
+}
+
+.pkg-tcolorbox img.inlineimage {
+  vertical-align: middle;
+}
+
+.pkg-tcolorbox div.figure {
+  margin: 1em 0;
+}
+
+.pkg-tcolorbox .example-image p {
+  display: flex;
+  align-items: center;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.pkg-tcolorbox .missing-image {
+  display: inline-block;
+  border: 1px dashed #999;
+  color: #777;
+  font-size: 80%;
+  padding: 0.2em 0.5em;
+}
+
+.pkg-tcolorbox .example-code-title {
+  font-family: var(--main-font);
+  font-style: italic;
+  font-size: 85%;
+  color: #4f4f4f;
+  margin-bottom: 0.4em;
+}
+
+/* \mylib{...}: library name badge (as in the PDF: green box with a "LIB" strip) */
+.pkg-tcolorbox .mylib {
+  display: inline-block;
+  position: relative;
+  line-height: 1.15;
+  color: #004000;
+  background: linear-gradient(to right, #80df9f 0.95em, #e6ffe6 0.95em);
+  border: 1px solid #008000;
+  border-radius: 2px;
+  padding: 0 0.25em 0 1.2em;
+}
+
+.pkg-tcolorbox .mylib::before {
+  content: "LIB";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2.1em;
+  font-size: 45%;
+  font-weight: bold;
+  font-family: var(--main-font);
+  color: white;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+  line-height: 2.1em;
+}
+
+.pkg-tcolorbox h4 .mylib,
+.pkg-tcolorbox .tocsection .mylib,
+.pkg-tcolorbox .home-toc .mylib,
+.pkg-tcolorbox .part-toc .mylib {
+  font-size: 90%;
+  vertical-align: 0.05em;
+}
+
+/* boxes of the PDF manual: dark blue frame, angular corners, drop shadow */
+.pkg-tcolorbox .example,
+.pkg-tcolorbox .marker {
+  --tcb-shadow: 3px 3px 4px rgba(0, 0, 0, 0.35);
+}
+
+.pkg-tcolorbox figure.example {
+  border: 2px solid #17365d;
+  border-radius: 4px;
+  corner-shape: bevel;
+  overflow: hidden;
+  box-shadow: var(--tcb-shadow);
+  background: white;
+  margin: 1em 1em 1.2em 1em;
+}
+
+.pkg-tcolorbox .example-image {
+  background-color: white;
+}
+
+.pkg-tcolorbox .example-code {
+  background: #dbe5f1;
+  flex: 1 1 auto;
+}
+
+.pkg-tcolorbox .example-image + .example-code {
+  border-left: 1px solid #b9c6d6;
+}
+
+.pkg-tcolorbox .clipboardButton {
+  background-color: #b3c4dc;
+}
+
+.pkg-tcolorbox .clipboardButton:hover {
+  background-color: #9bb1d0;
+}
+
+/* marker environment: yellow note with "!" strip and dog-eared corner */
+.pkg-tcolorbox .marker {
+  margin: 1em 0 1.2em 0;
+  filter: drop-shadow(var(--tcb-shadow));
+}
+
+.pkg-tcolorbox .marker-box {
+  position: relative;
+  padding: 0.15em 0.8em 0.15em calc(18px + 0.7em);
+  border: 1px solid #333300;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='13'%3E%3Cpath d='M17 1L1 5L5 13' fill='%23ccc766' stroke='%23333300' stroke-linejoin='round'/%3E%3Cpath d='M17 1L5 13' stroke='%23333300' stroke-width='2'/%3E%3C/svg%3E") right -1px bottom -1px / 17px 13px no-repeat,
+    linear-gradient(to right, #8f8b48 18px, #fff980 18px);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+}
+
+.pkg-tcolorbox .marker-box::before {
+  content: "!";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 2em;
+  font-family: Georgia, serif;
+}
+
+.pkg-tcolorbox .marker-box > p {
+  margin: 0.45em 0;
+}
+
+.pkg-tcolorbox .deprecated {
+  opacity: 0.75;
+  border-left: 3px solid #bbb;
+  padding-left: 0.8em;
+}
+
+/* documentation entries */
+.pkg-tcolorbox .colopt {
+  color: #5d5d5d;
+}
+
+.pkg-tcolorbox .choicesep {
+  margin: 0 0.25em;
+  color: #777;
+}
+
+.pkg-tcolorbox .docvalue {
+  color: #008080;
+}
+
+.pkg-tcolorbox .texttt.docdef {
+  color: #bf0000;
+}
+
+.pkg-tcolorbox .docnotes {
+  display: inline-flex;
+  gap: 0.3em;
+  margin-left: 0.6em;
+  align-self: center;
+}
+
+.pkg-tcolorbox .docnew,
+.pkg-tcolorbox .docupdated,
+.pkg-tcolorbox .marginnote {
+  font-size: 70%;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 0.05em 0.45em;
+  border-radius: 1em;
+}
+
+.pkg-tcolorbox .docnew {
+  color: #1d6b1d;
+  background: #e3f4e3;
+}
+
+.pkg-tcolorbox .docupdated {
+  color: #1d3f8f;
+  background: #e3eaf7;
+}
+
+.pkg-tcolorbox .marginnote {
+  float: right;
+}
+
+/* footnote marks */
+.pkg-tcolorbox sup.footnotemark a {
+  text-decoration: none;
+}
+
+/* references */
+.pkg-tcolorbox .bibitem {
+  padding-left: 2.5em;
+  text-indent: -2.5em;
+}
+
+.pkg-tcolorbox .biblabel {
+  display: inline-block;
+  min-width: 2.2em;
+  text-indent: 0;
+}
+
+/* home page */
+.pkg-tcolorbox .titlepagepic {
+  text-align: center;
+  margin: 1em 0;
+}
+
+.pkg-tcolorbox .abstract {
+  max-width: 40em;
+  margin: 1.5em auto;
+}
+
+.pkg-tcolorbox .abstract-title {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 0.3em;
+}
+
+.pkg-tcolorbox .home-toc {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
+  gap: 1em 2em;
+  margin-top: 2em;
+}
+
+.pkg-tcolorbox .home-toc h3 {
+  margin: 0 0 0.3em 0;
+  font-size: 1.15em;
+}
+
+.pkg-tcolorbox .home-toc ul,
+.pkg-tcolorbox .part-toc ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.pkg-tcolorbox .home-toc li,
+.pkg-tcolorbox .part-toc li {
+  margin: 0.25em 0;
+}
