@@ -24,9 +24,15 @@ STEP=${1:-all}
 if [[ $STEP == all ]]; then
   python3 convert.py tex
   cd "$TEX"
-  for run in 1 2; do
+  # nicematrix draws rules, delimiters and blocks at cell positions recorded
+  # in the .aux file of the previous run; rerun until the positions settle
+  # (two runs are not enough), at most five times
+  rm -f nicematrix-html.aux
+  for run in 1 2 3 4 5; do
     echo "LuaLaTeX run $run ..."
+    [[ -f nicematrix-html.aux ]] && cp nicematrix-html.aux previous.aux
     lualatex -interaction=nonstopmode nicematrix-html.tex > "lualatex-run$run.out" 2>&1 < /dev/null || true
+    if [[ $run -ge 2 ]] && cmp -s previous.aux nicematrix-html.aux; then break; fi
   done
   grep -c "" nicematrix-html.htmlimages | xargs echo "image fragments logged:"
   cd "$HERE"

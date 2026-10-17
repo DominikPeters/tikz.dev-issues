@@ -17,6 +17,11 @@ a recent LaTeX release (7.12: 2026-06-01 or later) and siunitx.
 
 ## Conversion
 
+nicematrix draws rules, delimiters and blocks at cell positions recorded in
+the `.aux` file of the previous LaTeX run, so `build.sh` reruns LuaLaTeX until
+the `.aux` file no longer changes (usually four runs); with fewer runs, these
+are drawn in the wrong places.
+
 The manual is `nicematrix.tex`; the documentation of the code
 (`nicematrix-code.dtx`) and the French version are not converted.
 
