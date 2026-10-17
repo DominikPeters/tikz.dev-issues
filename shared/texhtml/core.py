@@ -965,6 +965,9 @@ class Converter:
         args, e2 = read_args(self.s, e, "m")
         u = self.raw(args[0])
         href = "mailto:" + u if "@" in u and ":" not in u else u
+        # \url{tex.stackexchange.com/...}: a web address, not a relative link
+        if re.match(r"(www\.)?[\w-]+(\.[\w-]+)*\.[a-z]{2,}/", href):
+            href = "https://" + href
         out.append(("i", f'<a href="{esc(href)}">{esc(u)}</a>'))
         return e2
 

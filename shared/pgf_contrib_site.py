@@ -237,6 +237,8 @@ def finish_page(text, filename, formats, root, manual, home_groups=None, home_ex
         for heading in soup.select('.titlepage h1'):
             heading['class'] = ['manual-title']
         rebuild_home(soup, manual, home_groups, home_examples)
+        # the new start page replaces some headings (Contents, the cover)
+        headings = [h for h in headings if not h.decomposed and h.find_parent(class_='textbody')]
     if bibliography:
         expand_citations(soup, filename, bibliography)
 
