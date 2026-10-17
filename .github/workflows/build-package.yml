@@ -46,7 +46,7 @@ jobs:
 
       - name: Test build helpers
         if: inputs.package != 'tcolorbox'
-        run: python3 -m unittest discover -s tests -v
+        run: python3 -m unittest discover -s scripts/tests -v
 
       - name: Show FTP folders
         if: inputs.deploy

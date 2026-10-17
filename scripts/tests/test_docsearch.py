@@ -11,7 +11,7 @@ import unittest
 
 from bs4 import BeautifulSoup
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'shared'))
 from docsearch import DOCSEARCH_ASSETS, add_docsearch
 from assets import asset_url

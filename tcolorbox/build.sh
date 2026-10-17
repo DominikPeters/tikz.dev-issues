@@ -45,4 +45,4 @@ if [[ $STEP == all || $STEP == images ]]; then
 fi
 
 python3 convert.py html
-echo "Done. Preview with: python3 serve.py  (http://127.0.0.1:8765/tcolorbox/)"
+echo "Done: $HERE/build/site/tcolorbox (scripts/build.sh tcolorbox also copies it for scripts/serve.py)"

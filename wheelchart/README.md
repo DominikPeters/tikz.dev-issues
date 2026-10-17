@@ -7,7 +7,7 @@ same navigation, styling and DocSearch frontend as the other manuals.
 ```bash
 scripts/fetch.sh wheelchart
 scripts/build.sh wheelchart
-python3 -m http.server --directory build/wheelchart/site 8765
+scripts/serve.py          # http://127.0.0.1:8765/wheelchart/
 ```
 
 Wheelchart is distributed through CTAN without an upstream Git repository.

@@ -10,7 +10,7 @@ from pypdf import PdfReader, PdfWriter
 from pypdf.generic import (ArrayObject, BooleanObject, DecodedStreamObject,
                            DictionaryObject, FloatObject, NameObject, NumberObject)
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'shared'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'shared'))
 import illustration_formats as formats
 
 

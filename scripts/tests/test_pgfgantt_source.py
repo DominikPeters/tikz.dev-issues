@@ -4,7 +4,7 @@ from pathlib import Path
 import unittest
 
 spec = importlib.util.spec_from_file_location('pgfgantt_source',
-    Path(__file__).resolve().parents[1] / 'pgfgantt/preprocess.py')
+    Path(__file__).resolve().parents[2] / 'pgfgantt/preprocess.py')
 source = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(source)
 

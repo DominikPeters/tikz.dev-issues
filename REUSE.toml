@@ -20,7 +20,6 @@ path = [
   "shared/pgfmanual/pgfmanual.prettyprinter.code.tex",
   "shared/pgfmanual/pgfmanual-en-macros.tex",
   "tikz-cd/tikz-cd-html.sty",
-  "pgf/brave-gnu-world-logo.eps",
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "Till Tantau and the PGF/TikZ team; changes 2021-2026 Dominik Peters"

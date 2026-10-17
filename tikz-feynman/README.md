@@ -9,7 +9,7 @@ From the repository root:
 ```bash
 scripts/fetch.sh tikz-feynman
 scripts/build.sh tikz-feynman
-python3 -m http.server --directory build/tikz-feynman/site 8765
+scripts/serve.py          # http://127.0.0.1:8765/tikz-feynman/
 ```
 
 Requires the same tools as [tikz-cd](../tikz-cd/README.md), plus Biber and the

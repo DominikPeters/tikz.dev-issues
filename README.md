@@ -1,261 +1,70 @@
 # tikz.dev
 
-Sources of [tikz.dev](https://tikz.dev), the HTML versions of the manuals of
-[PGF/TikZ](https://github.com/pgf-tikz/pgf) (`tikz.dev/`),
-[pgfplots](https://github.com/pgf-tikz/pgfplots) (`tikz.dev/pgfplots/`),
-[tcolorbox](https://github.com/T-F-S/tcolorbox) (`tikz.dev/tcolorbox/`),
-[tikz-cd](https://github.com/astoff/tikz-cd) (`tikz.dev/tikz-cd/`),
-[pgf-pie](https://github.com/pgf-tikz/pgf-pie) (`tikz.dev/pgf-pie/`),
-[TikZ-Feynman](https://github.com/JP-Ellis/tikz-feynman) (`tikz.dev/tikz-feynman/`),
-[wheelchart](https://ctan.org/pkg/wheelchart) (`tikz.dev/wheelchart/`), and
-[pgfgantt](https://github.com/skafdasschaf/latex-pgfgantt) (`tikz.dev/pgfgantt/`).
+Sources of [tikz.dev](https://tikz.dev), HTML versions of the manuals of
+PGF/TikZ and related packages:
 
-Feedback, suggestions and bug reports: please open an
-[issue](https://github.com/DominikPeters/tikz.dev/issues).
+| Manual | On tikz.dev | Upstream |
+|---|---|---|
+| PGF/TikZ | [tikz.dev](https://tikz.dev/) | [pgf-tikz/pgf](https://github.com/pgf-tikz/pgf) |
+| PGFplots | [/pgfplots/](https://tikz.dev/pgfplots/) | [pgf-tikz/pgfplots](https://github.com/pgf-tikz/pgfplots) |
+| tcolorbox | [/tcolorbox/](https://tikz.dev/tcolorbox/) | [T-F-S/tcolorbox](https://github.com/T-F-S/tcolorbox) |
+| tikz-cd | [/tikz-cd/](https://tikz.dev/tikz-cd/) | [astoff/tikz-cd](https://github.com/astoff/tikz-cd) |
+| pgf-pie | [/pgf-pie/](https://tikz.dev/pgf-pie/) | [pgf-tikz/pgf-pie](https://github.com/pgf-tikz/pgf-pie) |
+| TikZ-Feynman | [/tikz-feynman/](https://tikz.dev/tikz-feynman/) | [JP-Ellis/tikz-feynman](https://github.com/JP-Ellis/tikz-feynman) |
+| wheelchart | [/wheelchart/](https://tikz.dev/wheelchart/) | [CTAN](https://ctan.org/pkg/wheelchart) |
+| pgfgantt | [/pgfgantt/](https://tikz.dev/pgfgantt/) | [skafdasschaf/latex-pgfgantt](https://github.com/skafdasschaf/latex-pgfgantt) |
 
-## Layout
+Feedback, suggestions and bug reports are welcome as
+[issues](https://github.com/DominikPeters/tikz.dev/issues).
 
-```
-shared/        style.css, pgfmanual.js, lwarp-mathjax-emulation.js for all manuals
-  pgfmanual/   HTML documentation helpers shared by PGF and contributed manuals
-scripts/       fetch.sh, prepare.py, build.sh, deploy.sh
-pgf/           pgf manual: lwarp build scripts, postprocessing, standalone images, ...
-  upstream.lock    upstream repository and the commit the site is built from
-  preprocess.py    mechanical edits to the upstream sources (section page names)
-  patches/         remaining edits to upstream files, one patch per file
-pgfplots/      pgfplots manual (same structure, no preprocess.py)
-tcolorbox/     tcolorbox manual: dedicated converter instead of lwarp
-tikz-cd/       tikz-cd manual: lwarp with shared PGF documentation helpers
-pgf-pie/       pgf-pie manual (same structure)
-tikz-feynman/  TikZ-Feynman manual (same structure, bibliography uses Biber)
-wheelchart/    wheelchart manual (lwarp, checksum-pinned distribution sources)
-pgfgantt/      pgfgantt manual (lwarp, preprocesses documented .dtx source)
-migration/     commit maps from the old fork repositories
-.upstream/     (not committed) upstream checkouts made by fetch.sh
-build/         (not committed) build trees and generated sites
-```
+## How it works
 
-The upstream package sources are not part of this repository. Each package
-pins an upstream revision in `<package>/upstream.lock`; the manual is built from
-that revision plus the package's preprocessing and patches. Wheelchart has no
-upstream Git repository: its [source manifest](wheelchart/upstream.json) pins
-immutable distribution archives and their checksums. See its
-[build notes](wheelchart/README.md) for release updates.
+The package sources are not stored here. Each manual pins an upstream commit
+in `<package>/upstream.lock`, and is built from that commit plus the edits in
+its folder (patches, HTML adaptations, postprocessing). Most manuals are
+converted with [lwarp](https://ctan.org/pkg/lwarp); tcolorbox has a dedicated
+converter. All manuals share one stylesheet, one script and one header.
 
-## Building
+GitHub Actions builds and deploys a manual whenever its folder changes, and
+checks every six hours for new upstream commits to its documentation. A new
+commit that builds is published and recorded in the lock file; one that fails
+opens an issue and leaves the site unchanged.
+
+## Building a manual locally
 
 ```bash
-scripts/fetch.sh pgf          # upstream checkout at the pinned commit
-scripts/build.sh pgf          # -> build/pgf/site
+scripts/fetch.sh pgf      # upstream checkout at the pinned commit
+scripts/build.sh pgf      # result in build/pgf/site
+scripts/serve.py          # http://127.0.0.1:8765/, with every manual built so far
 ```
 
-`scripts/fetch.sh pgf origin/master` (or any commit) tries another upstream
-version without changing the pin. `scripts/prepare.py pgf` only assembles the
-source tree (`build/pgf/src`) without running LaTeX.
+This needs a recent TeX Live with LuaLaTeX and lwarp, Python 3 and the image
+tools listed in [.github/workflows/build-package.yml](.github/workflows/build-package.yml).
+The full PGF manual takes a while; the smaller manuals build in minutes.
 
-Package-specific CSS and JavaScript go into the shared files, selected by the
-class on `<html>` that each build sets: `.pkg-pgf`, `.pkg-pgfplots`,
-`.pkg-tcolorbox`, `.pkg-tikz-cd`, `.pkg-pgf-pie`, `.pkg-tikz-feynman`,
-`.pkg-wheelchart`, `.pkg-pgfgantt`.
-The contributed manuals also have `.pkg-pgf-contrib` for their common styles
-and use `shared/pgf_contrib_site.py` for page processing and navigation.
+## Repository layout
 
-The [tikz-cd build](tikz-cd/README.md) uses the PGF in TeX Live and links to
-the main manual's HTML sections, so it can build independently. Packages whose
-locks specify `documentation=pgf` receive the shared PGF HTML documentation
-helpers before their own overlays. Other manuals retain their own helpers.
-
-### Search
-
-All manuals load DocSearch v3 through `shared/docsearch.py` and initialize it
-in `shared/pgfmanual.js`, using the existing Algolia application `JS6V5VZSDB`
-and `tikz` index. Searches use the manual's package name as the `tags` filter;
-PGF retains its existing `tikz` tag. The other tags are `pgfplots`, `tcolorbox`,
-`tikz-cd`, `pgf-pie`, `tikz-feynman`, `wheelchart`, and `pgfgantt`.
-
-The crawler must index and tag each manual before its search returns results.
-Crawler configuration and index settings are managed separately in Algolia;
-the frontend build does not change them. Keyboard shortcuts and the mobile
-search dialog are provided by DocSearch. If its CDN script is unavailable,
-the rest of the manual still initializes normally.
-Local CSS and JavaScript URLs use content hashes so browsers load updated
-frontend code even after multiple deployments on the same day.
-
-### LaTeX formatting
-
-The lwarp manuals load `shared/tikz-dev-fast-lwarp.sty`. It reuses parsed
-argument handlers for spans and filename sanitization, instead of rebuilding
-those handlers for every colored word and link. Internal links whose destination
-is already a plain filename also bypass font-command cleanup. Formatted names
-and custom filename prefixes retain the original cleanup. LaTeX still reruns
-until actual references stabilize. An image-page scratch counter is omitted
-from include checkpoints to avoid an otherwise redundant pass; illustration
-execution is unchanged. If lwarp changes the relevant
-implementation, that optimization falls back to the original handler and logs
-a warning. Integration tests compare extracted HTML, references and image
-manifests against stock lwarp.
-
-### Drawing reuse between LaTeX passes
-
-PGF and PGFplots reuse selected, reviewed illustrations within one build. The
-first pass draws them normally; subsequent passes reuse their original PDF
-pages. Setup code, code outside pictures, pre/post hooks, listings and lwarp's
-HTML/reference bookkeeping still execute. PNG/SVG conversion reads the saved
-original pages directly, avoiding rounding changes from PDF imports.
-
-The package `illustration-audit.json` files classify all 4,145 inventoried
-codeexamples and record an explicit opt-in set. Labels, remembered nodes,
-random state, global declarations, shell commands, external inputs, file
-writes and uncertain dependencies are reasons to keep drawings live. Unreviewed
-examples always execute. Eligibility requires the reviewed upstream commit,
-whole chapter hash, exact example hash, and the prepared source-context hash;
-changed sources run uncached until reviewed again. The context hash includes
-the other chapters, preambles and TeX/Lua helpers, since a drawing may use a
-macro or style defined outside its own chapter.
-
-Six Luna reviews cover all 4,145 entries, followed by independent cross-checks.
-The opt-in set contains 832 PGF examples across 61 chapters and 532 PGFplots
-examples across 35 chapters. Unsupported shorthand drawings, listings, and uncertain dependencies keep their
-normal execution path. The manifests retain a reason and source fingerprints
-for each decision. Source review is not a general proof of TeX purity.
-
-Cheap pictures remain live: a reviewed drawing must take at least 0.05 CPU
-seconds before its original page is saved. This avoids paying extraction/import
-costs for trivial drawings, which were slower in the earlier PGF tutorial
-benchmark. `TIKZ_RENDER_CACHE_MIN_SECONDS` changes this threshold; set it to
-`0` to exercise every reviewed drawing during correctness comparisons. The
-threshold can affect cache coverage, never the published drawing contents.
-
-This cache lives in the prepared source tree and is cleared at the start of
-each build. It accelerates repeated LaTeX passes even on a fresh GitHub runner.
-Set `TIKZ_RENDER_CACHE=0` to disable it for comparison. Keep the original-page
-cache and its generated map together when rerunning illustration conversion.
-
-To generate an untagged inventory for a new review:
-
-```bash
-python3 scripts/prepare.py pgfplots --no-illustration-cache --dest build/pgfplots/review
-python3 scripts/illustration_audit.py pgfplots build/pgfplots/review/doc/latex/pgfplots \
-  --output build/pgfplots/illustration-inventory.json
+```
+<package>/     one folder per manual: upstream.lock, patches/, build.sh,
+               postprocessing.py, HTML adaptations; README.md with notes
+shared/        style.css, pgfmanual.js, the header menu and the build tools
+               shared by all manuals (image conversion, caches, checks)
+scripts/       fetch.sh, prepare.py, build.sh, serve.py, deploy.sh; tests/ for
+               the build tools (python3 -m unittest discover -s scripts/tests)
+docs/          how the build works in detail
 ```
 
-Automatic hazard tags are review prompts, not a proof of safety. Update the
-review manifest only after checking dependencies and comparing cached and
-uncached HTML, auxiliary files and rendered illustrations.
+More detail:
 
-Inventories include separate hints for picture bodies and live setup options.
-The scanner also marks unsupported execution paths as live; an absence of hints
-never grants eligibility. To merge independent review JSON files into a complete
-manifest, repeat `--review` for each batch and supply `--manifest-output` and
-`--upstream-commit` (the full reviewed upstream SHA). Every review record must
-match the inventory's file, line, chapter hash and exact example hash. Negative
-findings take precedence over positive findings, and missing reviews remain
-unreviewed. Positive review batches must also carry the inventory's
-`context_sha256`; a missing context never enables caching. Run this against a
-freshly prepared, untagged tree so the source context fingerprint contains no
-generated TeX files or cache annotations.
-
-The [review report](reports/illustration-cache-review.md) records coverage and
-validation results.
-
-### Illustration conversion
-
-The lwarp manuals extract and crop illustrations in batches, then render them
-with a bounded worker pool. PGFplots also generates the ImageMagick PNGs used
-for shader fallbacks. SVG/PNG output formats, 300 dpi and one-point crop margins
-are preserved. Bounding boxes are measured in separate Ghostscript processes
-to preserve the original crop edges. Tcolorbox already uses a separate batch
-converter.
-
-Rendered results are cached in `build/image-cache`, outside the disposable
-prepared sources. GitHub Actions restores this cache between builds. Cache
-keys include the individual PDF page and its resource objects (fonts, embedded
-images, etc.), converter code, settings and tool versions. File names, page
-numbers and document timestamps do not determine reuse. Every required output
-must exist and match its recorded checksum; incomplete or damaged entries are
-rebuilt. A conversion failure stops the build before publishing new images.
-
-Set `TIKZ_IMAGE_JOBS` to change the default of four workers, or
-`TIKZ_IMAGE_CACHE` to choose a different cache directory. Removing
-`build/image-cache` forces conversion on the next build. The cache stores
-unoptimized SVGs so postprocessing and SVGO can be changed independently.
-
-For PGF and the contributed manuals, SVGO runs before choosing the HTML image format. An illustration uses
-SVG when its optimized file is no larger than the PNG, except for PDF features
-that convert poorly: knockout groups, luminosity/transfer soft masks, function
-or mesh shadings, and blend modes outside Normal/Multiply/Screen/Darken/Lighten.
-Those use PNG regardless of size. Ordinary opacity, axial/radial gradients and
-simple shadows are eligible for SVG. The generated `pgfmanual-image-formats.json`
-records the used PDF features, fallback reasons and optimized file sizes for
-each illustration. Analysis follows actual content operators into forms,
-patterns and masks, including original pages reused by the drawing cache.
-Existing explicit `codeexample[svg]` and patterns-library SVG overrides remain,
-as do linked SVG objects that need interactivity. PGFplots keeps its own policy.
-The [format review](reports/pgf-image-formats.md) records examples and validation.
-
-To rerun just illustration conversion from an existing prepared tree, without
-repeating LaTeX:
-
-```bash
-cd build/pgf/src/doc/generic/pgf
-python3 convert_illustrations.py pgfmanual_html.pdf pgfmanual-images.txt pgfmanual-images \
-  --cache ../../../../../image-cache
-```
-
-The Python dependencies include `pypdf`. Cache invalidation and failure tests
-run with `python3 -m unittest discover -s tests` from the repository root.
-
-## Automation (GitHub Actions)
-
-* `build.yml`: on every push to `main`, the manuals whose folders changed (all
-  of them if `shared/` or `scripts/` changed) are built at their pinned upstream
-  commit and deployed.
-* `upstream.yml`: every six hours, checks whether the upstream repositories have
-  new commits touching the documentation (`watch` in `upstream.lock`). If so,
-  the manual is built at the new commit and
-  * on success deployed, and the new commit is recorded in `upstream.lock` by
-    a commit to `main` listing the upstream changes;
-  * on failure an issue "[package] upstream build failing" is opened (or
-    updated); the site stays as it is. The issue is closed automatically after
-    the next successful build. A failed upstream commit is not built again
-    until upstream has a newer relevant commit or the files here that the
-    build uses change (`scripts/build-key.sh`); running the workflow by hand
-    with "retry" forces another attempt.
-
-Deployment uses `scripts/deploy.sh` (FTP with TLS, via lftp) with the
-repository variables `FTP_HOST`, `FTP_USER`, `FTP_ROOT` (folder of the site,
-relative to the FTP login), optionally `DEPLOY_PREFIX` (e.g. `/monorepo` for
-testing), and the secret `FTP_PASSWORD`. It never deletes files on the server,
-and uploads only the files whose contents changed since the last deploy (it
-keeps a list of checksums, `.deploy-manifest`, in each manual's folder on the
-server; `FULL_DEPLOY=1` uploads everything).
-
-## Fixing a patch
-
-When upstream changes a place one of the patches touches, the build stops
-with "patch X does not apply". To fix it:
-
-```bash
-scripts/fetch.sh pgf <new-commit>
-scripts/prepare.py pgf --reject      # applies what it can, leaves *.rej files
-# edit the files named by the .rej files in build/pgf/src by hand, then
-scripts/prepare.py pgf --refresh-patches build/pgf/src
-```
-
-`--refresh-patches` rewrites `pgf/patches/` from the edited tree; commit the
-result together with the new commit in `pgf/upstream.lock`.
+* [docs/building.md](docs/building.md): building, patches, the shared frontend
+* [docs/caching.md](docs/caching.md): drawing reuse, image conversion and formats
+* [docs/automation.md](docs/automation.md): GitHub Actions, upstream updates, deployment
+* [docs/migration.md](docs/migration.md): moving from the old fork repositories
 
 ## License
 
-The tikz.dev tooling (scripts, workflows, `shared/`, the build and
-postprocessing scripts, the tcolorbox converter) is under the MIT license
-(`LICENSE`). The manuals belong to their authors and keep their licenses, which
-also apply to the patches and other material derived from them here, and to
-the generated pages:
-
-* pgf: documentation GNU FDL 1.2 or LPPL 1.3c (code GPL 2 or LPPL 1.3c)
-* pgfplots: GPL 3 or later
-* tcolorbox: LPPL 1.3c or later
-
-`REUSE.toml` lists which files fall under which license; the texts are in
-`LICENSES/`.
+The tikz.dev tooling (scripts, workflows, `shared/`, build and postprocessing
+scripts, the tcolorbox converter) is under the [MIT license](LICENSE). The
+manuals belong to their authors and keep their licenses, which also apply to
+the patches and adaptations derived from them and to the generated pages.
+[REUSE.toml](REUSE.toml) lists which files fall under which license.

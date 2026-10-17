@@ -7,7 +7,7 @@ import subprocess
 import tempfile
 import unittest
 
-SHARED = Path(__file__).resolve().parents[1] / "shared"
+SHARED = Path(__file__).resolve().parents[2] / "shared"
 DOCUMENT = r"""
 \documentclass{article}
 \usepackage[warpHTML,mathjax,BaseJobname=main,HomeHTMLFilename=home]{lwarp}

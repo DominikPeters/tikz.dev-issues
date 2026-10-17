@@ -9,7 +9,7 @@ From the repository root:
 ```bash
 scripts/fetch.sh pgf-pie
 scripts/build.sh pgf-pie
-python3 -m http.server --directory build/pgf-pie/site 8765
+scripts/serve.py          # http://127.0.0.1:8765/pgf-pie/
 ```
 
 Requires the same LuaLaTeX, lwarp, Python, illustration conversion and SVGO

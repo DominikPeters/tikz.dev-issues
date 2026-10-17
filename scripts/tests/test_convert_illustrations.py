@@ -14,7 +14,7 @@ from unittest.mock import patch
 from pypdf import PdfWriter
 from pypdf.generic import DecodedStreamObject, DictionaryObject, FloatObject, NameObject, NumberObject
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'shared'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'shared'))
 import convert_illustrations as images
 
 

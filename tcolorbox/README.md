@@ -1,4 +1,4 @@
-# HTML version of the tcolorbox manual (prototype)
+# tcolorbox manual
 
 Converts the tcolorbox manual (`doc/latex/tcolorbox` of
 [T-F-S/tcolorbox](https://github.com/T-F-S/tcolorbox), checked out by
@@ -37,9 +37,11 @@ does everything. Inside this folder:
 ./build.sh          # full build: LaTeX (2 LuaLaTeX runs) + images + HTML
 ./build.sh images   # re-extract images from the last LaTeX run, then HTML
 ./build.sh html     # only regenerate HTML
-python3 serve.py    # preview at http://127.0.0.1:8765/tcolorbox/
 python3 check_links.py
 ```
+
+To preview, build from the repository root and run `scripts/serve.py`
+(<http://127.0.0.1:8765/tcolorbox/>).
 
 Requires LuaLaTeX, Python 3, `mutool`, `pdfcrop`, `pdftocairo`. Optional:
 `svgo` and `pngquant` (smaller files), `rsvg-convert` with numpy and Pillow
@@ -52,15 +54,11 @@ TeX installation is updated).
 Image identifiers are assigned in source order, so after changing what
 `convert.py` treats as an image, the full build has to be rerun.
 
-## Status of the prototype
+## Known limitations
 
-* All 28 chapters, part pages, references and the home page are generated;
-  963 images (948 SVG, 15 PNG; 9.7 MB transferred with gzip vs 26 MB as
-  PNG), 0 broken internal links (`check_links.py`).
 * Boxes in running text, tables and other "visual prose" become images
   rather than HTML (only examples have their code as text).
 * Breakable boxes are captured unbroken (e.g. one long column for an example
   that the PDF splits across columns/pages).
 * Two examples using tabularray fail with the TeX Live 2025 tabularray
   (version mismatch with the repository's code); fixed by updating TeX Live.
-* No search index, sitemap, or link from the tikz.dev front page yet.

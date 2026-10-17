@@ -9,13 +9,13 @@ From the repository root:
 ```bash
 scripts/fetch.sh tikz-cd
 scripts/build.sh tikz-cd
-python3 -m http.server --directory build/tikz-cd/site 8765
+scripts/serve.py          # http://127.0.0.1:8765/tikz-cd/
 ```
 
-Open <http://localhost:8765/> to preview this manual. Cross-manual links need
-the sibling manuals at their deployed paths. The build uses the PGF supplied
-by TeX Live and does not require a PGF manual build, PDF download, or network
-access after the upstream checkout and tools are installed.
+Links to the other manuals work in the preview once those are built too. The
+build uses the PGF supplied by TeX Live and does not require a PGF manual
+build, PDF download, or network access after the upstream checkout and tools
+are installed.
 
 Requires LuaLaTeX, lwarp, latexmk, Python with BeautifulSoup/html5lib and pypdf,
 Poppler, Ghostscript, pdfcrop, pngquant, and SVGO (as installed by the shared

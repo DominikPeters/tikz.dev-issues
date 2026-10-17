@@ -7,7 +7,7 @@ import unittest
 from unittest import mock
 
 
-SHARED = Path(__file__).resolve().parents[1] / "shared"
+SHARED = Path(__file__).resolve().parents[2] / "shared"
 SPEC = importlib.util.spec_from_file_location("render_cache", SHARED / "render_cache.py")
 render_cache = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None

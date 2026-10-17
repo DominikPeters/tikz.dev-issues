@@ -7,7 +7,7 @@ frontend used by the other manuals.
 ```bash
 scripts/fetch.sh pgfgantt
 scripts/build.sh pgfgantt
-python3 -m http.server --directory build/pgfgantt/site 8765
+scripts/serve.py          # http://127.0.0.1:8765/pgfgantt/
 ```
 
 The build runs docstrip to obtain the package matching the pinned documentation.

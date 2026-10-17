@@ -9,7 +9,7 @@ import unittest
 
 from bs4 import BeautifulSoup
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'shared'))
 from check_manual_site import check_site
 from pgf_contrib_site import finish_page
