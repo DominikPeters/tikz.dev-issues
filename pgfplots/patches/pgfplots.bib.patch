@@ -17,7 +17,7 @@ diff --git a/doc/latex/pgfplots/pgfplots.bib b/doc/latex/pgfplots/pgfplots.bib
    title        = {{\PGFPlotstable{} package -- Loading, rounding and formatting tables in \LaTeX{}}},
    howpublished = {{Available as separate package
 -                   \texttt{\textbackslash usepackage\{\href{file:pgfplotstable.pdf}{pgfplotstable}\}}}, as part of \PGFPlots{}},
-+                   \texttt{\textbackslash usepackage\{\href{https://pgfplots.sourceforge.net/pgfplotstable.pdf}{pgfplotstable}\}}}, as part of \PGFPlots{}},
++                   \texttt{\textbackslash usepackage\{\href{https://mirrors.ctan.org/graphics/pgf/contrib/pgfplots/doc/pgfplotstable.pdf}{pgfplotstable}\}}}, as part of \PGFPlots{}},
      year    =    {\today}
  }
  
@@ -25,7 +25,7 @@ diff --git a/doc/latex/pgfplots/pgfplots.bib b/doc/latex/pgfplots/pgfplots.bib
    author       = {C.~Feuers\"anger},
    title        = {{Programming in \TeX{} and Library Functions from \pgfname{} and \PGFPlots{}}},
 -  howpublished = {Available as part of \PGFPlots{}, \href{file:TeX-programming-notes.pdf}{TeX-programming-notes.pdf}},
-+  howpublished = {Available as part of \PGFPlots{}, \href{https://pgfplots.sourceforge.net/TeX-programming-notes.pdf}{TeX-programming-notes.pdf}},
++  howpublished = {Available as part of \PGFPlots{}, \href{https://mirrors.ctan.org/graphics/pgf/contrib/pgfplots/doc/TeX-programming-notes.pdf}{TeX-programming-notes.pdf}},
    year         = {\today},
  }
  

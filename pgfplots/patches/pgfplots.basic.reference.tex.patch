@@ -27,7 +27,7 @@ diff --git a/doc/latex/pgfplots/pgfplots.basic.reference.tex b/doc/latex/pgfplot
      expanded). Then, it invokes the resulting macro. Details about the \TeX{}
      command |\edef| and expansion control can be found in the document
 -    \href{file:TeX-programming-notes.pdf}{TeX-programming-notes.pdf} which
-+    \href{https://pgfplots.sourceforge.net/TeX-programming-notes.pdf}{TeX-programming-notes.pdf} which
++    \href{https://mirrors.ctan.org/graphics/pgf/contrib/pgfplots/doc/TeX-programming-notes.pdf}{TeX-programming-notes.pdf} which
      comes with \PGFPlots{}.
  \end{command}
  
