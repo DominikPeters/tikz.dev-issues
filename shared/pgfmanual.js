@@ -21,6 +21,7 @@ function initDocSearch() {
     pgfgantt: "pgfgantt",
     "tkz-euclide": "tkz-euclide",
     chemfig: "chemfig",
+    forest: "forest",
   };
   const tag = tags[TIKZDEV_PACKAGE];
   if (!tag || !document.getElementById("search") || typeof window.docsearch !== "function") return;

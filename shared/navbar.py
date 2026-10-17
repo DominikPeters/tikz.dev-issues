@@ -22,6 +22,7 @@ PACKAGES = [
     ("pgfgantt", "pgfgantt", "pgfgantt/"),
     ("tkz-euclide", "tkz-euclide", "tkz-euclide/"),
     ("chemfig", "chemfig", "chemfig/"),
+    ("forest", "forest", "forest/"),
 ]
 FOLDERS = {pkg: folder for pkg, _, folder in PACKAGES}
 

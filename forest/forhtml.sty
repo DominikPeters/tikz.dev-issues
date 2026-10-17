@@ -1,0 +1,45 @@
+% forhtml.sty -- instrumentation for the HTML version of the forest manual.
+%
+% Images: the capture machinery is in tikzdev-capture.sty (shared/texhtml).
+% forestexample typesets the tree of an example into \treebox; the layouts
+% that show the tree now first ship a copy of it, for the identifier that the
+% converter announces with \HTMLnext before the example.
+%
+% Index: forest-index prints the name of an option, style, ... by executing
+% its "print form" with the key TeX and memoize (its memo file replays the
+% same code in later runs). In the print stage, this code is now wrapped in
+% \forhtml@print, which logs it to \jobname.htmlindex together with the
+% identifier that the converter announces before the \index call
+% (\HTMLindexnext). The converter turns the logged forms into HTML.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{forhtml}[2026/10/17 HTML extraction for the forest manual]
+\RequirePackage{tikzdev-capture}
+
+\pgfqkeys{/forestexample}{
+  do layout/tree on left/.prefix code={\HTMLshipnext\treebox},
+  do layout/tree on top/.prefix code={\HTMLshipnext\treebox},
+  do layout/tree on bottom/.prefix code={\HTMLshipnext\treebox},
+  do layout/only tree/.prefix code={\HTMLshipnext\treebox},
+  % the tree is placed by hand later (\box\treebox), but it is shown in HTML
+  do layout/export/.prefix code={\HTMLshipnext\treebox},
+}
+
+\newwrite\forhtml@log
+\immediate\openout\forhtml@log=\jobname.htmlindex
+\gdef\forhtml@id{}
+\DeclareRobustCommand\HTMLindexnext[1]{\gdef\forhtml@id{#1}}
+\long\def\forhtml@print#1{%
+  \ifx\forhtml@id\@empty\else
+    \immediate\write\forhtml@log{\forhtml@id\space\detokenize{#1}}%
+    \gdef\forhtml@id{}%
+  \fi
+  #1}
+\forestset{
+  TeX and memoize@orig/.code={\forest@execandmemoize{#1}},
+  TeX and memoize/.style={
+    if stage={print}
+      {TeX and memoize@orig={\forhtml@print{#1}}}
+      {TeX and memoize@orig={#1}}},
+}
+
+\endinput

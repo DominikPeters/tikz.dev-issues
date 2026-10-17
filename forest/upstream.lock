@@ -1,0 +1,7 @@
+# Upstream sources of this manual. "commit" is the last upstream commit that
+# built successfully; it is advanced automatically by .github/workflows/upstream.yml.
+repo=https://github.com/sasozivanovic/forest.git
+commit=d053d0555a2f249bc5b2ae7e99eb3b03b72dcb90
+watch=forest-doc.tex forest-doc.sty forest.dtx forest-index.dtx forest-libs.dtx
+docdir=.
+sitepath=/forest/

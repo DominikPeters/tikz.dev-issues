@@ -1982,6 +1982,36 @@ div.warning-see-pdf img {
   overflow-y: hidden;
 }
 /* ************************************************************************ */
+/* forest                                                                   */
+/* ************************************************************************ */
+
+.pkg-forest .bodyandsidetoc > header {
+  background-color: #2f5d34;
+}
+
+/* the package name, as printed by the manual's \FoRest; */
+.forest-name {
+  font-variant: small-caps;
+}
+
+/* example numbers, referred to as (7) in the text */
+.pkg-forest .example-number {
+  flex-basis: 100%;
+  font-size: 0.85em;
+  color: #666;
+  margin-bottom: -0.5em;
+}
+
+.pkg-forest ul.advise {
+  list-style: "☞  ";
+}
+
+.pkg-forest .processor-signature {
+  font-weight: normal;
+  font-size: 0.9em;
+}
+
+/* ************************************************************************ */
 /* chemfig                                                                  */
 /* ************************************************************************ */
 

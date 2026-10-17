@@ -1,13 +1,12 @@
 # Manuals converted without lwarp
 
 Manuals that are not written with PGF's documentation macros (tcolorbox,
-tkz-euclide, chemfig) are converted by a Python converter instead of lwarp.
-Such a manual is built from a small set of its own documentation macros (an
-example environment, an
-entry for each command or key, ...), so parsing its sources directly and
-mapping these macros onto the tikz.dev HTML structure (`manualentry`,
-`entryheadline`, `example`, side tables of contents) gives cleaner pages than
-running the manual through lwarp.
+tkz-euclide, chemfig, forest) are converted by a Python converter instead of
+lwarp. Such a manual is built from a small set of its own documentation macros
+(an example environment, an entry for each command or key, ...), so parsing
+its sources directly and mapping these macros onto the tikz.dev HTML structure
+(`manualentry`, `entryheadline`, `example`, side tables of contents) gives
+cleaner pages than running the manual through lwarp.
 
 ## How it works
 
@@ -52,6 +51,11 @@ LuaLaTeX, images, HTML; see `tcolorbox/build.sh`) and `convert.py` with
 Add the manual to `scripts/build.sh` (the case for converted manuals), to the
 header menu in `shared/navbar.py` and to the search tags in
 `shared/pgfmanual.js`, and give it a header color in `shared/style.css`.
+
+When the way a manual prints something is computed by TeX (forest's index
+macros print each name according to its category), the LaTeX run can log the
+result for the converter instead of reimplementing it: see
+`forest/forhtml.sty`, which logs the printed form of every `\index` call.
 
 Check the result against the official PDF, and look at the converter's
 warnings (unknown commands, unresolved references) at the end of each run.
