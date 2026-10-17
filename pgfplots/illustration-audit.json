@@ -2,7 +2,7 @@
   "format": 1,
   "package": "pgfplots",
   "upstream_commit": "f40faa5864936890736461a2b410dcef8968e97f",
-  "context_sha256": "8ed18e321fde156eed47a683158ae0c2c4467bac03466ab08c8d2bfa241122e2",
+  "context_sha256": "746c3c559f92ef96b4f31bdcd5c52be2ab3c94949498794cc7c99d2198c9c429",
   "enabled": true,
   "scope": "Drawing payloads only, between LaTeX passes of one freshly prepared build. Setup, hooks and listings remain live.",
   "default": "uncached",
@@ -628,7 +628,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 19,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "5e40f1454a742b97002de4bb03bd9fcaf6bbb6b21a0b3ed17232ad8ba7d12c92",
       "status": "unsupported",
       "reason": "The example has no literal supported tikzpicture body for the cache rewrite to replace.",
@@ -637,7 +637,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 25,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "16b9930f9d78fb50c2b8b879025a1de2ed3b71c0f5c718ca9c729855e94461c4",
       "status": "listing_only",
       "reason": "The codeexample is explicitly non-executing or source-only; its picture text is displayed but is not rendered as a cacheable illustration.",
@@ -646,7 +646,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 36,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "f401bc38e39cce30710fb297e74c1ada501ab0afdc459e5f614704ee1d3d935b",
       "status": "unsupported",
       "reason": "The example has no literal supported tikzpicture body for the cache rewrite to replace.",
@@ -655,7 +655,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 45,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "5a1d0efeaf18e09feb01aafd2f44c1c0ba0d03c1fbe4bc02ddb3e3d8e8632c1a",
       "status": "listing_only",
       "reason": "The codeexample is explicitly non-executing or source-only; its picture text is displayed but is not rendered as a cacheable illustration.",
@@ -664,7 +664,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 73,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "03cf8c05b92e41b7965997f9f9afd3415b5879bb503fcf7354a6d79b9d674078",
       "status": "listing_only",
       "reason": "The codeexample is explicitly non-executing or source-only; its picture text is displayed but is not rendered as a cacheable illustration.",
@@ -673,7 +673,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 110,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "c0f4d411d50e3d3815463a33839f7a170d06d6ca7ea0a1c7ec13593726021947",
       "status": "unsupported",
       "reason": "The example has no literal supported tikzpicture body for the cache rewrite to replace.",
@@ -682,7 +682,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 123,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "36c167e8234430a3ac212518e2440bd2bb7f5c22c10387d703b959bbddadc742",
       "status": "unsupported",
       "reason": "The example has no literal supported tikzpicture body for the cache rewrite to replace.",
@@ -691,7 +691,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 146,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "37e09d651f3fa5d7ecc075ec57b50d5952828fe38f1045a3669b8d9c93f59279",
       "status": "unsupported",
       "reason": "The example has no literal supported tikzpicture body for the cache rewrite to replace.",
@@ -700,7 +700,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 169,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "c6edc1c6abb18dee6db2b0a42d3d126f3ce3540c0d9a833d0b7ca3bdc7b880e5",
       "status": "unsupported",
       "reason": "The example has no literal supported tikzpicture body for the cache rewrite to replace.",
@@ -709,7 +709,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 200,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "9775cb056c1d4f74468fad2bdf2a2d98cc334b4d5d4af95cd00282d824b442e5",
       "status": "eligible",
       "reason": "Eligible after source/body review: deterministic sampled plot expression; body includes 2 plot command(s).",
@@ -719,7 +719,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 365,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "279b8bc832673711a3570ec4fab4c75bc3f76ade13d4f10aa007cfc1af19e3f3",
       "status": "eligible",
       "reason": "Eligible after source/body review: TikZ/axis annotations or deterministic drawing commands; body includes 0 plot command(s).",
@@ -729,7 +729,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 430,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "5c1e3be17b45f4cac11367b9cdc869f2180717a2c38da901a0fd2461ca5f8eb7",
       "status": "eligible",
       "reason": "Eligible after source/body review: plot using inline coordinate data; body includes 1 plot command(s) and 1 inline coordinate-like tuple(s).",
@@ -739,7 +739,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 511,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "74d67796a331adf8a3857f7d71e22f550027f8dce2b9012ba289f1481d1d3dab",
       "status": "unsafe",
       "reason": "Unsafe for reuse: global_definition_or_declaration. The cache replaces the whole picture body, so these effects or input changes would be skipped on later passes.",
@@ -748,7 +748,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 772,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "d47772fd8b210154af217d438a445f2cfaab783a60c3d8c4568844116ed617fe",
       "status": "eligible",
       "reason": "Eligible after source/body review: deterministic sampled plot expression; body includes 1 plot command(s) with annotations contained in the same picture.",
@@ -758,7 +758,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 802,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "cc3d55fba901a5c785be73deb33fccea235ae12068534e393bf8b88b78dd2be9",
       "status": "eligible",
       "reason": "Eligible after source/body review: deterministic sampled plot expression; body includes 1 plot command(s) and 2 inline coordinate-like tuple(s) with annotations contained in the same picture.",
@@ -768,7 +768,7 @@
     {
       "file": "pgfplots.basic.reference.tex",
       "line": 852,
-      "source_sha256": "58be17fc68e4af58974e442e9fb11b5e487af68cd7d3500c9ab521eb90445086",
+      "source_sha256": "37b1cc8990160610b2ab6e7379a7492f94394097acfc31d177d5c47efd7552ca",
       "source_span_sha256": "64d417dcfebfd99daaeddb31306f97f89e4394afe81897d4f22e412fc3177f8a",
       "status": "unsafe",
       "reason": "Unsafe for reuse: named_path_or_picture_state; named paths or named picture output state. The cache replaces the whole picture body, so these effects or input changes would be skipped on later passes.",
@@ -2855,7 +2855,7 @@
     {
       "file": "pgfplots.preliminaries.tex",
       "line": 194,
-      "source_sha256": "2c99a4f7a2e16f8b83a1b0ce9218d24344b2af52f448e74b1df2c6d9a4d055ed",
+      "source_sha256": "0848ce01d1d11af99575b5dd1fa20ea7e125dd1f7a212e2d2e9ddaf716595c7b",
       "source_span_sha256": "642df52ba92d4dcd2605b8e2b1f8ef0bfbdc5e2c26bb16544ab4a54d0e7b7624",
       "status": "listing_only",
       "reason": "This codeexample is explicitly configured as code only or non-executing, so it is not a rendered-picture cache candidate.",
@@ -2865,7 +2865,7 @@
     {
       "file": "pgfplots.preliminaries.tex",
       "line": 230,
-      "source_sha256": "2c99a4f7a2e16f8b83a1b0ce9218d24344b2af52f448e74b1df2c6d9a4d055ed",
+      "source_sha256": "0848ce01d1d11af99575b5dd1fa20ea7e125dd1f7a212e2d2e9ddaf716595c7b",
       "source_span_sha256": "3943b3d94d0a742ad53c88a412b219e49d57c8ae67755ed95fac1e7f64579374",
       "status": "eligible",
       "reason": "This picture uses deterministic formula within its own axis; the source has no external data path, random generator, label/reference, or persistent declaration.",

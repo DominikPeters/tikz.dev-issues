@@ -2,7 +2,7 @@
   "format": 1,
   "package": "pgf",
   "upstream_commit": "1d6234878836bc50b5e5a15ae266d74911466e7a",
-  "context_sha256": "8713680a9aa6621a3595b31c1cfa18542417ee3279c06bdccef8b5a1f800c5b6",
+  "context_sha256": "cfbb773bf64b3ef4410f847d33345c6266d1c9285021e16556ecf181541357f1",
   "enabled": true,
   "scope": "Drawing payloads only, between LaTeX passes of one freshly prepared build. Setup, hooks and listings remain live.",
   "default": "uncached",
