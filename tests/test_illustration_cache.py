@@ -28,6 +28,7 @@ DOCUMENT = r"""
 \newcount\outsideeffects
 \newcount\uncachedruns
 \makeatletter
+\newcommand\CurrentPictureID{\the\pgf@picture@serial@count}
 \let\code@pre\@empty
 \let\code@post\@empty
 % Exercise the same raw-source path used by PGF's codeexample execution:
@@ -48,6 +49,7 @@ DOCUMENT = r"""
   \code@pre\expandafter\scantokens\expandafter{\code@temp}\code@post
   \endgroup
 }
+\makeatother
 \begin{document}
 \section{Cache integration}\label{cache-section}
 \begin{itemize}
@@ -57,11 +59,11 @@ DOCUMENT = r"""
   \begin{tikzpicture}
     \draw[red] (0,0) circle[radius=2pt];
   \end{tikzpicture}
-\end{tikzpicture}\typeout{CACHE-PGFID-A=\the\pgf@picture@serial@count}}
+\end{tikzpicture}\typeout{CACHE-PGFID-A=\CurrentPictureID}}
 \end{itemize}
-\RunCachedExample{KEY}{\begin{tikzpicture}
+\RunCachedExample{KEY}{\begin {tikzpicture}
   \fill[green] (0,0) rectangle (1,1);
-\end{tikzpicture}\typeout{CACHE-PGFID-B=\the\pgf@picture@serial@count}}
+\end {tikzpicture}\typeout{CACHE-PGFID-B=\CurrentPictureID}}
 % PGFplots reads this inline table while changing catcodes inside axis.
 \RunCachedExample{KEY}{\begin{tikzpicture}
   \begin{axis}[width=3cm,height=2cm]
@@ -83,7 +85,7 @@ DOCUMENT = r"""
   \typeout{UNCACHED-RNG=\uncachedrandom}
   \node {\label{uncached-drawing-label}uncached drawing};
 \end{tikzpicture}
-\typeout{UNCACHED-PGFID=\the\pgf@picture@serial@count}
+\typeout{UNCACHED-PGFID=\CurrentPictureID}
 \end{document}
 """
 
@@ -101,7 +103,7 @@ class IllustrationCacheIntegrationTests(unittest.TestCase):
         except ImportError:
             self.skipTest("requires pypdf")
 
-    def environment(self, cache_enabled):
+    def environment(self, cache_enabled, minimum_seconds="0"):
         env = os.environ.copy()
         env["TEXINPUTS"] = str(SHARED) + "//:" + env.get("TEXINPUTS", "")
         env["LUAINPUTS"] = str(SHARED) + "//:" + env.get("LUAINPUTS", "")
@@ -110,14 +112,18 @@ class IllustrationCacheIntegrationTests(unittest.TestCase):
             pythonpath.append(env["PYTHONPATH"])
         env["PYTHONPATH"] = os.pathsep.join(pythonpath)
         env["TIKZ_RENDER_CACHE"] = "1" if cache_enabled else "0"
+        env["TIKZ_RENDER_CACHE_MIN_SECONDS"] = str(minimum_seconds)
         return env
 
-    def run_variant(self, directory, cache_enabled):
+    def run_variant(self, directory, cache_enabled, minimum_seconds="0", inline_prose=False):
         directory.mkdir()
         (directory / "mathjax.txt").write_text("// fixture\n")
         source = DOCUMENT.replace("KEY", CACHE_ID)
+        if inline_prose:
+            source = source.replace(r"\end {tikzpicture}\typeout{CACHE-PGFID-B=",
+                                    r"\end {tikzpicture}right of picture.\typeout{CACHE-PGFID-B=")
         (directory / "main_html.tex").write_text(source)
-        env = self.environment(cache_enabled)
+        env = self.environment(cache_enabled, minimum_seconds)
         first_pdf = None
         first_pending = None
         logs = []
@@ -252,6 +258,66 @@ class IllustrationCacheIntegrationTests(unittest.TestCase):
                     convert_illustrations.page_bytes(original_reader.pages[entry["page"] - 1]),
                 )
                 self.assertGreater(len(cached_pdf_reader.pages), 0)
+
+
+    def test_high_threshold_keeps_all_pictures_live_with_identical_outputs(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            stock = self.run_variant(root / "stock", cache_enabled=False, inline_prose=True)
+            high_threshold = self.run_variant(
+                root / "high-threshold", cache_enabled=True, minimum_seconds="1000000", inline_prose=True
+            )
+
+            self.assertEqual(stock["html"], high_threshold["html"])
+            self.assertEqual(stock["aux"], high_threshold["aux"])
+            self.assertEqual(stock["manifest"], high_threshold["manifest"])
+            self.assertEqual(high_threshold["first_pending"], "")
+            self.assertEqual(high_threshold["pending_final"], "")
+            self.assertEqual(high_threshold["used_final"], "")
+            self.assertRegex(
+                high_threshold["cache_log"],
+                r"Illustration drawing cache: 0 reused, 0 recorded",
+            )
+            self.assertEqual(
+                list(high_threshold["cache_dir"].glob("*.pdf")), []
+            )
+            self.assertEqual(
+                list(high_threshold["cache_dir"].glob("*.tex")), []
+            )
+
+    def test_invalid_minimum_seconds_fails_with_clear_error(self):
+        invalid_values = ("not-a-number", "-0.01", "nan", "inf")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for index, value in enumerate(invalid_values):
+                with self.subTest(value=value):
+                    directory = root / f"invalid-{index}"
+                    directory.mkdir()
+                    (directory / "mathjax.txt").write_text("// fixture\n")
+                    (directory / "main_html.tex").write_text(
+                        DOCUMENT.replace("KEY", CACHE_ID)
+                    )
+                    result = subprocess.run(
+                        [
+                            sys.executable,
+                            str(SHARED / "render_cache.py"),
+                            "-halt-on-error",
+                            "-interaction=nonstopmode",
+                            "main_html.tex",
+                        ],
+                        cwd=directory,
+                        env=self.environment(True, value),
+                        capture_output=True,
+                        text=True,
+                    )
+                    self.assertNotEqual(result.returncode, 0)
+                    log = (directory / "main_html.log").read_text(errors="replace")
+                    # TeX wraps log lines mid-word; unwrap without inserting
+                    # whitespace so the actual diagnostic stays recognizable.
+                    self.assertIn(
+                        "TIKZ_RENDER_CACHE_MIN_SECONDS must be a finite nonnegative number",
+                        "".join(log.splitlines()),
+                    )
 
 
 if __name__ == "__main__":

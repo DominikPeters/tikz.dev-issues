@@ -5,11 +5,20 @@
 % All setup, listings, and code outside pictures continue to execute each pass.
 \begin{warpHTML}
 \newif\ifTDC@disabled
+\newif\ifTDC@worthwhile
 \directlua{
   local path = kpse.find_file("tikz_render_cache.lua", "lua")
     or kpse.find_file("tikz_render_cache.lua", "tex")
   assert(path, "Cannot find tikz_render_cache.lua")
   tikz_render_cache = dofile(path)
+  local minimum_raw = os.getenv("TIKZ_RENDER_CACHE_MIN_SECONDS")
+  local minimum = 0.05
+  if not (minimum_raw == nil) then minimum = tonumber(minimum_raw) end
+  assert(type(minimum) == "number" and minimum == minimum
+      and minimum >= 0 and minimum < math.huge,
+    "TIKZ_RENDER_CACHE_MIN_SECONDS must be a finite nonnegative number; got "
+      .. tostring(minimum_raw))
+  tikz_render_cache.minimum_seconds = minimum
   if os.getenv("TIKZ_RENDER_CACHE") == "0" then
     tex.print("\string\\TDC@disabledtrue")
   end
@@ -38,17 +47,31 @@
     \fi
     \TDC@originallabel{##1}%
   }%
+  % Start after the cache bookkeeping so only picture-body CPU is measured.
+  \directlua{tikz_render_cache.start("\luaescapestring{\TDC@key}")}%
 }
 
 \def\TikzDevCacheEnd{%
+  % Stop at the first instruction after the drawing, before cache bookkeeping.
+  \directlua{%
+    if tikz_render_cache.worthwhile(
+        "\luaescapestring{\TDC@key}", tikz_render_cache.minimum_seconds) then
+      tex.print("\string\\csname TDC@worthwhiletrue\string\\endcsname")
+    else
+      tex.print("\string\\csname TDC@worthwhilefalse\string\\endcsname")
+    end
+  }%
   \let\LWR@orig@label\TDC@originallabel
-  % Unusual wrappers producing several outer images remain uncached.
-  \ifnum\value{LWR@lateximagenumber}=\numexpr\TDC@beforeimages+1\relax
-    \ifx\TDC@page\@empty\else
-      \edef\TDC@ids{\number\numexpr\pgf@picture@serial@count-\TDC@beforeids\relax}%
-      \ifnum\TDC@ids>0\relax
-        \immediate\write\TDC@pending{\string{"key":"\TDC@key","page":\TDC@page,"pgf_ids":\TDC@ids\string}}%
-        \global\advance\TDC@misses by1\relax
+  % Cheap drawings stay live; preserve all existing page/image/ID checks.
+  \ifTDC@worthwhile
+    % Unusual wrappers producing several outer images remain uncached.
+    \ifnum\value{LWR@lateximagenumber}=\numexpr\TDC@beforeimages+1\relax
+      \ifx\TDC@page\@empty\else
+        \edef\TDC@ids{\number\numexpr\pgf@picture@serial@count-\TDC@beforeids\relax}%
+        \ifnum\TDC@ids>0\relax
+          \immediate\write\TDC@pending{\string{"key":"\TDC@key","page":\TDC@page,"pgf_ids":\TDC@ids\string}}%
+          \global\advance\TDC@misses by1\relax
+        \fi
       \fi
     \fi
   \fi

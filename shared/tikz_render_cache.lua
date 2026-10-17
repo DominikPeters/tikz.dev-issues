@@ -1,7 +1,19 @@
 -- Rewrite raw codeexample text, preserving the input catcodes of live pictures.
-local cache = { sequence = {} }
+local cache = { sequence = {}, started = {} }
 local begin_picture = '\\begin%s*{%s*tikzpicture%s*}'
 local end_picture = '\\end%s*{%s*tikzpicture%s*}'
+
+-- Time only the drawing body. These helpers never alter the source or output.
+function cache.start(key)
+    cache.started[key] = os.clock()
+end
+
+function cache.worthwhile(key, minimum_seconds)
+    local started = cache.started[key]
+    cache.started[key] = nil
+    if started == nil then return false end
+    return os.clock() - started >= minimum_seconds
+end
 
 local function exists(path)
     local stream = io.open(path, 'rb')
@@ -45,7 +57,7 @@ function cache.rewrite(source, id, jobname)
             parts[#parts + 1] = '\\TikzDevCacheUse{' .. key .. '}'
         else
             parts[#parts + 1] = '\\TikzDevCacheBegin{' .. key .. '}'
-                .. source:sub(start, finish) .. '\\TikzDevCacheEnd'
+                .. source:sub(start, finish) .. '\\TikzDevCacheEnd{}'
         end
         cursor = finish + 1
     end

@@ -59,24 +59,34 @@ manifests against stock lwarp.
 
 ### Drawing reuse between LaTeX passes
 
-PGFplots also reuses selected, reviewed illustrations within one build. The
+PGF and PGFplots reuse selected, reviewed illustrations within one build. The
 first pass draws them normally; subsequent passes reuse their original PDF
 pages. Setup code, code outside pictures, pre/post hooks, listings and lwarp's
 HTML/reference bookkeeping still execute. PNG/SVG conversion reads the saved
 original pages directly, avoiding rounding changes from PDF imports.
 
-The package `illustration-audit.json` files record unsafe examples and a limited
-opt-in set. Labels, remembered nodes, random state, global declarations, file
+The package `illustration-audit.json` files classify all 4,145 inventoried
+codeexamples and record an explicit opt-in set. Labels, remembered nodes,
+random state, global declarations, shell commands, external inputs, file
 writes and uncertain dependencies are reasons to keep drawings live. Unreviewed
 examples always execute. Eligibility requires the reviewed upstream commit,
-whole chapter hash and exact example hash; changed sources run uncached until
-reviewed again. The PGF review is retained, but its drawing cache is disabled:
-the simple tutorial sample did not show a consistent benefit.
+whole chapter hash, exact example hash, and the prepared source-context hash;
+changed sources run uncached until reviewed again. The context hash includes
+the other chapters, preambles and TeX/Lua helpers, since a drawing may use a
+macro or style defined outside its own chapter.
 
-The initial review explicitly classifies 391 of 4,145 inventoried codeexamples;
-3,754 remain unclassified and uncached. Drawing reuse is enabled for 118 reviewed
-PGFplots examples. Completing the classification and measuring a full manual
-build with drawing reuse remain follow-up work.
+Six Luna reviews cover all 4,145 entries, followed by independent cross-checks.
+The opt-in set contains 832 PGF examples across 61 chapters and 532 PGFplots
+examples across 35 chapters. Unsupported shorthand drawings, listings, and uncertain dependencies keep their
+normal execution path. The manifests retain a reason and source fingerprints
+for each decision. Source review is not a general proof of TeX purity.
+
+Cheap pictures remain live: a reviewed drawing must take at least 0.05 CPU
+seconds before its original page is saved. This avoids paying extraction/import
+costs for trivial drawings, which were slower in the earlier PGF tutorial
+benchmark. `TIKZ_RENDER_CACHE_MIN_SECONDS` changes this threshold; set it to
+`0` to exercise every reviewed drawing during correctness comparisons. The
+threshold can affect cache coverage, never the published drawing contents.
 
 This cache lives in the prepared source tree and is cleared at the start of
 each build. It accelerates repeated LaTeX passes even on a fresh GitHub runner.
@@ -94,6 +104,21 @@ python3 scripts/illustration_audit.py pgfplots build/pgfplots/review/doc/latex/p
 Automatic hazard tags are review prompts, not a proof of safety. Update the
 review manifest only after checking dependencies and comparing cached and
 uncached HTML, auxiliary files and rendered illustrations.
+
+Inventories include separate hints for picture bodies and live setup options.
+The scanner also marks unsupported execution paths as live; an absence of hints
+never grants eligibility. To merge independent review JSON files into a complete
+manifest, repeat `--review` for each batch and supply `--manifest-output` and
+`--upstream-commit` (the full reviewed upstream SHA). Every review record must
+match the inventory's file, line, chapter hash and exact example hash. Negative
+findings take precedence over positive findings, and missing reviews remain
+unreviewed. Positive review batches must also carry the inventory's
+`context_sha256`; a missing context never enables caching. Run this against a
+freshly prepared, untagged tree so the source context fingerprint contains no
+generated TeX files or cache annotations.
+
+The [review report](reports/illustration-cache-review.md) records coverage and
+validation results.
 
 ### Illustration conversion
 
