@@ -14,6 +14,7 @@ from bs4 import BeautifulSoup, Comment
 from assets import asset_url
 from check_manual_site import check_site
 from docsearch import add_docsearch
+from home import contents, title_box
 from illustration_formats import image_format
 from lwarp_html import escape_code_angles, normalize_page_layout
 from navbar import ISSUES_URL, REPO_URL, home_url, title_menu
@@ -33,6 +34,7 @@ class Manual:
     ignored_html: tuple[str, ...] = ()
     pair_adjacent_examples: bool = False
     page_aliases: tuple[tuple[str, str], ...] = ()
+    author: str = ''  # of the documentation, for the start page
 
     @property
     def images(self):
@@ -143,7 +145,7 @@ def add_chrome(soup, filename, contents, manual):
     container.append(footer)
 
 
-def finish_page(text, filename, formats, root, manual):
+def finish_page(text, filename, formats, root, manual, home_groups=None):
     soup = BeautifulSoup(escape_code_angles(text), 'html5lib')
     normalize_page_layout(soup)
     aliases = dict(manual.page_aliases)
@@ -231,6 +233,7 @@ def finish_page(text, filename, formats, root, manual):
     if filename == 'index.html':
         for heading in soup.select('.titlepage h1'):
             heading['class'] = ['manual-title']
+        rebuild_home(soup, manual, home_groups)
 
     for table in soup.select('.textbody table'):
         table.wrap(soup.new_tag('div', attrs={'class': 'table-scroll', 'role': 'region',
@@ -316,6 +319,126 @@ documentation.'''))
     return soup.decode(formatter='html5')
 
 
+MONTHS = 'January|February|March|April|May|June|July|August|September|October|November|December'
+DATE_RE = re.compile(rf'\d{{4}}/\d\d/\d\d|(?:{MONTHS})\s+\d{{1,2}},\s*\d{{4}}'
+                     rf'|\d{{1,2}}(?:st|nd|rd|th)?\s+(?:{MONTHS})\s+\d{{4}}')
+VERSION_RE = re.compile(r'(?:\bVersion\s+|\bv)(\d[\w.]*)')
+
+
+def heading_html(heading):
+    """The title of a section heading, without its number and anchor link."""
+    heading = copy.copy(heading)
+    for tag in heading.select('.sectionnumber, a.anchor-link'):
+        tag.decompose()
+    title = heading.select_one('.heading-title') or heading
+    return title.decode_contents().strip()
+
+
+def home_contents(manual, read):
+    """The cards of the start page: one per page, with its numbered subsections."""
+    groups = []
+    for filename, label in manual.pages.items():
+        if filename == 'index.html':
+            continue
+        soup = BeautifulSoup(read(filename), 'html5lib')
+        href = filename.removesuffix('.html')
+        number, items = '', []
+        for heading in soup.select('.textbody h4, .textbody h5'):
+            mark = heading.select_one('.sectionnumber')
+            num = mark.get_text(strip=True) if mark else ''
+            if heading.name == 'h4':
+                number = number or num
+            elif num:
+                items.append((num, heading_html(heading), f'{href}#sec-{num}'))
+        groups.append((escape_html(label), href, number, items))
+    if not any(items for *_, items in groups):  # no subsections: one list of the pages
+        groups = [('', None, '', [(number, title, href) for title, href, number, _ in groups])]
+    return groups
+
+
+def escape_html(text):
+    return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+
+def rebuild_home(soup, manual, groups):
+    """Replace lwarp's title page and table of contents by the shared start
+    page (shared/home.py): the title box and the contents as cards."""
+    textbody = soup.select_one('.textbody')
+    title = textbody.select_one('h1.manual-title') if textbody else None
+    if title is None:
+        return
+    cover = title.find_parent(class_='center') or title.find_parent(class_='titlepage') or title
+    # a logo drawn above the title
+    logo = ''
+    image = title.find_previous('img')
+    if image is not None and cover in image.parents:
+        source = image.find_parent(class_='lateximagesource') or image
+        logo = str(source)
+    # a blank line in the title separates a subtitle (a single line break does not)
+    parts = [part.strip() for part in re.split(r'\s*<br/?>\s*(?:<br/?>\s*)+', title.decode_contents()) if part.strip()]
+    heading, subtitle = parts[0], ' '.join(parts[1:])
+    text = ' '.join(cover.get_text(' ').replace(title.get_text(' '), ' ').split())
+    version = VERSION_RE.search(text)
+    date = DATE_RE.search(text)
+    today = datetime.date.today()
+    if date and date.group(0) in (f'{today:%B} {today.day}, {today.year}', f'{today:%Y/%m/%d}'):
+        date = None  # \today: the date of the build, not of the manual
+    version_line = ''
+    if version:
+        version_line = ('version ' if subtitle else 'Version ') + version.group(1)
+    if date:
+        version_line += f' ({date.group(0)})' if version_line else date.group(0)
+    if subtitle:
+        version_line = subtitle + (', ' + version_line if version_line else '')
+    name = manual.title.removesuffix(' Manual')
+    box = BeautifulSoup(title_box(
+        heading, version_line, f'Author of the {name} manual: {manual.author}.' if manual.author else '',
+        manual.source_url, logo, tool='lwarp'), 'html.parser').div
+    top = cover
+    while top.parent is not textbody:
+        top = top.parent
+    top.insert_before(box)
+    cover.decompose()
+    if top is not cover and not top.get_text(strip=True) and top.find('img') is None:
+        top.decompose()
+    following = box.find_next_sibling()
+    while following is not None and following.name == 'a' and not following.get_text(strip=True):
+        following = following.find_next_sibling()
+    if following is not None and 'footnotes' in following.get('class', []):
+        following.decompose()  # footnotes of the title page (affiliations)
+
+    if groups is None:
+        return
+    # lwarp's table of contents (or a picture of it) gives way to the cards
+    anchor = None
+    for contents_heading in textbody.select('h4, h5'):
+        if contents_heading.get_text(' ', strip=True).startswith('Contents'):
+            anchor = contents_heading
+            for sibling in list(contents_heading.find_next_siblings()):
+                if sibling.name == 'nav' or 'example' in sibling.get('class', []) or (
+                        sibling.name == 'a' and not sibling.get_text(strip=True)):
+                    sibling.decompose()
+                else:
+                    break
+            break
+    for toc in textbody.select('nav.toc'):
+        container = toc.find_parent(class_='multicols')
+        toc.decompose()
+        if container is not None and not container.get_text(strip=True):
+            container.decompose()
+    cards = BeautifulSoup(contents(groups), 'html.parser')
+    if anchor is not None:
+        top = anchor
+        while top.parent is not textbody:
+            top = top.parent
+        top.insert_after(cards)
+        anchor.decompose()
+        if top is not anchor and not top.get_text(strip=True) and top.find('img') is None:
+            top.decompose()
+    else:
+        textbody.append(cards)
+
+
 def build_site(manual):
     root = Path.cwd()
     generated = {p.name for p in root.glob('*.html') if p.name not in (manual.jobname + '_html.html', *manual.ignored_html)}
@@ -329,9 +452,11 @@ def build_site(manual):
     for name in ['style.css', 'pgfmanual.js', 'lwarp-mathjax-emulation.js']:
         copy2(name, output / name)
     copytree(manual.images, output / manual.images, dirs_exist_ok=True)
+    sources = {filename: Path(next((old for old, new in manual.page_aliases if new == filename), filename))
+               for filename in manual.pages}
+    groups = home_contents(manual, lambda filename: sources[filename].read_text())
     for filename in manual.pages:
-        source = next((old for old, new in manual.page_aliases if new == filename), filename)
-        text = Path(source).read_text()
-        (output / filename).write_text(finish_page(text, filename, formats, root, manual))
+        text = sources[filename].read_text()
+        (output / filename).write_text(finish_page(text, filename, formats, root, manual, groups))
     result = check_site(output)
     print(f'{manual.package} site verified: {result}')

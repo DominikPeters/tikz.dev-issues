@@ -19,6 +19,7 @@ MANUAL = Manual(
     description='Documentation and examples for tikz-cd, commutative diagrams with TikZ.',
     pdf_url='https://mirrors.ctan.org/graphics/pgf/contrib/tikz-cd/tikz-cd-doc.pdf',
     source_url='https://github.com/astoff/tikz-cd',
+    author='Augusto Stoffel',
     notice='''\
 tikz-cd documentation:
 Copyright 2011, 2012, 2014, 2018, 2021 Augusto Stoffel

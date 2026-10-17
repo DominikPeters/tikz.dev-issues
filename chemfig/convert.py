@@ -28,6 +28,7 @@ from texhtml.core import (  # noqa: E402
     match_brace, read_args, read_cs, split_kv, tex_to_text,
 )
 from texhtml.site import Manual, write_site  # noqa: E402
+from home import contents, title_box  # noqa: E402
 
 # the CTAN package at the pinned version (scripts/fetch.sh chemfig)
 UPSTREAM = os.environ.get("UPSTREAM", os.path.join(ROOT, ".upstream", "chemfig"))
@@ -414,21 +415,14 @@ This file may be distributed and/or modified under the LaTeX Project Public Lice
 
 
 def home_html(ctx, pages):
-    sections = []
-    for part_id, part_name in PARTS:
-        lis = "".join(f'<li><a href="{p.slug}">{p.section_number + "&ensp;" if p.section_number else ""}'
-                      f"{p.title_html}</a></li>" for p in pages if p.part == part_id)
-        sections.append(f'<div class="home-toc-section"><h3><a href="{part_id}">{part_name}</a></h3><ul>{lis}</ul></div>')
+    groups = [(part_name, part_id, "", [(p.section_number, p.title_html, p.slug) for p in pages if p.part == part_id])
+              for part_id, part_name in PARTS]
+    box = title_box('<span class="chemfig-name">chem<i>fig</i></span>',
+                    f"A TeX package for drawing molecules, version {ctx.version} ({ctx.date})",
+                    "Author of the chemfig manual: Christian Tellechea.", "https://ctan.org/pkg/chemfig")
     return f"""
-<div class="manual-title-block">
-<div class="manual-title"><span class="chemfig-name">chem<i>fig</i></span></div>
-<div class="manual-version">A TeX package for drawing molecules, version {ctx.version} ({ctx.date})</div>
-<div class="manual-authorship-explanation">Christian Tellechea</div>
-<div class="manual-html-title">HTML version of the official documentation</div>
-<div class="manual-html-explanation">This is an unofficial HTML rendering of the
-<a href="https://ctan.org/pkg/chemfig">chemfig</a> manual, generated from its LaTeX sources.</div>
-</div>
-<div class="home-toc">{''.join(sections)}</div>
+{box}
+{contents(groups)}
 """
 
 

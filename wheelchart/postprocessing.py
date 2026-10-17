@@ -13,6 +13,7 @@ MANUAL = Manual(
     description='Documentation and examples for wheelchart: pie charts, bar charts, infographics and other diagrams with TikZ.',
     pdf_url='https://mirrors.ctan.org/graphics/pgf/contrib/wheelchart/wheelchart.pdf',
     source_url='https://ctan.org/tex-archive/graphics/pgf/contrib/wheelchart',
+    author='Matthias Floré',
     notice='''\
 wheelchart documentation:
 Copyright 2022-2026 Matthias Floré

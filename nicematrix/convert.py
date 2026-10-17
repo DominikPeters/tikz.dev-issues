@@ -36,6 +36,7 @@ from texhtml.core import (  # noqa: E402
     xcolor_to_css,
 )
 from texhtml.site import Manual, write_site  # noqa: E402
+from home import contents, title_box  # noqa: E402
 
 # checkout of the nicematrix repository at the pinned commit (scripts/fetch.sh nicematrix)
 UPSTREAM = os.environ.get("UPSTREAM", os.path.join(ROOT, ".upstream", "nicematrix"))
@@ -544,20 +545,23 @@ This file may be distributed and/or modified under the LaTeX Project Public Lice
 
 
 def home_html(ctx, pages):
-    lis = "".join(f'<li><a href="{p.slug}">{p.section_number + "&ensp;" if p.section_number else ""}'
-                  f"{p.title_html}</a></li>" for p in pages)
-    intro = ctx.intro
+    groups = []
+    for p in pages:
+        items = [(anchor.removeprefix("sec-"), title, f"{p.slug}#{anchor}") for kind, anchor, title in p.toc
+                 if kind == "tocsubsection" and p.section_number]
+        groups.append((p.title_html, p.slug, p.section_number, items))
+    box = title_box('The package <span class="sffamily">nicematrix</span>',
+                    f"Enhanced arrays with the help of PGF/TikZ, version {ctx.version} ({ctx.date})",
+                    "Author of the nicematrix manual: F. Pantigny.", "https://github.com/fpantigny/nicematrix")
+    # the abstract above the contents, the rest of the introduction below
+    intro = ctx.intro.body
+    end = intro.find("</p>") + len("</p>")
     return f"""
-<div class="manual-title-block">
-<div class="manual-title">The package <span class="sffamily">nicematrix</span></div>
-<div class="manual-version">Version {ctx.version} ({ctx.date})</div>
-<div class="manual-authorship-explanation">F. Pantigny</div>
-<div class="manual-html-title">HTML version of the official documentation</div>
-<div class="manual-html-explanation">This is an unofficial HTML rendering of the
-<a href="https://ctan.org/pkg/nicematrix">nicematrix</a> manual, generated from its LaTeX sources.</div>
-</div>
-<div class="nm-intro">{intro.body}{footnotes_html(intro)}</div>
-<div class="home-toc"><div class="home-toc-section"><h3>Contents</h3><ul>{lis}</ul></div></div>
+{box}
+<div class="home-abstract"><p class="abstract-title">Abstract</p>{intro[:end]}</div>
+{contents(groups)}
+<h2 class="home-contents-title">Introduction</h2>
+<div class="nm-intro">{intro[end:]}{footnotes_html(ctx.intro)}</div>
 """
 
 

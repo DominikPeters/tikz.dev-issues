@@ -62,10 +62,17 @@ processing in `shared/pgf_contrib_site.py`. The list of manuals in the header
 menu is in `shared/navbar.py`. Local CSS and JavaScript URLs carry content
 hashes, so browsers pick up new versions immediately.
 
+The start pages share one design (`shared/home.py`): the title box of the PGF
+and PGFplots start pages, the abstract, and the contents as cards accented in
+the manual's color (`--pkg-color` in `style.css`). The converted manuals build
+it in their `home_html`; for the lwarp manuals, `pgf_contrib_site.py` replaces
+lwarp's title page and table of contents with it, taking the title, logo and
+version from the title page and the author from the `Manual`.
+
 Search uses DocSearch v3 (`shared/docsearch.py`, initialised in
 `pgfmanual.js`) with the Algolia application `JS6V5VZSDB` and index `tikz`.
 Each manual filters by its own tag (PGF: `tikz`, the others: their package
-name). The crawler and index settings are managed in Algolia, not here; a new
+name); a switch in the search window searches all manuals instead. The crawler and index settings are managed in Algolia, not here; a new
 manual's search returns results once the crawler has indexed and tagged it.
 
 ## lwarp speedups

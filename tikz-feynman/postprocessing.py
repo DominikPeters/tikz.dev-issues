@@ -21,6 +21,7 @@ MANUAL = Manual(
     description='Documentation and examples for TikZ-Feynman, Feynman diagrams with TikZ.',
     pdf_url='https://mirrors.ctan.org/graphics/pgf/contrib/tikz-feynman/tikz-feynman.pdf',
     source_url='https://github.com/JP-Ellis/tikz-feynman',
+    author='Joshua P. Ellis',
     notice='''\
 TikZ-Feynman documentation:
 Copyright (C) 2016 Joshua Ellis

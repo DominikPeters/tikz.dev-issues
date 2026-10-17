@@ -11,6 +11,7 @@ MANUAL = Manual(
     description='Documentation and examples for drawing Gantt charts with pgfgantt and TikZ.',
     pdf_url='https://mirrors.ctan.org/graphics/pgf/contrib/pgfgantt/pgfgantt-doc.pdf',
     source_url='https://github.com/skafdasschaf/latex-pgfgantt',
+    author='Wolfgang Esser-Skala',
     notice='''\
 pgfgantt documentation:
 Copyright (C) 2024 by Wolfgang Esser-Skala

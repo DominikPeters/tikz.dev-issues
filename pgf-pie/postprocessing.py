@@ -19,6 +19,7 @@ MANUAL = Manual(
     description='Documentation and examples for pgf-pie, pie charts with TikZ.',
     pdf_url='https://mirrors.ctan.org/graphics/pgf/contrib/pgf-pie/pgf-pie-manual.pdf',
     source_url='https://github.com/pgf-tikz/pgf-pie',
+    author='Yuan Xu',
     notice='''\
 pgf-pie documentation:
 Copyright 2011-2020 Yuan Xu

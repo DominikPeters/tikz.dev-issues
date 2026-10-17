@@ -36,6 +36,7 @@ from texhtml.core import (  # noqa: E402
     load_images, match_brace, parse_bib, read_args, read_cs, split_items, tex_to_text,
 )
 from texhtml.site import Manual, sort_citations, write_site  # noqa: E402
+from home import contents, title_box  # noqa: E402
 
 # checkout of the forest repository at the pinned commit (scripts/fetch.sh forest)
 UPSTREAM = os.environ.get("UPSTREAM", os.path.join(ROOT, ".upstream", "forest"))
@@ -724,21 +725,14 @@ This file may be distributed and/or modified under the LaTeX Project Public Lice
 
 
 def home_html(ctx, pages):
-    sections = []
-    for part_id, part_name in PARTS:
-        lis = "".join(f'<li><a href="{p.slug}">{p.section_number}&ensp;{p.title_html}</a></li>'
-                      for p in pages if p.part == part_id)
-        sections.append(f'<div class="home-toc-section"><h3><a href="{part_id}">{part_name}</a></h3><ul>{lis}</ul></div>')
+    groups = [(part_name, part_id, "", [(p.section_number, p.title_html, p.slug) for p in pages if p.part == part_id])
+              for part_id, part_name in PARTS]
+    box = title_box('<span class="forest-name">Forest</span>',
+                    f"A PGF/TikZ-based package for drawing linguistic trees, version {ctx.version.lstrip('v')}",
+                    "Author of the forest manual: Sašo Živanović.", "https://github.com/sasozivanovic/forest")
     return f"""
-<div class="manual-title-block">
-<div class="manual-title"><span class="forest-name">Forest</span></div>
-<div class="manual-version">A PGF/TikZ-based package for drawing linguistic trees, version {ctx.version}</div>
-<div class="manual-authorship-explanation">Sašo Živanović</div>
-<div class="manual-html-title">HTML version of the official documentation</div>
-<div class="manual-html-explanation">This is an unofficial HTML rendering of the
-<a href="https://ctan.org/pkg/forest">forest</a> manual, generated from its LaTeX sources.</div>
-</div>
-<div class="home-toc">{''.join(sections)}</div>
+{box}
+{contents(groups)}
 """
 
 

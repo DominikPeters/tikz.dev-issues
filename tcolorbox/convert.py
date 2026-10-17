@@ -35,6 +35,7 @@ from texhtml.core import (  # noqa: E402
     load_images, match_brace, parse_bib, pretty_id, read_args, skip_ws, split_kv,
 )
 from texhtml.site import Manual, sort_citations, write_site  # noqa: E402
+from home import contents, title_box  # noqa: E402
 
 # checkout of the tcolorbox repository at the pinned commit (scripts/fetch.sh tcolorbox)
 UPSTREAM = os.environ.get("UPSTREAM", os.path.join(ROOT, ".upstream", "tcolorbox"))
@@ -934,27 +935,20 @@ def home_html(ctx, pages):
             cover_width, cover_height = struct.unpack(">II", f.read(8))
         cover = (f'<div class="titlepagepic"><img alt="tcolorbox cover" '
                  f'src="{IMGDIR_NAME}/cover.png" width="{cover_width}" height="{cover_height}" /></div>')
-    sections = []
+    groups = []
     for part_id, part_name in PARTS:
-        lis = "".join(f'<li><a href="{p.slug}">{p.section_number}&ensp;{toc_title(p)}</a></li>'
-                      for p in pages if p.part == part_id)
+        items = [(p.section_number, toc_title(p), p.slug) for p in pages if p.part == part_id]
         if part_id == "appendix":
-            lis += '<li><a href="references">References</a></li>'
-        sections.append(f'<div class="home-toc-section"><h3><a href="{part_id}">{part_name}</a></h3><ul>{lis}</ul></div>')
-    main = f"""
-<div class="manual-title-block">
-<div class="manual-title">The <span class="texttt">tcolorbox</span> package</div>
-<div class="manual-version">Manual for version {ctx.version} ({ctx.date})</div>
-<div class="manual-authorship-explanation">Thomas F. Sturm</div>
-<div class="manual-html-title">HTML version of the official documentation</div>
-<div class="manual-html-explanation">This is an unofficial HTML rendering of the
-<a href="https://ctan.org/pkg/tcolorbox">tcolorbox</a> manual, generated from its LaTeX sources.</div>
-</div>
+            items.append(("", "References", "references"))
+        groups.append((part_name, part_id, "", items))
+    box = title_box('The <span class="texttt">tcolorbox</span> package', f"Manual for version {ctx.version} ({ctx.date})",
+                    "Author of the tcolorbox manual: Thomas F. Sturm.", "https://github.com/T-F-S/tcolorbox")
+    return f"""
+{box}
+<div class="home-abstract"><p class="abstract-title">Abstract</p>{abstract}</div>
 {cover}
-<div class="abstract"><p class="abstract-title">Abstract</p>{abstract}</div>
-<div class="home-toc">{''.join(sections)}</div>
+{contents(groups)}
 """
-    return main
 
 
 def main():

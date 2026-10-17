@@ -1348,6 +1348,144 @@ nav.sidetoc .sidetoccontents a.tocsubsubsection {
   display: none;
 }
 
+/* Start pages made with shared/home.py: the title box (as on the PGF and
+   PGFplots start pages), an abstract and the contents as cards with an
+   accent in the manual's color */
+.pkg-pgfplots { --pkg-color: #623cc9; }
+.pkg-tcolorbox { --pkg-color: #8c2323; }
+.pkg-tikz-cd { --pkg-color: #236b53; }
+.pkg-pgf-pie { --pkg-color: #855017; }
+.pkg-tikz-feynman { --pkg-color: #3c5770; }
+.pkg-wheelchart { --pkg-color: #596a35; }
+.pkg-pgfgantt { --pkg-color: #635185; }
+.pkg-tkz-euclide { --pkg-color: #006d77; }
+.pkg-chemfig { --pkg-color: #202838; }
+.pkg-forest { --pkg-color: #2f5d34; }
+.pkg-nicematrix { --pkg-color: #24539c; }
+
+.manual-title-block.home-box {
+  margin-top: 0.75rem;
+  padding: 1em 1em 0.6em;
+}
+.textbody .home-box .manual-title {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 2.5em;
+  font-weight: normal;
+  line-height: 1.15;
+  text-align: center;
+}
+.home-box .manual-version {
+  margin-top: 0.15em;
+}
+@media (max-width: 640px) {
+  .textbody .home-box .manual-title {
+    font-size: 1.9em;
+  }
+  .home-box .manual-version {
+    font-size: 1.2em;
+  }
+}
+.home-box .manual-logo img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 0.3em;
+}
+
+.index-page .abstract,
+.index-page .home-abstract {
+  max-width: 48em;
+  margin: 1.5em auto;
+  padding: 0.8em 1.2em;
+  background-color: hsl(30, 37%, 90%);
+}
+.index-page .abstracttitle,
+.index-page .home-abstract .abstract-title {
+  font-weight: bold;
+  text-align: center;
+  margin: 0 0 0.3em;
+}
+.index-page .abstract p:last-child,
+.index-page .home-abstract p:last-child {
+  margin-bottom: 0;
+}
+
+.textbody h2.home-contents-title {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 1.4em 0 0.6em;
+  padding: 0;
+  border: 0;
+  text-align: left;
+}
+.home-contents {
+  column-width: 17em;
+  column-gap: 1em;
+  margin-bottom: 2em;
+}
+.home-contents-single {
+  columns: auto;
+  max-width: 34em;
+}
+.home-contents-single ol {
+  columns: 2 13em;
+  column-gap: 1.5em;
+}
+.home-contents-single li {
+  break-inside: avoid;
+}
+.home-card {
+  break-inside: avoid;
+  margin-bottom: 1em;
+  background: #fff;
+  border: 1px solid #d9d6cf;
+  border-top: 3px solid var(--pkg-color, #333);
+  border-radius: 3px;
+  padding: 0.7em 0.9em 0.8em;
+}
+.textbody .home-card h3 {
+  display: flex;
+  gap: 0.4em;
+  font-size: 1.05em;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 0.45em;
+  padding: 0;
+}
+.home-card h3 a,
+.home-card h3 a:visited {
+  color: inherit;
+}
+.home-card ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.92em;
+  line-height: 1.35;
+}
+.home-card li {
+  display: flex;
+  gap: 0.5em;
+  margin: 0.25em 0;
+}
+.textbody .home-card a:link,
+.textbody .home-card a:visited {
+  text-decoration: none;
+}
+.home-card-number {
+  flex: none;
+  min-width: 2.3em;
+  color: #8a8a8a;
+  font-variant-numeric: tabular-nums;
+}
+.home-card h3 .home-card-number {
+  min-width: 0;
+}
+.textbody .home-card a:hover {
+  text-decoration: underline;
+}
+
 .quicklinks {
   margin-bottom: 0.5em;
   line-height: 1.8;
@@ -1742,7 +1880,7 @@ div.warning-see-pdf img {
 
 .pkg-tcolorbox h4 .mylib,
 .pkg-tcolorbox .tocsection .mylib,
-.pkg-tcolorbox .home-toc .mylib,
+.pkg-tcolorbox .home-card .mylib,
 .pkg-tcolorbox .part-toc .mylib {
   font-size: 90%;
   vertical-align: 0.05em;
@@ -1916,37 +2054,12 @@ div.warning-see-pdf img {
   max-width: 100%;
 }
 
-.pkg-tcolorbox .abstract {
-  max-width: 40em;
-  margin: 1.5em auto;
-}
-
-.pkg-tcolorbox .abstract-title {
-  text-align: center;
-  font-weight: bold;
-  margin-bottom: 0.3em;
-}
-
-.pkg-tcolorbox .home-toc {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
-  gap: 1em 2em;
-  margin-top: 2em;
-}
-
-.pkg-tcolorbox .home-toc h3 {
-  margin: 0 0 0.3em 0;
-  font-size: 1.15em;
-}
-
-.pkg-tcolorbox .home-toc ul,
 .pkg-tcolorbox .part-toc ul {
   list-style: none;
   padding-left: 0;
   margin: 0;
 }
 
-.pkg-tcolorbox .home-toc li,
 .pkg-tcolorbox .part-toc li {
   margin: 0.25em 0;
 }
@@ -2137,11 +2250,6 @@ div.warning-see-pdf img {
 
 .pkg-nicematrix .nm-intro {
   margin: 1.5em 0;
-}
-
-.pkg-nicematrix .home-toc ul {
-  list-style: none;
-  padding-left: 0;
 }
 
 /* ************************************************************************ */

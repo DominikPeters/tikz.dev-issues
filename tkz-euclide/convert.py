@@ -28,6 +28,7 @@ from texhtml.core import (  # noqa: E402
     instrument, load_images, match_brace, read_args, read_cs,
 )
 from texhtml.site import Manual, write_site  # noqa: E402
+from home import contents, title_box  # noqa: E402
 
 # the CTAN package at the pinned version (scripts/fetch.sh tkz-euclide)
 UPSTREAM = os.environ.get("UPSTREAM", os.path.join(ROOT, ".upstream", "tkz-euclide"))
@@ -367,25 +368,17 @@ def write_instrumented_tex(ctx, pages):
 
 
 def home_html(ctx, pages):
-    sections = []
-    for part_id, part_name in PARTS:
-        lis = "".join(f'<li><a href="{p.slug}">{p.section_number}&ensp;{p.title_html}</a></li>'
-                      for p in pages if p.part == part_id)
-        sections.append(f'<div class="home-toc-section"><h3><a href="{part_id}">{part_name}</a></h3><ul>{lis}</ul></div>')
+    groups = [(part_name, part_id, "", [(p.section_number, p.title_html, p.slug) for p in pages if p.part == part_id])
+              for part_id, part_name in PARTS]
+    box = title_box('<span class="texttt">tkz-euclide</span>', f"Euclidean geometry with TikZ, version {VERSION}",
+                    "Author of the tkz-euclide manual: Alain Matthes.", "https://ctan.org/pkg/tkz-euclide")
     return f"""
-<div class="manual-title-block">
-<div class="manual-title"><span class="texttt">tkz-euclide</span></div>
-<div class="manual-version">Euclidean geometry with TikZ, version {VERSION}</div>
-<div class="manual-authorship-explanation">Alain Matthes</div>
-<div class="manual-html-title">HTML version of the official documentation</div>
-<div class="manual-html-explanation">This is an unofficial HTML rendering of the
-<a href="https://ctan.org/pkg/tkz-euclide">tkz-euclide</a> manual, generated from its LaTeX sources.</div>
-</div>
-<div class="abstract"><p class="abstract-title">Abstract</p><p><span class="texttt">tkz-euclide</span> is a set of
+{box}
+<div class="home-abstract"><p class="abstract-title">Abstract</p><p><span class="texttt">tkz-euclide</span> is a set of
 convenient macros for drawing figures in the plane with a Cartesian coordinate system. It handles the most
 classic situations of Euclidean geometry. It is built on top of PGF and its front end TikZ, and lets you
 construct figures step by step, as closely as possible to a construction made by hand.</p></div>
-<div class="home-toc">{''.join(sections)}</div>
+{contents(groups)}
 """
 
 
