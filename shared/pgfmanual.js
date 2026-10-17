@@ -1,5 +1,5 @@
 // tikz.dev page scripts, shared by all manuals. The manual a page belongs to
-// is given by the class on <html> (pkg-pgf, pkg-pgfplots, pkg-tcolorbox).
+// is given by the class on <html> (pkg-pgf, pkg-pgfplots, pkg-tcolorbox, pkg-tikz-cd).
 const TIKZDEV_PACKAGE = (Array.from(document.documentElement.classList)
   .find((c) => c.startsWith("pkg-")) || "pkg-pgf").slice(4);
 const PDF_MANUAL_URLS = {
@@ -127,6 +127,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     } else {
       chapterMenu.classList.add("show-menu");
     }
+    hamburger.setAttribute("aria-expanded", String(chapterMenu.classList.contains("show-menu")));
   }
   hamburger.addEventListener("click", toggleMenu);
 

@@ -14,11 +14,12 @@ path = [
   "pgf/patches/**",
   "pgf/standalone/**",
   "pgf/spotlight-tocs/**",
-  "pgf/pgfmanual.sty",
-  "pgf/pgfmanual.code.tex",
-  "pgf/pgfmanual.pdflinks.code.tex",
-  "pgf/pgfmanual.prettyprinter.code.tex",
-  "pgf/pgfmanual-en-macros.tex",
+  "shared/pgfmanual/pgfmanual.sty",
+  "shared/pgfmanual/pgfmanual.code.tex",
+  "shared/pgfmanual/pgfmanual.pdflinks.code.tex",
+  "shared/pgfmanual/pgfmanual.prettyprinter.code.tex",
+  "shared/pgfmanual/pgfmanual-en-macros.tex",
+  "tikz-cd/tikz-cd-html.sty",
   "pgf/brave-gnu-world-logo.eps",
 ]
 precedence = "override"
@@ -37,4 +38,11 @@ SPDX-License-Identifier = "GPL-3.0-or-later"
 path = "tcolorbox/tcbhtml.sty"
 precedence = "override"
 SPDX-FileCopyrightText = "Thomas F. Sturm; changes 2026 Dominik Peters"
+SPDX-License-Identifier = "LPPL-1.3c+"
+
+# tikz-cd documentation: LPPL 1.3c or later
+[[annotations]]
+path = "tikz-cd/patches/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2011-2021 Augusto Stoffel; changes 2026 Dominik Peters"
 SPDX-License-Identifier = "LPPL-1.3c+"

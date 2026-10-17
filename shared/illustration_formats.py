@@ -107,10 +107,10 @@ def choose_format(svg_bytes, png_bytes, risks):
     return 'png', 'smaller-png'
 
 
-def image_format(src, choices, force_svg=False):
+def image_format(src, choices, force_svg=False, images_directory='pgfmanual-images'):
     """Apply a report entry; preserve manual SVG overrides and other assets."""
     path = Path(src)
-    if path.parent.name != 'pgfmanual-images' or path.suffix != '.svg':
+    if path.parent.name != images_directory or path.suffix != '.svg':
         return src
     choice = choices[path.stem]  # Missing entries must fail, not silently guess.
     if force_svg or choice['format'] == 'svg':

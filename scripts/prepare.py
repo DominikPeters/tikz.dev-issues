@@ -93,6 +93,11 @@ def apply_patches(pkg, tree, reject=False):
 
 def overlay(pkg, tree, docdir):
     target = os.path.join(tree, docdir)
+    # PGF-style manuals share their HTML documentation vocabulary. Keep these
+    # helpers selective: PGFplots has its own variants of some of these files.
+    documentation = read_lock(pkg).get("documentation")
+    if documentation:
+        shutil.copytree(os.path.join(SHARED, documentation + "manual"), target, dirs_exist_ok=True)
     src = os.path.join(ROOT, pkg)
     for name in os.listdir(src):
         if name in OWN_FILES or name.startswith("."):
@@ -103,7 +108,7 @@ def overlay(pkg, tree, docdir):
         else:
             shutil.copy2(s, t)
     for name in os.listdir(SHARED):
-        if name == "__pycache__" or name.startswith("."):
+        if not os.path.isfile(os.path.join(SHARED, name)) or name.startswith("."):
             continue
         shutil.copy2(os.path.join(SHARED, name), target)
 
@@ -135,6 +140,7 @@ def prepare(pkg, dest, patches=True, reject=False, illustration_cache=True):
 
 
 def refresh_patches(pkg, edited):
+    root_docs = read_lock(pkg)["docdir"] == "."
     with tempfile.TemporaryDirectory() as tmp:
         base = os.path.join(tmp, "base")
         export_upstream(pkg, base)
@@ -144,7 +150,7 @@ def refresh_patches(pkg, edited):
             for name in files:
                 rel = os.path.relpath(os.path.join(dirpath, name), base)
                 other = os.path.join(edited, rel)
-                if os.sep not in rel:
+                if os.sep not in rel and not root_docs:
                     continue  # repository files (README.md, ...), not part of the manual
                 if os.path.exists(other) and not filecmp.cmp(os.path.join(base, rel), other, shallow=False):
                     changed.append(rel)

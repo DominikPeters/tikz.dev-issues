@@ -151,6 +151,13 @@ class FormatTests(unittest.TestCase):
         with self.assertRaises(KeyError):
             formats.image_format('pgfmanual-images/missing.svg', choices)
 
+    def test_html_policy_supports_another_manual_image_directory(self):
+        src = 'tikz-cd-doc-images/image-1.svg'
+        choices = {'image-1': {'format': 'png'}}
+        self.assertEqual(formats.image_format(src, choices), src)
+        self.assertEqual(formats.image_format(src, choices, images_directory='tikz-cd-doc-images'),
+                         'tikz-cd-doc-images/image-1.png')
+
 
 if __name__ == '__main__':
     unittest.main()

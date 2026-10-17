@@ -1,6 +1,6 @@
 /* tikz.dev style sheet, shared by all manuals.
  * Package-specific rules are scoped by the class on <html>:
- * .pkg-pgf, .pkg-pgfplots, .pkg-tcolorbox (set by each package's build). */
+ * .pkg-pgf, .pkg-pgfplots, .pkg-tcolorbox, .pkg-tikz-cd. */
 
 /*
   CSS stylesheet for tikz.dev
@@ -1877,4 +1877,54 @@ div.warning-see-pdf img {
 .pkg-tcolorbox .home-toc li,
 .pkg-tcolorbox .part-toc li {
   margin: 0.25em 0;
+}
+
+/* tikz-cd uses the PGF documentation markup and shared navigation. */
+.pkg-tikz-cd .manual-title {
+  display: block;
+  text-align: center;
+  font-size: 1.9em;
+  margin: 1em 0;
+}
+.pkg-tikz-cd #hamburger-button {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+}
+.pkg-tikz-cd .textbody img {
+  max-width: 100%;
+  height: auto;
+}
+.pkg-tikz-cd .example {
+  margin-left: 0;
+  margin-right: 0;
+}
+.pkg-tikz-cd .example-code {
+  min-width: 0;
+  flex: 1 1 24em;
+  overflow-x: auto;
+}
+.pkg-tikz-cd .multicols {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1em 2em;
+}
+.pkg-tikz-cd .multicols h6 {
+  flex-basis: 100%;
+}
+.pkg-tikz-cd .toc-number {
+  margin-right: 0.3em;
+}
+.pkg-tikz-cd .bodycontainer {
+  min-width: 0;
+}
+.pkg-tikz-cd .table-scroll {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.pkg-tikz-cd .textbody a {
+  overflow-wrap: anywhere;
 }

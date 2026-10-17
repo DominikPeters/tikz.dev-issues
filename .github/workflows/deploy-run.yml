@@ -37,7 +37,8 @@ jobs:
       - name: Deploy artifacts
         if: env.RUN_ID != ''
         run: |
-          for pkg in pgf pgfplots tcolorbox; do
+          for lock in */upstream.lock; do
+            pkg=${lock%%/*}
             if gh run download "$RUN_ID" -R "$GITHUB_REPOSITORY" -n "site-$pkg" -D "build/$pkg/site"; then
               scripts/deploy.sh "$pkg"
             else

@@ -1,0 +1,7 @@
+# The manual is at the root of the upstream repository.
+repo=https://github.com/astoff/tikz-cd.git
+commit=ca0b856c01c1205abc58985e09c656e944b0b4b1
+watch=tikz-cd-doc.tex tikz-cd.sty tikzlibrarycd.code.tex
+docdir=.
+documentation=pgf
+sitepath=/tikz-cd/

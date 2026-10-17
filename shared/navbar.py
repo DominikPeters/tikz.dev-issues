@@ -11,6 +11,7 @@ PACKAGES = [
     ("pgf", 'PGF/<span class="tikzname">TikZ</span>', ""),
     ("pgfplots", "PGFplots", "pgfplots/"),
     ("tcolorbox", "tcolorbox", "tcolorbox/"),
+    ("tikz-cd", "tikz-cd", "tikz-cd/"),
 ]
 FOLDERS = {pkg: folder for pkg, _, folder in PACKAGES}
 

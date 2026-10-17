@@ -1,0 +1,177 @@
+--- a/tikz-cd-doc.tex
++++ b/tikz-cd-doc.tex
+@@ -25,7 +25,16 @@
+ 
+ \def\pgfautoxrefs{1}
+ 
++\PassOptionsToPackage{nomulticol,nohyperref}{doc}
+ \documentclass[a4paper]{ltxdoc}
++\usepackage[latexmk,mathjax,IndexRef=nameref,HomeHTMLFilename=index]{lwarp}
++\usepackage{tikz-dev-fast-lwarp}
++\CSSFilename{style.css}
++\setcounter{FileDepth}{1}
++\boolfalse{CombineHigherDepths}
++\begin{warpMathJax}
++\CustomizeMathJax{\newcommand{\meta}[1]{\langle\textit{#1}\rangle}}
++\end{warpMathJax}
+ \usepackage[hyphens]{url}
+ 
+ \def\xcolorversion{2.00}
+@@ -39,7 +48,7 @@
+ 	colorlinks=false,	% use true to enable colors below:
+ 	linkcolor=blue,%red,
+ 	filecolor=blue,%magenta,
+-	pagecolor=blue,%red,
++	% pagecolor is a PDF-only option.
+ 	urlcolor=blue,%cyan,
+ 	citecolor=blue,
+ 	pdfborder=0 0 0,
+@@ -116,12 +125,7 @@
+ with pgf) to compile.  Please place a copy of that file in the current
+ directory}{}}
+ 
+-\IfFileExists{pgfmanual.aux}
+-  {\externaldocument[pgfman-]{pgfmanual}}
+-  {\PackageWarning{tikz-cd-doc}{
+-Couldn't find pgfmanual.aux.  To get cross-references to the pgf
+-manual, compile it and copy all resulting .aux files to the current
+-directory}{}}
++\usepackage{tikz-cd-html}
+ 
+ \makeindex
+ 
+@@ -156,6 +160,7 @@
+ 
+ \tikzset{gray x/.tip={Rays[color=gray]}}
+ 
++\StartDefiningTabulars
+ \newcommand{\displayarrow}[2][]{%
+   \index{#2@\protect\texttt{#2} arrow tip}%
+   \index{Arrow tips!#2@\protect\texttt{#2}}%
+@@ -172,6 +177,7 @@
+   \tikz[baseline=-axis_height, line width=rule_thickness] \draw[arrows=gray
+   x-gray x,commutative diagrams/.cd, #1] (0,0) -- (0.6,0);}
+ 
++\StopDefiningTabulars
+ \begin{document}
+ \begin{center}
+ \vspace*{1em}
+@@ -200,7 +206,7 @@
+ 
+ \tableofcontents
+ 
+-\section{Getting started}
++\section[getting-started]{Getting started}
+ \label{sec:basic-usage}
+ 
+ To load this package in \LaTeX, type
+@@ -265,7 +271,7 @@
+ consists of a string of characters |r|, |l|, |d|, |u| (standing for
+ right, left, down and up).  Labels can be placed on an arrow by means
+ of the quotes syntax, described in detail in the \pgfname{} manual
+-\cite[\S\ref*{pgfman-section-label-quotes}]{pgfman}.  Notice the use
++\cite[\href{../tikz-shapes.html\#section-label-quotes}{label quotes}]{pgfman}.  Notice the use
+ of |"\phi"| in the example below.
+ 
+ \begin{codeexample}[]
+@@ -297,7 +303,7 @@
+ 
+ The example above also showcases one of the possible ways to pass
+ special options to a \tikzname\ matrix node.  See the \pgfname{}
+-manual \cite[\S\ref*{pgfman-section-matrices}]{pgfman} for more
++manual \cite[\href{../tikz-matrices.html\#section-matrices}{matrices}]{pgfman} for more
+ information.
+ 
+ Arrows can have an arbitrary number of labels, by repeated use of
+@@ -361,7 +367,7 @@
+ The following list shows all available arrow types (each of them is a
+ style key located in |/tikz/commutative diagrams|).
+ 
+-\begin{multicols}{2}\raggedcolumns
++\begin{multicols}{2}
+   \subsubsection*{Basic arrows}
+   \begin{tabular}{ll}
+     \displayarrowstyle{to head}\\
+@@ -545,7 +551,7 @@
+ All other functions of this library work as described in this manual
+ without change.
+ 
+-\section{Controlling the appearance of diagrams}
++\section[diagram-options]{Controlling the appearance of diagrams}
+ \label{sec:chang-appe-diagr}
+ 
+ This section describes a number of customization keys defined by this
+@@ -570,15 +576,15 @@
+ Some examples are \texttt{dashed}, |dotted|, and its relatives,
+ |line width=|\meta{dimension}, |color=|\meta{color}, |bend right|, |bend left|,
+ |in=|\meta{angle}, |out=|\meta{angle}, |loop|, etc.  See the
+-\pgfname{} manual~\cite[\S\ref*{pgfman-section-cap-joins} and
+-\S\ref*{pgfman-library-to-paths}]{pgfman}.  Likewise, \tikzname{}
++\pgfname{} manual~\cite[\href{../tikz-actions.html\#section-cap-joins}{line styles} and
++\href{../library-edges.html\#library-to-paths}{to paths}]{pgfman}.  Likewise, \tikzname{}
+ provides several keys that are useful for labels, such as |above|,
+ |below|, |left|, |right|, |swap| (which makes the label be placed on
+ the right side of the arrow, relative to its direction), |sloped|,
+ |pos=|\meta{fraction}, |near start|, |near end|, |inner sep=|\meta{dimension},
+ |font=|\meta{font command}, |text width=|\meta{dimension}, etc.  See the \pgfname{}
+-manual~\cite[\S\ref*{pgfman-section-nodes}, esp.\
+-\S\ref*{pgfman-section-pos-option}]{pgfman}.
++manual~\cite[\href{../tikz-shapes.html\#section-nodes}{nodes}, esp.\
++\href{../tikz-shapes.html\#section-pos-option}{label placement}]{pgfman}.
+ 
+ \subsection{General options}
+ \label{sec:general-options}
+@@ -699,7 +705,7 @@
+ \end{tikzcd}
+ \end{codeexample}
+ 
+-Section \ref*{pgfman-section-matrices}.3.2 of the \pgfname{} manual
++The \href{../tikz-matrices.html\#section-matrices}{discussion of matrix spacing} in the \pgfname{} manual
+ \cite{pgfman} contains further details on the spacing of matrix cells.
+ 
+ \begin{stylekey}{/tikz/commutative diagrams/cramped}
+@@ -783,7 +789,7 @@
+ many cases.  If the \texttt{math font} style gives unsatisfactory
+ results, you can try selecting the \texttt{tikz} style, and setting
+ |/tikz/>| to the value that best matches your font (among those shown
+-in \cite[\S\ref*{pgfman-section-arrows-meta}]{pgfman}).
++in \cite[\href{../tikz-arrows.html\#section-arrows-meta}{arrow tips}]{pgfman}).
+ 
+ \begin{codeexample}[]
+ % in preamble
+@@ -1072,7 +1078,7 @@
+ \end{codeexample}
+ \end{stylekey}
+ 
+-\section{Advanced usage}
++\section[advanced-usage]{Advanced usage}
+ \label{sec:advanced-usage}
+ 
+ This section provides further details on the functioning of this
+@@ -1123,7 +1129,7 @@
+ 
+ Recall that the \texttt{to} path operation used in the paths created by
+ |\arrow| can take a number of options, as described in 
+-\S\ref*{pgfman-library-to-paths} of the \pgfname{} manual~\cite{pgfman}.  In particular, the
++\href{../library-edges.html\#library-to-paths}{to paths} of the \pgfname{} manual~\cite{pgfman}.  In particular, the
+ key |/tikz/to path| determines the path that is actually drawn, and
+ can be used to do all sorts of fiddling.
+ 
+@@ -1240,7 +1246,7 @@
+ \end{verse}
+ to your document preamble.
+ 
+-\section{Additional goodies}
++\section[additional-goodies]{Additional goodies}
+ \label{sec:general-infra}
+ 
+ This package provides some general \pgfname\ infrastructure to achieve
+@@ -1326,7 +1332,7 @@
+ advisable, to directly refer to the arrow tips listed in this section
+ inside a |{tikzcd}|.
+ 
+-\begin{multicols}{2}\raggedcolumns
++\begin{multicols}{2}
+   \begin{tabular}{ll}
+     \displayarrow{cm to}\\
+     \displayarrow[/tikz/commutative diagrams/double line]{cm implies}\\

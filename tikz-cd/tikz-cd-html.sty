@@ -1,0 +1,20 @@
+% Local adaptations of the PGF documentation helpers for the tikz-cd manual.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tikz-cd-html}[2026/10/17 tikz-cd HTML manual]
+
+% The names axis\_height and rule\_thickness must retain their printed
+% underscores without expanding font commands into auxiliary label names.
+\renewenvironment{math-function}[1]{%
+  \def\mathdefaultname{#1}%
+  \extractmathfunctionname{#1}%
+  \begingroup
+  \edef\_{\string_}%
+  \xdef\mathurl{math:\mathname}%
+  \endgroup
+  \expandafter\hypertarget\expandafter{\mathurl}{}%
+  \begin{pgfmanualentry}
+  \pgfmanualentryheadline{\definitionspan{\texttt{#1}}}%
+  \index{\mathname @\protect\texttt{\mathname} math function}%
+  \index{Math functions!\mathname @\protect\texttt{\mathname}}%
+  \pgfmanualbody
+}{\end{pgfmanualentry}}

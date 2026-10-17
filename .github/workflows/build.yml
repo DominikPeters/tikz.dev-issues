@@ -6,7 +6,7 @@ on:
   push:
     # monorepo: test branch, deploys below DEPLOY_PREFIX (remove after the switch)
     branches: [main, monorepo]
-    paths: [pgf/**, pgfplots/**, tcolorbox/**, shared/**, scripts/**, .github/workflows/build*.yml]
+    paths: [pgf/**, pgfplots/**, tcolorbox/**, tikz-cd/**, shared/**, scripts/**, .github/workflows/build*.yml]
   workflow_dispatch:
     inputs:
       package:
@@ -32,7 +32,7 @@ jobs:
           fetch-depth: 0
       - id: pick
         run: |
-          all='["pgf","pgfplots","tcolorbox"]'
+          all=$(printf '%s\n' */upstream.lock | cut -d/ -f1 | jq -R . | jq -sc .)
           if [[ "${{ github.event_name }}" == workflow_dispatch ]]; then
             p="${{ inputs.package }}"
             [[ -z $p ]] && echo "packages=$all" >> "$GITHUB_OUTPUT" || echo "packages=[\"$p\"]" >> "$GITHUB_OUTPUT"
@@ -42,7 +42,10 @@ jobs:
           if grep -qE '^(shared|scripts|\.github)/' <<< "$changed"; then
             echo "packages=$all" >> "$GITHUB_OUTPUT"
           else
-            echo "packages=$(grep -oE '^(pgf|pgfplots|tcolorbox)/' <<< "$changed" | tr -d / | sort -u | jq -R . | jq -sc .)" >> "$GITHUB_OUTPUT"
+            packages=$(cut -d/ -f1 <<< "$changed" | sort -u | while read -r pkg; do
+              if [[ -f $pkg/upstream.lock ]]; then echo "$pkg"; fi
+            done | jq -R . | jq -sc .)
+            echo "packages=$packages" >> "$GITHUB_OUTPUT"
           fi
 
   build:

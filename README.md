@@ -2,8 +2,9 @@
 
 Sources of [tikz.dev](https://tikz.dev), the HTML versions of the manuals of
 [PGF/TikZ](https://github.com/pgf-tikz/pgf) (`tikz.dev/`),
-[pgfplots](https://github.com/pgf-tikz/pgfplots) (`tikz.dev/pgfplots/`) and
-[tcolorbox](https://github.com/T-F-S/tcolorbox) (`tikz.dev/tcolorbox/`).
+[pgfplots](https://github.com/pgf-tikz/pgfplots) (`tikz.dev/pgfplots/`),
+[tcolorbox](https://github.com/T-F-S/tcolorbox) (`tikz.dev/tcolorbox/`) and
+[tikz-cd](https://github.com/astoff/tikz-cd) (`tikz.dev/tikz-cd/`).
 
 Feedback, suggestions and bug reports: please open an
 [issue](https://github.com/DominikPeters/tikz.dev/issues).
@@ -12,6 +13,7 @@ Feedback, suggestions and bug reports: please open an
 
 ```
 shared/        style.css, pgfmanual.js, lwarp-mathjax-emulation.js for all manuals
+  pgfmanual/   HTML documentation helpers shared by PGF and tikz-cd
 scripts/       fetch.sh, prepare.py, build.sh, deploy.sh
 pgf/           pgf manual: lwarp build scripts, postprocessing, standalone images, ...
   upstream.lock    upstream repository and the commit the site is built from
@@ -19,6 +21,7 @@ pgf/           pgf manual: lwarp build scripts, postprocessing, standalone image
   patches/         remaining edits to upstream files, one patch per file
 pgfplots/      pgfplots manual (same structure, no preprocess.py)
 tcolorbox/     tcolorbox manual: dedicated converter instead of lwarp
+tikz-cd/       tikz-cd manual: lwarp with shared PGF documentation helpers
 migration/     commit maps from the old fork repositories
 .upstream/     (not committed) upstream checkouts made by fetch.sh
 build/         (not committed) build trees and generated sites
@@ -41,11 +44,16 @@ source tree (`build/pgf/src`) without running LaTeX.
 
 Package-specific CSS and JavaScript go into the shared files, selected by the
 class on `<html>` that each build sets: `.pkg-pgf`, `.pkg-pgfplots`,
-`.pkg-tcolorbox`.
+`.pkg-tcolorbox`, `.pkg-tikz-cd`.
+
+The [tikz-cd build](tikz-cd/README.md) uses the PGF in TeX Live and links to
+the main manual's HTML sections, so it can build independently. Packages whose
+locks specify `documentation=pgf` receive the shared PGF HTML documentation
+helpers before their own overlays. Other manuals retain their own helpers.
 
 ### LaTeX formatting
 
-Both lwarp manuals load `shared/tikz-dev-fast-lwarp.sty`. It reuses parsed
+The lwarp manuals load `shared/tikz-dev-fast-lwarp.sty`. It reuses parsed
 argument handlers for spans and filename sanitization, instead of rebuilding
 those handlers for every colored word and link. Internal links whose destination
 is already a plain filename also bypass font-command cleanup. Formatted names
@@ -122,7 +130,7 @@ validation results.
 
 ### Illustration conversion
 
-PGF and PGFplots extract and crop illustrations in batches, then render them
+The lwarp manuals extract and crop illustrations in batches, then render them
 with a bounded worker pool. PGFplots also generates the ImageMagick PNGs used
 for shader fallbacks. SVG/PNG output formats, 300 dpi and one-point crop margins
 are preserved. Bounding boxes are measured in separate Ghostscript processes
@@ -142,7 +150,7 @@ Set `TIKZ_IMAGE_JOBS` to change the default of four workers, or
 `build/image-cache` forces conversion on the next build. The cache stores
 unoptimized SVGs so postprocessing and SVGO can be changed independently.
 
-For PGF, SVGO runs before choosing the HTML image format. An illustration uses
+For PGF and tikz-cd, SVGO runs before choosing the HTML image format. An illustration uses
 SVG when its optimized file is no larger than the PNG, except for PDF features
 that convert poorly: knockout groups, luminosity/transfer soft masks, function
 or mesh shadings, and blend modes outside Normal/Multiply/Screen/Darken/Lighten.
