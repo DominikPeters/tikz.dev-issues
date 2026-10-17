@@ -141,6 +141,8 @@ def write_site(manual, ctx, pages, home_html):
     """Write the chapter pages, part pages, references (if anything is cited)
     and the start page. home_html(ctx, pages) returns the start page's main
     content; it is called after the images have been copied to the site."""
+    if not hasattr(ctx, "cited_sorted"):  # manuals that cite nothing do not sort their citations
+        sort_citations(ctx)
     manual = replace(manual, has_references=bool(ctx.cited_sorted))
     os.makedirs(manual.site_dir, exist_ok=True)
     for name in ("style.css", "pgfmanual.js"):
