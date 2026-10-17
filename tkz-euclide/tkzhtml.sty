@@ -1,0 +1,15 @@
+% tkzhtml.sty -- instrumentation for the HTML version of the tkz-euclide manual.
+%
+% The capture machinery is in tikzdev-capture.sty (shared/texhtml). This file
+% hooks the examples of the tkzexample package into it: before an example,
+% the converter announces its identifier with \HTMLnext; tkzexample typesets
+% the example's picture into \tkzexamplebox and outputs it with \tkz@result,
+% which now first ships a copy of that box as the example's image.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tkzhtml}[2026/10/17 HTML extraction for the tkz-euclide manual]
+\RequirePackage{tikzdev-capture}
+
+\let\tkzhtml@result\tkz@result
+\def\tkz@result{\HTMLshipnext\tkzexamplebox\tkzhtml@result}
+
+\endinput

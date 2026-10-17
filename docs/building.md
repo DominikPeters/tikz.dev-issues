@@ -4,9 +4,10 @@
 
 Each manual pins an upstream revision in `<package>/upstream.lock` (`repo`,
 `commit`, the `watch` paths that trigger a rebuild, the documentation folder
-`docdir`, and the `sitepath` on tikz.dev). wheelchart has no upstream Git
-repository: its `upstream.json` pins distribution archives by checksum (see
-[wheelchart/README.md](../wheelchart/README.md)).
+`docdir`, and the `sitepath` on tikz.dev). wheelchart and tkz-euclide are
+fetched from archives instead of Git: their `upstream.json` pins the archives
+by checksum (see [wheelchart/README.md](../wheelchart/README.md) and
+[tkz-euclide/README.md](../tkz-euclide/README.md)).
 
 ```bash
 scripts/fetch.sh pgf               # checkout at the pinned commit, in .upstream/pgf

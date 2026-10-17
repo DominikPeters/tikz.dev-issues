@@ -19,6 +19,7 @@ function initDocSearch() {
     "tikz-feynman": "tikz-feynman",
     wheelchart: "wheelchart",
     pgfgantt: "pgfgantt",
+    "tkz-euclide": "tkz-euclide",
   };
   const tag = tags[TIKZDEV_PACKAGE];
   if (!tag || !document.getElementById("search") || typeof window.docsearch !== "function") return;

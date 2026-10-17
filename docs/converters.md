@@ -1,7 +1,8 @@
 # Manuals converted without lwarp
 
-Manuals that are not written with PGF's documentation macros (tcolorbox, ...)
-are converted by a Python converter instead of lwarp. Such a manual is built
+Manuals that are not written with PGF's documentation macros (tcolorbox,
+tkz-euclide) are converted by a Python converter instead of lwarp. Such a
+manual is built
 from a small set of its own documentation macros (an example environment, an
 entry for each command or key, ...), so parsing its sources directly and
 mapping these macros onto the tikz.dev HTML structure (`manualentry`,
@@ -43,8 +44,14 @@ LuaLaTeX, images, HTML; see `tcolorbox/build.sh`) and `convert.py` with
 * the list of chapters `(source file, page name, part)`;
 * a `texhtml.site.Manual` and the content of the start page;
 * the LaTeX side: usually a small `.sty` that hooks the example environment
-  into `tikzdev-capture.sty` (`\HTMLexamplebegin` ... `\HTMLexampleend`
-  around the compiled output; see `tcolorbox/tcbhtml.sty`).
+  into `tikzdev-capture.sty`: `\HTMLexamplebegin` ... `\HTMLexampleend`
+  around the compiled output (see `tcolorbox/tcbhtml.sty`), or
+  `\HTMLshipnext{box}` if the example's output is in a box register (see
+  `tkz-euclide/tkzhtml.sty`).
+
+Add the manual to `scripts/build.sh` (the case for converted manuals), to the
+header menu in `shared/navbar.py` and to the search tags in
+`shared/pgfmanual.js`, and give it a header color in `shared/style.css`.
 
 Check the result against the official PDF, and look at the converter's
 warnings (unknown commands, unresolved references) at the end of each run.

@@ -1,0 +1,8 @@
+# The CTAN package archive, pinned by upstream.json (the GitHub repository
+# al-ma-dev/tkz-euclide lags behind CTAN). "commit" is the SHA-256 of
+# upstream.json; to update, put the new archive's checksum and version there.
+source=archives
+manifest=upstream.json
+commit=ebdd8d37da2ea0d116f915a4a45141063844d61068a73b8d6bdeb9d84fb76d73
+docdir=doc/latex
+sitepath=/tkz-euclide/

@@ -11,10 +11,10 @@ out="$root/build/$pkg/site"
 export TIKZ_IMAGE_CACHE="${TIKZ_IMAGE_CACHE:-$root/build/image-cache}"
 
 case $pkg in
-  tcolorbox)
-    # dedicated converter, reads the upstream checkout directly
-    UPSTREAM="$root/.upstream/tcolorbox" "$root/tcolorbox/build.sh"
-    site="$root/tcolorbox/build/site/tcolorbox"
+  tcolorbox|tkz-euclide)
+    # converted without lwarp (docs/converters.md), reads the upstream checkout directly
+    UPSTREAM="$root/.upstream/$pkg" "$root/$pkg/build.sh"
+    site="$root/$pkg/build/site/$pkg"
     ;;
   *)
     # lwarp-based manuals: build in the prepared upstream tree

@@ -1,0 +1,14 @@
+{
+  "version": "tkz-euclide 5.14c (2026-10-16)",
+  "upstream": "https://ctan.org/pkg/tkz-euclide",
+  "archives": [
+    {
+      "url": "https://mirrors.ctan.org/macros/latex/contrib/tkz/tkz-euclide.zip",
+      "format": "zip",
+      "sha256": "7160f9a500743de646519cb5bae46a08eec86b3f8b9acc77d83e24829210ad07",
+      "trees": {
+        "tkz-euclide/": ""
+      }
+    }
+  ]
+}

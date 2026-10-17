@@ -20,6 +20,7 @@ PACKAGES = [
     ("tikz-feynman", "TikZ-Feynman", "tikz-feynman/"),
     ("wheelchart", "wheelchart", "wheelchart/"),
     ("pgfgantt", "pgfgantt", "pgfgantt/"),
+    ("tkz-euclide", "tkz-euclide", "tkz-euclide/"),
 ]
 FOLDERS = {pkg: folder for pkg, _, folder in PACKAGES}
 

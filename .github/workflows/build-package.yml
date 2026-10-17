@@ -45,7 +45,7 @@ jobs:
           echo /opt/venv/bin >> "$GITHUB_PATH"
 
       - name: Test build helpers
-        if: inputs.package != 'tcolorbox'
+        if: hashFiles(format('{0}/convert.py', inputs.package)) == ''
         run: python3 -m unittest discover -s scripts/tests -v
 
       - name: Show FTP folders
@@ -57,11 +57,11 @@ jobs:
         run: scripts/deploy.sh --list || echo "::warning::FTP listing failed"
 
       - name: Restore source archive cache
-        if: inputs.package == 'wheelchart'
+        if: hashFiles(format('{0}/upstream.json', inputs.package)) != ''
         uses: actions/cache@v4
         with:
           path: .upstream/archive-cache
-          key: source-archives-v1-${{ hashFiles('wheelchart/upstream.json') }}
+          key: source-archives-v1-${{ hashFiles(format('{0}/upstream.json', inputs.package)) }}
 
       - name: Fetch upstream
         id: fetch
@@ -75,7 +75,7 @@ jobs:
           fi
 
       - name: Restore illustration cache
-        if: inputs.package != 'tcolorbox'
+        if: hashFiles(format('{0}/convert.py', inputs.package)) == ''
         uses: actions/cache@v4
         with:
           path: build/image-cache

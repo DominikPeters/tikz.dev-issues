@@ -111,4 +111,15 @@
   \ifx\tdcap@cur\@empty\else\tdcap@ship{\tdcap@cur}\fi
   \unvbox\tdcap@box}
 
+
+% For packages that typeset an example's output into a box register of their
+% own: ship a copy of that box for the identifier announced by \HTMLnext.
+\def\HTMLshipnext#1{%
+  \edef\tdcap@cur{\tdcap@next}%
+  \gdef\tdcap@next{}%
+  \ifx\tdcap@cur\@empty\else
+    \setbox\tdcap@box\copy#1\relax
+    \tdcap@ship{\tdcap@cur}%
+  \fi}
+
 \endinput

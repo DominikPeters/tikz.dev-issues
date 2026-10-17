@@ -16,7 +16,8 @@
     upstream moves on or the build files here change (`scripts/build-key.sh`);
     running the workflow by hand with "retry" forces another attempt.
 
-  wheelchart has no upstream repository and is updated by hand.
+  wheelchart and tkz-euclide come from pinned archives (`upstream.json`)
+  and are updated by hand.
 
 Builds run in the `texlive/texlive:latest` container; the tools are installed
 in `build-package.yml`. Upstream archives and the illustration cache are kept

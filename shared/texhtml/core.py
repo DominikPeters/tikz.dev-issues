@@ -1155,6 +1155,13 @@ class Converter:
         return e
 
     cmd_egroup = cmd_bgroup
+    cmd_begingroup = cmd_bgroup
+    cmd_endgroup = cmd_bgroup
+    cmd_sloppy = cmd_bgroup
+
+    def cmd_endinput(self, k, e, out):
+        # the rest of the file is not read
+        return len(self.s)
 
     def cmd_kern(self, k, e, out):
         m = re.match(r"\s*-?[\d.]+\s*[a-z]{2}", self.s[e:])
@@ -1202,9 +1209,11 @@ class Converter:
         label_anchors = "".join(f'<a id="{esc(lb)}"></a>' for lb in labels)
         out.append(("b", f'<{tag}>{label_anchors}<span><span class="sectionnumber" id="{anchor}">{number}</span> '
                          f'{title}</span><a class="anchor-link" href="#{anchor}">&para;</a></{tag}>'))
-        if level == 1:
+        if level == 1 and page.sections == 1:
             page.title = re.sub(r"<[^>]+>", "", title).strip()
             page.title_html = title
+        elif level == 1:
+            page.toc.append(("tocsection", anchor, title))
         elif level == 2:
             page.toc.append(("tocsubsection", anchor, title))
         else:
@@ -1319,17 +1328,25 @@ class Page:
         self.body = ""
         self.first_heading_done = False
         self.current_number = section_number
+        self.sections = 0  # number of top-level headings (a page may have several)
+        self.top_number = section_number
 
     def next_number(self, level):
         if level == 1:
             self.counters = [0, 0]
-            return self.section_number
+            self.sections += 1
+            if self.sections == 1 or not self.section_number.isdigit():
+                self.top_number = self.section_number
+            else:
+                # further sections in the same source file continue the numbering
+                self.top_number = str(int(self.section_number) + self.sections - 1)
+            return self.top_number
         if level == 2:
             self.counters[0] += 1
             self.counters[1] = 0
-            return f"{self.section_number}.{self.counters[0]}"
+            return f"{self.top_number}.{self.counters[0]}"
         self.counters[1] += 1
-        return f"{self.section_number}.{self.counters[0]}.{self.counters[1]}"
+        return f"{self.top_number}.{self.counters[0]}.{self.counters[1]}"
 
 
 def parse_bib(path):
@@ -1402,6 +1419,8 @@ def convert_pages(ctx, chapters, read_source, converter, appendix_parts=("append
         page.body = conv.render(items)
         page.captures = conv.captures
         pages.append(page)
+        if part not in appendix_parts:
+            section_no += max(page.sections - 1, 0)
     return pages
 
 

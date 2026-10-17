@@ -1981,6 +1981,31 @@ div.warning-see-pdf img {
   overflow-x: auto;
   overflow-y: hidden;
 }
+/* ************************************************************************ */
+/* tkz-euclide                                                              */
+/* ************************************************************************ */
+
+.pkg-tkz-euclide .bodyandsidetoc > header {
+  background-color: #006d77;
+}
+
+/* argument and option tables of the command entries */
+.pkg-tkz-euclide table.tkz-table {
+  border-collapse: collapse;
+  margin: 0.6em 0 1em;
+}
+
+.pkg-tkz-euclide table.tkz-table th,
+.pkg-tkz-euclide table.tkz-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.15em 1.2em 0.15em 0;
+}
+
+.pkg-tkz-euclide table.tkz-table th {
+  border-bottom: 1px solid #999;
+}
+
 .pkg-pgfgantt .bodyandsidetoc > header {
   background-color: #635185;
 }
