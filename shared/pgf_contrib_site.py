@@ -290,7 +290,8 @@ def finish_page(text, filename, formats, root, manual, home_groups=None, home_ex
 
     for img in soup.find_all('img'):
         src = img.get('src', '')
-        if Path(src).parent.name != manual.images:
+        # (the start page's examples come from finished pages: already converted)
+        if Path(src).parent.name != manual.images or Path(src).suffix != '.svg':
             continue
         svg = ElementTree.parse(root / src).getroot()
         img['width'] = f'{float(svg.get("width").removesuffix("pt")) * 4 / 3:.3f}'
