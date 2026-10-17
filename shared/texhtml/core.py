@@ -455,7 +455,11 @@ def split_items(s, a, b, cmd="\\item", verbatim_envs=(), short_verb=""):
 # Code highlighting
 # --------------------------------------------------------------------------
 
-KEY_CANDIDATE = re.compile(r"(?<=[\[,{])([ \t]*\n?[ \t]*)([A-Za-z][A-Za-z0-9 \-]*?[A-Za-z0-9])(?=[ \t]*\n?[ \t]*[=,\]}/])")
+# EMPH_OPEN/EMPH_CLOSE: private-use characters a converter may put around
+# highlighted parts of a listing (replaced by HTML after highlighting)
+EMPH_OPEN, EMPH_CLOSE = "\ue000", "\ue001"
+KEY_CANDIDATE = re.compile(r"(?<=[\[,{\ue000])([ \t]*\n?[ \t]*)([A-Za-z][A-Za-z0-9 \-]*?[A-Za-z0-9])"
+                           r"(?=[ \t]*\n?[ \t]*[=,\]}/\ue001])")
 
 
 def dedent_code(code):

@@ -45,6 +45,10 @@ def page_shell(manual, pages, page, title, main_html, local_toc, is_home=False):
     cls = ' class="current"' if is_home else ""
     toc.append(f'<p{cls}><a class="linkintro" href="./">Home</a></p>')
     current_part = page.part if page else None
+    if not manual.parts:  # a manual without parts: all pages at the top level
+        for p in pages:
+            c = ' class="current"' if p is page else ""
+            toc.append(f'<p{c}><a class="tocsection" href="{p.slug}">{manual.toc_title(p)}</a></p>')
     for part_id, part_name in manual.parts:
         pcls = []
         if part_id == current_part:

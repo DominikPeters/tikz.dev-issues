@@ -16,6 +16,7 @@ PGF/TikZ and related packages:
 | tkz-euclide | [/tkz-euclide/](https://tikz.dev/tkz-euclide/) | [CTAN](https://ctan.org/pkg/tkz-euclide) |
 | chemfig | [/chemfig/](https://tikz.dev/chemfig/) | [CTAN](https://ctan.org/pkg/chemfig) |
 | forest | [/forest/](https://tikz.dev/forest/) | [sasozivanovic/forest](https://github.com/sasozivanovic/forest) |
+| nicematrix | [/nicematrix/](https://tikz.dev/nicematrix/) | [fpantigny/nicematrix](https://github.com/fpantigny/nicematrix) |
 
 Feedback, suggestions and bug reports are welcome as
 [issues](https://github.com/DominikPeters/tikz.dev/issues).
@@ -26,7 +27,7 @@ The package sources are not stored here. Each manual pins an upstream commit
 in `<package>/upstream.lock`, and is built from that commit plus the edits in
 its folder (patches, HTML adaptations, postprocessing). Most manuals are
 converted with [lwarp](https://ctan.org/pkg/lwarp); tcolorbox, tkz-euclide,
-chemfig and forest are converted by a Python converter. All manuals share one stylesheet, one script and one header.
+chemfig, forest and nicematrix are converted by a Python converter. All manuals share one stylesheet, one script and one header.
 
 GitHub Actions builds and deploys a manual whenever its folder changes, and
 checks every six hours for new upstream commits to its documentation. A new
@@ -61,7 +62,7 @@ More detail:
 
 * [docs/building.md](docs/building.md): building, patches, the shared frontend
 * [docs/caching.md](docs/caching.md): drawing reuse, image conversion and formats
-* [docs/converters.md](docs/converters.md): manuals converted without lwarp (tcolorbox, tkz-euclide, chemfig, forest)
+* [docs/converters.md](docs/converters.md): manuals converted without lwarp (tcolorbox, tkz-euclide, chemfig, forest, nicematrix)
 * [docs/automation.md](docs/automation.md): GitHub Actions, upstream updates, deployment
 * [docs/migration.md](docs/migration.md): moving from the old fork repositories
 
