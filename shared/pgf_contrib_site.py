@@ -14,7 +14,8 @@ from bs4 import BeautifulSoup, Comment
 from assets import asset_url
 from check_manual_site import check_site
 from docsearch import add_docsearch
-from home import contents, title_box
+from citations import entry_label, unique
+from home import contents, find_examples, showcase, title_box
 from illustration_formats import image_format
 from lwarp_html import escape_code_angles, normalize_page_layout
 from navbar import ISSUES_URL, REPO_URL, home_url, title_menu
@@ -35,6 +36,8 @@ class Manual:
     pair_adjacent_examples: bool = False
     page_aliases: tuple[tuple[str, str], ...] = ()
     author: str = ''  # of the documentation, for the start page
+    # examples whose pictures the start page shows: (page, fragment of the code without whitespace)
+    showcase: tuple[tuple[str, str], ...] = ()
 
     @property
     def images(self):
@@ -145,7 +148,7 @@ def add_chrome(soup, filename, contents, manual):
     container.append(footer)
 
 
-def finish_page(text, filename, formats, root, manual, home_groups=None):
+def finish_page(text, filename, formats, root, manual, home_groups=None, home_examples=(), bibliography=None):
     soup = BeautifulSoup(escape_code_angles(text), 'html5lib')
     normalize_page_layout(soup)
     aliases = dict(manual.page_aliases)
@@ -233,7 +236,9 @@ def finish_page(text, filename, formats, root, manual, home_groups=None):
     if filename == 'index.html':
         for heading in soup.select('.titlepage h1'):
             heading['class'] = ['manual-title']
-        rebuild_home(soup, manual, home_groups)
+        rebuild_home(soup, manual, home_groups, home_examples)
+    if bibliography:
+        expand_citations(soup, filename, bibliography)
 
     for table in soup.select('.textbody table'):
         table.wrap(soup.new_tag('div', attrs={'class': 'table-scroll', 'role': 'region',
@@ -360,7 +365,7 @@ def escape_html(text):
     return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 
-def rebuild_home(soup, manual, groups):
+def rebuild_home(soup, manual, groups, examples=()):
     """Replace lwarp's title page and table of contents by the shared start
     page (shared/home.py): the title box and the contents as cards."""
     textbody = soup.select_one('.textbody')
@@ -426,7 +431,7 @@ def rebuild_home(soup, manual, groups):
         toc.decompose()
         if container is not None and not container.get_text(strip=True):
             container.decompose()
-    cards = BeautifulSoup(contents(groups), 'html.parser')
+    cards = BeautifulSoup(showcase(examples) + contents(groups), 'html.parser')
     if anchor is not None:
         top = anchor
         while top.parent is not textbody:
@@ -437,6 +442,92 @@ def rebuild_home(soup, manual, groups):
             top.decompose()
     else:
         textbody.append(cards)
+
+
+BIB_MARKER = re.compile(r'^\[(\d+)\]$')
+CITATION = re.compile(r'\[(\d{1,3})\]')
+NOT_PROSE = {'code', 'kbd', 'pre', 'script', 'style', 'a', 'samp'}
+
+
+def bibliography_items(soup):
+    """The entries of a numbered reference list: [(number, li)]."""
+    items = []
+    for li in soup.select('li'):
+        marker = li.select_one('.listmarker')
+        match = BIB_MARKER.match(marker.get_text(strip=True)) if marker else None
+        heading = li.find_previous(['h4', 'h5'])
+        if match and heading and re.search(r'Reference|Bibliograph', heading.get_text()):
+            items.append((match.group(1), li))
+    return items
+
+
+def collect_bibliography(manual, read):
+    """Author-year labels for the numbered references of a manual:
+    {number: {label, href, title}}, from the page that lists them."""
+    entries = {}
+    for filename in manual.pages:
+        soup = BeautifulSoup(read(filename), 'html5lib')
+        for number, li in bibliography_items(soup):
+            marker = li.select_one('.listmarker')
+            text = ' '.join(li.get_text(' ').replace(marker.get_text(), '', 1).split())
+            title = li.find('em')
+            start = text.find('\u2018')
+            if title is not None and title.get_text(strip=True):
+                em_start = text.find(' '.join(title.get_text(' ').split()))
+                start = em_start if start < 0 or 0 <= em_start < start else start
+            authors, rest = (text[:start], text[start:]) if start > 0 else (text.split(',')[0], text)
+            target = li.find('a', id=True)
+            anchor = target['id'] if target else f'ref-{number}'
+            href = ('' if filename == 'index.html' else filename.removesuffix('.html')) + '#' + anchor
+            entries[number] = {'label': entry_label(authors, rest), 'href': href, 'title': text,
+                               'page': filename}
+    labels = unique({n: e['label'] or n for n, e in entries.items()})
+    for number, entry in entries.items():
+        entry['label'] = labels[number]
+    return entries
+
+
+def expand_citations(soup, filename, bibliography):
+    """[5] becomes [Tantau 2025], linked to the reference (also in the list)."""
+    textbody = soup.select_one('.textbody')
+    if textbody is None:
+        return
+    if any(entry['page'] == filename for entry in bibliography.values()):
+        for number, li in bibliography_items(soup):
+            if number in bibliography:
+                li.select_one('.listmarker').string = f"[{bibliography[number]['label']}] "
+                if li.find('a', id=True) is None:
+                    li['id'] = f'ref-{number}'
+    # citations that lwarp linked: [<a href="references#cite...">2</a>]
+    for link in textbody.select('a[href]'):
+        number = link.get_text(strip=True)
+        entry = bibliography.get(number)
+        if entry and link['href'].endswith('#' + entry['href'].split('#')[1]):
+            link.string = entry['label']
+            link['title'] = entry['title']
+    # citations in plain text: [5]
+    for text in list(textbody.find_all(string=CITATION)):
+        if isinstance(text, Comment) or any(parent.name in NOT_PROSE or
+                                            set(parent.get('class', [])) & {'example-code', 'verb', 'listmarker'}
+                                            or parent.has_attr('data-nosnippet') for parent in text.parents):
+            continue
+        parts = []
+        last = 0
+        for match in CITATION.finditer(text):
+            entry = bibliography.get(match.group(1))
+            if entry is None:
+                continue
+            parts.append(text[last:match.start()])
+            link = soup.new_tag('a', href=entry['href'], title=entry['title'])
+            link.string = entry['label']
+            parts.extend(['[', link, ']'])
+            last = match.end()
+        if not parts:
+            continue
+        parts.append(text[last:])
+        for part in parts:
+            text.insert_before(part)
+        text.extract()
 
 
 def build_site(manual):
@@ -455,8 +546,15 @@ def build_site(manual):
     sources = {filename: Path(next((old for old, new in manual.page_aliases if new == filename), filename))
                for filename in manual.pages}
     groups = home_contents(manual, lambda filename: sources[filename].read_text())
-    for filename in manual.pages:
+    bibliography = collect_bibliography(manual, lambda filename: sources[filename].read_text())
+    # the start page last: its showcase takes pictures from the finished pages
+    for filename in sorted(manual.pages, key=lambda name: name == 'index.html'):
         text = sources[filename].read_text()
-        (output / filename).write_text(finish_page(text, filename, formats, root, manual, groups))
+        examples = ()
+        if filename == 'index.html':
+            examples = find_examples({name: (output / name).read_text() for name, _ in manual.showcase},
+                                     manual.showcase)
+        (output / filename).write_text(finish_page(text, filename, formats, root, manual, groups, examples,
+                                                   bibliography))
     result = check_site(output)
     print(f'{manual.package} site verified: {result}')

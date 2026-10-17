@@ -63,8 +63,12 @@ menu is in `shared/navbar.py`. Local CSS and JavaScript URLs carry content
 hashes, so browsers pick up new versions immediately.
 
 The start pages share one design (`shared/home.py`): the title box of the PGF
-and PGFplots start pages, the abstract, and the contents as cards accented in
-the manual's color (`--pkg-color` in `style.css`). The converted manuals build
+and PGFplots start pages, the abstract, a row of example pictures, and the
+contents as cards accented in the manual's color (`--pkg-color` in
+`style.css`). The pictures are chosen by hand per manual (`SHOWCASE` in a
+converter, `showcase` in an lwarp manual's `Manual`), each by its page and a
+fragment of its code, so that they survive renumbering; one that is no longer
+found is left out. The converted manuals build
 it in their `home_html`; for the lwarp manuals, `pgf_contrib_site.py` replaces
 lwarp's title page and table of contents with it, taking the title, logo and
 version from the title page and the author from the `Manual`.
@@ -89,3 +93,7 @@ image lists with stock lwarp.
 ```bash
 python3 -m unittest discover -s scripts/tests
 ```
+
+Citations are shown as author–year labels ([Tantau 2025]) rather than numbers
+(`shared/citations.py`): from the `.bib` fields in the converted manuals, and
+from the printed reference list in the lwarp manuals.

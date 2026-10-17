@@ -157,6 +157,7 @@ class Context:
         self.pass_no = 1
         self.bib = {}
         self.cite_numbers = {}
+        self.cite_labels = {}  # author-year labels (texhtml.site.sort_citations)
 
     def warn(self, msg):
         self.warnings[msg] += 1
@@ -1101,7 +1102,7 @@ class Converter:
         for key in keys:
             if key not in self.ctx.cited:
                 self.ctx.cited.append(key)
-            n = self.ctx.cite_numbers.get(key, "?")
+            n = esc(self.ctx.cite_labels.get(key, "?"))
             nums.append(f'<a href="references#{esc(key)}">{n}</a>')
         extra = (", " + self.inline(args[0])) if args[0] else ""
         out.append(("i", "[" + ", ".join(nums) + extra + "]"))
@@ -1600,6 +1601,12 @@ def parse_bib(path):
             j = fm.end()
             if j < len(body) and body[j] == "{":
                 e = match_brace(body, j)
+                val = body[j + 1:e]
+            elif j < len(body) and body[j] == '"':  # "quoted", braces may hide quotes
+                e, depth = j + 1, 0
+                while e < len(body) and (body[e] != '"' or depth > 0):
+                    depth += {"{": 1, "}": -1}.get(body[e], 0)
+                    e += 1
                 val = body[j + 1:e]
             else:
                 e = body.find(",", j)

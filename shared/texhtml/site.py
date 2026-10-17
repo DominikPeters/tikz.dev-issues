@@ -14,6 +14,7 @@ from docsearch import DOCSEARCH_ASSETS  # noqa: E402
 from navbar import ISSUES_URL, REPO_URL, home_url, title_menu  # noqa: E402
 
 from .core import Page, esc, fix_page_refs, footnotes_html, tex_to_text  # noqa: E402
+from citations import YEAR, author_year, split_names, unique  # noqa: E402
 
 
 @dataclass
@@ -181,7 +182,7 @@ def write_references(manual, ctx, pages, part="appendix"):
     entries = []
     for key in ctx.cited_sorted:
         e = ctx.bib.get(key, {})
-        n = ctx.cite_numbers[key]
+        n = ctx.cite_labels[key]
         author = tex_to_text(e.get("author", e.get("editor", ""))).replace(" and ", ", ")
         title = tex_to_text(e.get("title", key))
         rest = []
@@ -210,3 +211,11 @@ def sort_citations(ctx):
                 e.get("year", e.get("date", "")), e.get("title", ""))
     ctx.cited_sorted = sorted(ctx.cited, key=sort_key)
     ctx.cite_numbers = {k: i + 1 for i, k in enumerate(ctx.cited_sorted)}
+    # author-year labels, shown instead of the numbers: [Tantau 2025]
+    labels = {}
+    for key in ctx.cited_sorted:
+        e = ctx.bib.get(key, {})
+        names = split_names(tex_to_text(e.get("author", e.get("editor", ""))), bibtex=True)
+        year = YEAR.search(e.get("year", e.get("date", "")))
+        labels[key] = author_year(names, year.group(1) if year else "") or str(ctx.cite_numbers[key])
+    ctx.cite_labels = unique(labels)

@@ -12,6 +12,11 @@ MANUAL = Manual(
     pdf_url='https://mirrors.ctan.org/graphics/pgf/contrib/pgfgantt/pgfgantt-doc.pdf',
     source_url='https://github.com/skafdasschaf/latex-pgfgantt',
     author='Wolfgang Esser-Skala',
+    showcase=(
+        ('user-guide.html', '\\begin{ganttchart}[yunit'),
+        ('user-guide.html', 'appendstyle={fill=red},p'),
+        ('user-guide.html', '\\definecolor{foobarblue}'),
+    ),
     notice='''\
 pgfgantt documentation:
 Copyright (C) 2024 by Wolfgang Esser-Skala

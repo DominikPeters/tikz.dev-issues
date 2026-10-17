@@ -36,7 +36,7 @@ from texhtml.core import (  # noqa: E402
     xcolor_to_css,
 )
 from texhtml.site import Manual, write_site  # noqa: E402
-from home import contents, title_box  # noqa: E402
+from home import contents, find_examples, showcase, title_box  # noqa: E402
 
 # checkout of the nicematrix repository at the pinned commit (scripts/fetch.sh nicematrix)
 UPSTREAM = os.environ.get("UPSTREAM", os.path.join(ROOT, ".upstream", "nicematrix"))
@@ -544,6 +544,14 @@ This file may be distributed and/or modified under the LaTeX Project Public Lice
 )
 
 
+
+# examples whose pictures the start page shows: (page, fragment of the code without whitespace)
+SHOWCASE = [
+    ('examples.html', 'nicematrix/cell-node/.ap'),
+    ('color-of-the-background-of-the-rows-and-columns.html', '\\begin{NiceTabular}[c]{l'),
+    ('codeafter.html', 'mmand{\\arraystretch}{1.4'),
+]
+
 def home_html(ctx, pages):
     groups = []
     for p in pages:
@@ -559,6 +567,7 @@ def home_html(ctx, pages):
     return f"""
 {box}
 <div class="home-abstract"><p class="abstract-title">Abstract</p>{intro[:end]}</div>
+{showcase(find_examples({p.slug + '.html': p.body for p in pages}, SHOWCASE))}
 {contents(groups)}
 <h2 class="home-contents-title">Introduction</h2>
 <div class="nm-intro">{intro[end:]}{footnotes_html(ctx.intro)}</div>

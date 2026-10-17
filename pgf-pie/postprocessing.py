@@ -20,6 +20,11 @@ MANUAL = Manual(
     pdf_url='https://mirrors.ctan.org/graphics/pgf/contrib/pgf-pie/pgf-pie-manual.pdf',
     source_url='https://github.com/pgf-tikz/pgf-pie',
     author='Yuan Xu',
+    showcase=(
+        ('usage.html', 'icture}\\pie[text=legend]'),
+        ('variant-charts.html', 'in{tikzpicture}\\pie[clou'),
+        ('variant-charts.html', 'in{tikzpicture}\\pie[pola'),
+    ),
     notice='''\
 pgf-pie documentation:
 Copyright 2011-2020 Yuan Xu

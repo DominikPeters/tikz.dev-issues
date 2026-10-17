@@ -22,6 +22,11 @@ MANUAL = Manual(
     pdf_url='https://mirrors.ctan.org/graphics/pgf/contrib/tikz-feynman/tikz-feynman.pdf',
     source_url='https://github.com/JP-Ellis/tikz-feynman',
     author='Joshua P. Ellis',
+    showcase=(
+        ('examples.html', 'ayout,horizontal=atob]{%'),
+        ('examples.html', ']b--[fermion,halfleft,mo'),
+        ('examples.html', 'ayout,horizontal=atob][e'),
+    ),
     notice='''\
 TikZ-Feynman documentation:
 Copyright (C) 2016 Joshua Ellis

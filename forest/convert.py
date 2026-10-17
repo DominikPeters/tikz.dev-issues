@@ -36,7 +36,7 @@ from texhtml.core import (  # noqa: E402
     load_images, match_brace, parse_bib, read_args, read_cs, split_items, tex_to_text,
 )
 from texhtml.site import Manual, sort_citations, write_site  # noqa: E402
-from home import contents, title_box  # noqa: E402
+from home import contents, find_examples, showcase, title_box  # noqa: E402
 
 # checkout of the forest repository at the pinned commit (scripts/fetch.sh forest)
 UPSTREAM = os.environ.get("UPSTREAM", os.path.join(ROOT, ".upstream", "forest"))
@@ -527,7 +527,7 @@ class ForestConverter(Converter):
         for key in keys:
             if key not in self.ctx.cited:
                 self.ctx.cited.append(key)
-            links.append(f'<a href="references#{esc(key)}">{self.ctx.cite_numbers.get(key, "?")}</a>')
+            links.append(f'<a href="references#{esc(key)}">{esc(self.ctx.cite_labels.get(key, "?"))}</a>')
         text = (self.inline(pre) + " " if pre else "") + ", ".join(links) + (", " + self.inline(post) if post else "")
         out.append(("i", "[" + text + "]"))
         return e2
@@ -724,6 +724,14 @@ This file may be distributed and/or modified under the LaTeX Project Public Lice
 )
 
 
+
+# examples whose pictures the start page shows: (page, fragment of the code without whitespace)
+SHOWCASE = [
+    ('decision-tree.html', '\\forestset{declaretoks={'),
+    ('library-linguistics.html', "t}[VP[DP[John]][V'[V,dra"),
+    ('decorating-the-tree.html', '\\begin{forest}[XP[specif'),
+]
+
 def home_html(ctx, pages):
     groups = [(part_name, part_id, "", [(p.section_number, p.title_html, p.slug) for p in pages if p.part == part_id])
               for part_id, part_name in PARTS]
@@ -732,6 +740,7 @@ def home_html(ctx, pages):
                     "Author of the forest manual: Sašo Živanović.", "https://github.com/sasozivanovic/forest")
     return f"""
 {box}
+{showcase(find_examples({p.slug + '.html': p.body for p in pages}, SHOWCASE))}
 {contents(groups)}
 """
 

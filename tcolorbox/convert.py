@@ -35,7 +35,7 @@ from texhtml.core import (  # noqa: E402
     load_images, match_brace, parse_bib, pretty_id, read_args, skip_ws, split_kv,
 )
 from texhtml.site import Manual, sort_citations, write_site  # noqa: E402
-from home import contents, title_box  # noqa: E402
+from home import contents, find_examples, showcase, title_box  # noqa: E402
 
 # checkout of the tcolorbox repository at the pinned commit (scripts/fetch.sh tcolorbox)
 UPSTREAM = os.environ.get("UPSTREAM", os.path.join(ROOT, ".upstream", "tcolorbox"))
@@ -921,6 +921,14 @@ def write_instrumented_tex(ctx, pages):
 
 
 
+
+# examples whose pictures the start page shows: (page, fragment of the code without whitespace)
+SHOWCASE = [
+    ('library-raster.html', 'emize}[rastercolumns=4,r'),
+    ('library-skins.html', '\\newcommand{\\ballexample'),
+    ('library-raster.html', '1]\\tcbitemOne\\tcbitemTwo'),
+]
+
 def home_html(ctx, pages):
     abstract = ("<p><span class=\"verb\">tcolorbox</span> provides an environment for colored and framed text boxes with a "
                 "heading line. Optionally, such a box can be split in an upper and a lower part. The package "
@@ -947,6 +955,7 @@ def home_html(ctx, pages):
 {box}
 <div class="home-abstract"><p class="abstract-title">Abstract</p>{abstract}</div>
 {cover}
+{showcase(find_examples({p.slug + '.html': p.body for p in pages}, SHOWCASE))}
 {contents(groups)}
 """
 

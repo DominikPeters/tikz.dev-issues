@@ -1411,6 +1411,39 @@ nav.sidetoc .sidetoccontents a.tocsubsubsection {
   margin-bottom: 0;
 }
 
+/* example pictures on the start page, on the background of example pictures */
+.home-showcase {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1em;
+  margin: 1.5em 0 0.5em;
+}
+.home-showcase-item {
+  flex: 1 1 14em;
+  max-width: 24em;
+  height: 13em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8em;
+  background-color: rgb(245, 245, 204);
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+.home-showcase-item:hover {
+  outline: 2px solid var(--pkg-color, #333);
+}
+.textbody .home-showcase-item img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+  box-shadow: none;
+  border: 0;
+}
+
 .textbody h2.home-contents-title {
   font-size: 1.5em;
   font-weight: 600;

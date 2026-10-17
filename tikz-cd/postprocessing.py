@@ -20,6 +20,11 @@ MANUAL = Manual(
     pdf_url='https://mirrors.ctan.org/graphics/pgf/contrib/tikz-cd/tikz-cd-doc.pdf',
     source_url='https://github.com/astoff/tikz-cd',
     author='Augusto Stoffel',
+    showcase=(
+        ('diagram-options.html', '\\begin{tikzcd}[rowsep=sc'),
+        ('getting-started.html', '\\begin{tikzcd}T\\arrow[dr'),
+        ('advanced-usage.html', 'iagrams/everydiagram]\\no'),
+    ),
     notice='''\
 tikz-cd documentation:
 Copyright 2011, 2012, 2014, 2018, 2021 Augusto Stoffel

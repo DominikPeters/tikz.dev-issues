@@ -14,6 +14,11 @@ MANUAL = Manual(
     pdf_url='https://mirrors.ctan.org/graphics/pgf/contrib/wheelchart/wheelchart.pdf',
     source_url='https://ctan.org/tex-archive/graphics/pgf/contrib/wheelchart',
     author='Matthias Floré',
+    showcase=(
+        ('keys.html', 'lchart[data=,gap=0.1,mid'),
+        ('keys.html', 'lchart[data=,radius={1}{'),
+        ('keys.html', 'eness=2]\\wheelchart[data'),
+    ),
     notice='''\
 wheelchart documentation:
 Copyright 2022-2026 Matthias Floré

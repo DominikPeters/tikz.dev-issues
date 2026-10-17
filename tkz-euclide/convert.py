@@ -28,7 +28,7 @@ from texhtml.core import (  # noqa: E402
     instrument, load_images, match_brace, read_args, read_cs,
 )
 from texhtml.site import Manual, write_site  # noqa: E402
-from home import contents, title_box  # noqa: E402
+from home import contents, find_examples, showcase, title_box  # noqa: E402
 
 # the CTAN package at the pinned version (scripts/fetch.sh tkz-euclide)
 UPSTREAM = os.environ.get("UPSTREAM", os.path.join(ROOT, ".upstream", "tkz-euclide"))
@@ -367,6 +367,14 @@ def write_instrumented_tex(ctx, pages):
     print(f"Wrote instrumented sources to {TEXDIR} ({n} image fragments)")
 
 
+
+# examples whose pictures the start page shows: (page, fragment of the code without whitespace)
+SHOWCASE = [
+    ('examples.html', '\\begin{tikzpicture}[ultr'),
+    ('more-examples.html', 'tkzDefPoint(4,1){B}\\tkzI'),
+    ('examples.html', '5]\\tkzDefPoint(0,0){D}\\t'),
+]
+
 def home_html(ctx, pages):
     groups = [(part_name, part_id, "", [(p.section_number, p.title_html, p.slug) for p in pages if p.part == part_id])
               for part_id, part_name in PARTS]
@@ -378,6 +386,7 @@ def home_html(ctx, pages):
 convenient macros for drawing figures in the plane with a Cartesian coordinate system. It handles the most
 classic situations of Euclidean geometry. It is built on top of PGF and its front end TikZ, and lets you
 construct figures step by step, as closely as possible to a construction made by hand.</p></div>
+{showcase(find_examples({p.slug + '.html': p.body for p in pages}, SHOWCASE))}
 {contents(groups)}
 """
 

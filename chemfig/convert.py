@@ -28,7 +28,7 @@ from texhtml.core import (  # noqa: E402
     match_brace, read_args, read_cs, split_kv, tex_to_text,
 )
 from texhtml.site import Manual, write_site  # noqa: E402
-from home import contents, title_box  # noqa: E402
+from home import contents, find_examples, showcase, title_box  # noqa: E402
 
 # the CTAN package at the pinned version (scripts/fetch.sh chemfig)
 UPSTREAM = os.environ.get("UPSTREAM", os.path.join(ROOT, ".upstream", "chemfig"))
@@ -414,6 +414,14 @@ This file may be distributed and/or modified under the LaTeX Project Public Lice
 )
 
 
+
+# examples whose pictures the start page shows: (page, fragment of the code without whitespace)
+SHOWCASE = [
+    ('gallery.html', 'Manganese5,10,15,20-tetr'),
+    ('gallery.html', 'Electrophilicadditionofh'),
+    ('gallery.html', 'Sulfonationofnaphthalene'),
+]
+
 def home_html(ctx, pages):
     groups = [(part_name, part_id, "", [(p.section_number, p.title_html, p.slug) for p in pages if p.part == part_id])
               for part_id, part_name in PARTS]
@@ -422,6 +430,7 @@ def home_html(ctx, pages):
                     "Author of the chemfig manual: Christian Tellechea.", "https://ctan.org/pkg/chemfig")
     return f"""
 {box}
+{showcase(find_examples({p.slug + '.html': p.body for p in pages}, SHOWCASE))}
 {contents(groups)}
 """
 
