@@ -142,6 +142,19 @@ Set `TIKZ_IMAGE_JOBS` to change the default of four workers, or
 `build/image-cache` forces conversion on the next build. The cache stores
 unoptimized SVGs so postprocessing and SVGO can be changed independently.
 
+For PGF, SVGO runs before choosing the HTML image format. An illustration uses
+SVG when its optimized file is no larger than the PNG, except for PDF features
+that convert poorly: knockout groups, luminosity/transfer soft masks, function
+or mesh shadings, and blend modes outside Normal/Multiply/Screen/Darken/Lighten.
+Those use PNG regardless of size. Ordinary opacity, axial/radial gradients and
+simple shadows are eligible for SVG. The generated `pgfmanual-image-formats.json`
+records the used PDF features, fallback reasons and optimized file sizes for
+each illustration. Analysis follows actual content operators into forms,
+patterns and masks, including original pages reused by the drawing cache.
+Existing explicit `codeexample[svg]` and patterns-library SVG overrides remain,
+as do linked SVG objects that need interactivity. PGFplots keeps its own policy.
+The [format review](reports/pgf-image-formats.md) records examples and validation.
+
 To rerun just illustration conversion from an existing prepared tree, without
 repeating LaTeX:
 

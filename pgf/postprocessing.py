@@ -11,10 +11,9 @@ import subprocess
 import requests
 from navbar import other_packages_menu  # shared/navbar.py
 from lwarp_html import escape_code_angles, normalize_page_layout
+from illustration_formats import image_format
 
-def kilobytes(filename):
-    st = os.stat(filename)
-    return st.st_size / 1000
+image_formats = json.load(open('pgfmanual-image-formats.json'))['images']
 
 # mkdir processed
 os.makedirs("processed", exist_ok=True)
@@ -605,7 +604,7 @@ def _add_dimensions(tag, svgfilename):
     return (width_px, height_px)
 
 def process_images(filename, soup):
-    "replace SVGs by PNGs if this saves filesize"
+    "Use the post-SVGO format choices, with existing manual SVG overrides."
     # Step 1: label all images explicitly tagged that they should remain an SVG
     # (tagging works by adding the option "svg" to the \begin{codeexample})
     divs = soup.find_all("div", class_="prefers-svg")
@@ -621,17 +620,8 @@ def process_images(filename, soup):
                 tag.decompose()
                 continue
             tag["loading"] = "lazy"
-            # do not replace the following svgs
-            if "prefers-svg" in tag['class']:
-                continue
-            if "library-patterns" in filename:
-                continue
-            # replace all SVGs by PNGs except if that's a big filesize penalty
-            # doing this because the SVGs are missing some features like shadows
-            factor = 5
-            png_filename = tag['src'].replace("svg", "png")
-            if kilobytes(png_filename) < factor * kilobytes(tag['src']):
-                tag['src'] = png_filename
+            force_svg = ('prefers-svg' in tag.get('class', []) or 'library-patterns' in filename)
+            tag['src'] = image_format(tag['src'], image_formats, force_svg)
     for tag in soup.find_all("object"):
         if "svg" in tag['data']: 
             _add_dimensions(tag, tag['data'])
