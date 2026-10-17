@@ -190,6 +190,9 @@ def skip_comment(s, k):
     return k
 
 
+VERB_RE = re.compile(r"\\[Vv]erb\*?([^A-Za-z*\s])")
+
+
 def match_brace(s, k, open_ch="{", close_ch="}"):
     """s[k] == open_ch. Return index of the matching close_ch."""
     depth = 0
@@ -198,6 +201,12 @@ def match_brace(s, k, open_ch="{", close_ch="}"):
     while i < n:
         c = s[i]
         if c == "\\":
+            m = VERB_RE.match(s, i)
+            if m and not s.endswith("\\string", 0, i):  # \verb|...| may contain unbalanced braces
+                end = s.find(m.group(1), m.end())
+                if end != -1:
+                    i = end + 1
+                    continue
             i += 2
             continue
         if c == "%":
@@ -557,6 +566,8 @@ class Converter:
     inline_image_specs = {"includegraphics": "*om", "tikz": "o", "fbox": "m", "colorbox": "mm",
                           "fcolorbox": "mmm"}
     ignored = IGNORED
+    # characters delimiting verbatim text, like |\\foo| with \\MakeShortVerb
+    short_verb_chars = "|"
     # Folder of the images on the site (relative to the pages).
     img_dir = "images"
 
@@ -572,6 +583,7 @@ class Converter:
         self.aliases = {}
         self.user_macros = {}  # name -> argument spec
         self.last_temp = ""  # code last written by dispListing/dispExample/tcbwritetemp
+        self.in_table_cell = False
 
     # -- images --------------------------------------------------------------
 
@@ -597,6 +609,11 @@ class Converter:
     def at_line_start(self, k):
         line_start = self.s.rfind("\n", 0, k) + 1
         return self.s[line_start:k].strip() in ("", "{")
+
+    def block_image_at(self, k):
+        """Whether a fragment at s[k] is captured as a block (a paragraph of its
+        own) rather than inline; never in table cells (no paragraphs there)."""
+        return not self.in_table_cell and self.at_line_start(k)
 
     # -- core loop -----------------------------------------------------------
 
@@ -660,10 +677,10 @@ class Converter:
                 buf.append("\u00a0")
                 k += 1
                 continue
-            if c == "|":
-                e = s.find("|", k + 1)
+            if c in self.short_verb_chars:
+                e = s.find(c, k + 1)
                 if e == -1 or e > b:
-                    buf.append("|")
+                    buf.append(c)
                     k += 1
                     continue
                 flush()
@@ -837,7 +854,7 @@ class Converter:
             return e
         if name in self.user_macros:
             args, e2 = read_args(s, e, self.user_macros[name])
-            if self.at_line_start(k):
+            if self.block_image_at(k):
                 image_id = self.new_image(k, e2, "block")
                 out.append(("b", f'<div class="figure">{self.img_html(image_id)}</div>'))
             else:
@@ -852,7 +869,7 @@ class Converter:
     def inline_image(self, k, e, name, out):
         """A command that becomes an image: a block image if it starts a line."""
         args, e2 = read_args(self.s, e, self.inline_image_specs.get(name, "om"))
-        if self.at_line_start(k):
+        if self.block_image_at(k):
             image_id = self.new_image(k, e2, "block")
             out.append(("b", f'<div class="figure">{self.img_html(image_id)}</div>'))
         else:
@@ -1092,7 +1109,7 @@ class Converter:
         return e + m.end()
 
     def cmd_def(self, k, e, out):
-        m = re.match(r"\\([A-Za-z@]+)((?:#\d)*)\s*\{", self.s[e:])
+        m = re.match(r"\\([A-Za-z@]+|[^A-Za-z@])((?:#\d)*)\s*\{", self.s[e:])
         if not m:
             return e
         brace = e + m.end() - 1
@@ -1162,6 +1179,55 @@ class Converter:
     def cmd_endinput(self, k, e, out):
         # the rest of the file is not read
         return len(self.s)
+
+    cmd_leavevmode = cmd_bgroup
+    cmd_protect = cmd_bgroup
+
+    def cmd_string(self, k, e, out):
+        """\\string\\cs prints \\cs."""
+        s = self.s
+        if e < len(s) and s[e] == "\\":
+            _, e2 = read_cs(s, e)
+            out.append(("i", esc(s[e:e2])))
+            return e2
+        out.append(("i", esc(s[e:e + 1])))
+        return e + 1
+
+    def cmd_char(self, k, e, out):
+        m = re.match(r"`\\?(.)|(\d+)", self.s[e:])
+        if not m:
+            return e
+        out.append(("i", esc(m.group(1) if m.group(1) else chr(int(m.group(2))))))
+        return e + m.end()
+
+    def cmd_catcode(self, k, e, out):
+        m = re.match(r"`\\?.\s*=?\s*\d+\s?", self.s[e:])
+        return e + (m.end() if m else 0)
+
+    def cmd_csname(self, k, e, out):
+        end = self.s.find("\\endcsname", e)
+        return end + len("\\endcsname") if end != -1 else e
+
+    def cmd_hskip(self, k, e, out):
+        m = re.match(r"\s*-?[\d.]+\s*[a-z]{2}(\s*(plus|minus)\s*-?[\d.]+\s*[a-z]+)*", self.s[e:])
+        return e + (m.end() if m else 0)
+
+    cmd_vskip = cmd_hskip
+
+    def cmd_spaceskip(self, k, e, out):
+        """Assignments to dimension registers: skip the value."""
+        m = re.match(r"\s*=?\s*(-?[\d.]+\s*[a-z]{2}(\s*(plus|minus)\s*-?[\d.]+\s*[a-z]+)*|\\[A-Za-z@]+)",
+                     self.s[e:])
+        return e + (m.end() if m else 0)
+
+    cmd_xspaceskip = cmd_spaceskip
+
+    def cmd_vbox(self, k, e, out):
+        args, e2 = read_args(self.s, e, "m")
+        out.extend(self.group(*args[0]))
+        return e2
+
+    cmd_vtop = cmd_vbox
 
     def cmd_kern(self, k, e, out):
         m = re.match(r"\s*-?[\d.]+\s*[a-z]{2}", self.s[e:])
@@ -1245,6 +1311,10 @@ class Converter:
             out.extend(self.items(body_start, body_end))
             return after
         # everything else is rendered as an image
+        if self.in_table_cell:
+            image_id = self.new_image(k, after, "inline")
+            out.append(("i", self.img_html(image_id, inline=True)))
+            return after
         image_id = self.new_image(k, after, "block")
         out.append(("b", f'<div class="figure">{self.img_html(image_id)}</div>'))
         return after
@@ -1285,6 +1355,130 @@ class Converter:
         for key, val in split_kv(self.s, *r):
             d[key] = val
         return d
+
+    # -- tables (opt-in: a subclass sets env_tabular = Converter.env_html_table) --
+
+    TABLE_RULES = re.compile(r"\\(?:toprule|midrule|bottomrule|hline|endhead|endfirsthead|endfoot|endlastfoot)\b"
+                             r"(?:\[[^\]]*\])?|\\(?:cmidrule|cline)(?:\([^)]*\))?\{[^}]*\}")
+    # macros that stand for a whole table row (see table_row_macro), or for the
+    # first cells of a row (table_row_macros_partial)
+    table_row_macros = ()
+    table_row_macros_partial = ()
+    # a first row containing one of these words is a header row
+    table_header_words = ("arguments", "options", "option", "argument", "macro", "macros", "default",
+                          "definition", "example", "explanation", "styles", "style", "name", "key",
+                          "keys", "value", "description", "meaning")
+    table_class = "html-table"
+
+    def env_html_table(self, k, a, b, after, out):
+        """A tabular (or longtable, tabularx) as an HTML table."""
+        name = self.s[self.s.rfind("{", 0, a) + 1:a - 1]
+        spec = {"tabularx": "mom", "tabular*": "mom"}.get(name, "om")
+        args, a2 = read_args(self.s, a, spec)
+        rows = []
+        for r0, r1 in self._split_top(a2, b, "\\\\"):
+            text = self.s[r0:r1]
+            if not self.TABLE_RULES.sub("", re.sub(r"%[^\n]*", "", text)).strip():
+                continue
+            rows.extend(self._row_cells(r0, r1))
+        if not rows:
+            return
+        html_rows = []
+        for i, cells in enumerate(rows):
+            tag = "th" if i == 0 and self._looks_like_header(cells) else "td"
+            html_rows.append("<tr>" + "".join(f"<{tag}>{c}</{tag}>" for c in cells) + "</tr>")
+        out.append(("b", f'<div class="table-scroll"><table class="{self.table_class}">'
+                         + "".join(html_rows) + "</table></div>"))
+
+    def table_row_macro(self, name, k):
+        """For a macro in table_row_macros at s[k:], return (list of cell HTML, end)."""
+        raise NotImplementedError
+
+    def _looks_like_header(self, cells):
+        plain = [re.sub(r"<[^>]+>", "", c).strip().lower() for c in cells]
+        return any(p in self.table_header_words for p in plain)
+
+    def _row_cells(self, r0, r1):
+        """Rows in s[r0:r1] (a row macro is a row of its own)."""
+        s = self.s
+        rows = []
+        i = plain_start = r0
+        pattern = re.compile(r"\\(" + "|".join(map(re.escape, self.table_row_macros)) + r")(?![A-Za-z])") \
+            if self.table_row_macros else None
+        while pattern:
+            m = pattern.search(s, i, r1)
+            if not m:
+                break
+            before = self.TABLE_RULES.sub("", re.sub(r"%[^\n]*", "", s[plain_start:m.start()]))
+            if before.strip():
+                rows.append(self._cells(plain_start, m.start()))
+            cells, e = self.table_row_macro(m.group(1), m.start())
+            if self.table_row_macros_partial and m.group(1) in self.table_row_macros_partial:
+                # the rest of the row follows the macro: & more cells
+                rest_end = r1
+                nxt = pattern.search(s, e, r1)
+                if nxt:
+                    rest_end = nxt.start()
+                more = self._cells(e, rest_end)
+                if more and not re.sub(r"<[^>]+>", "", more[0]).strip():
+                    more = more[1:]
+                cells = cells + more
+                e = rest_end
+            rows.append(cells)
+            i = plain_start = e
+        rest = self.TABLE_RULES.sub("", re.sub(r"%[^\n]*", "", s[plain_start:r1]))
+        if rest.strip():
+            rows.append(self._cells(plain_start, r1))
+        return rows
+
+    def _cells(self, r0, r1):
+        cells = []
+        for c0, c1 in self._split_top(r0, r1, "&"):
+            # rules (\\hline, ...) at the start of the cell; converted in place, so
+            # that images in cells are captured
+            m = re.compile(r"(\s|" + self.TABLE_RULES.pattern + r")*").match(self.s, c0, c1)
+            saved, self.in_table_cell = self.in_table_cell, True
+            cells.append(self.inline((m.end(), c1)))
+            self.in_table_cell = saved
+        return cells
+
+    def _split_top(self, a, b, sep):
+        """Split s[a:b] at top-level occurrences of sep (outside braces and environments);
+        for row separators (\\\\), \\cr counts too."""
+        s = self.s
+        parts = []
+        depth = 0
+        start = a
+        i = a
+        while i < b:
+            c = s[i]
+            if c == "%":
+                nl = s.find("\n", i)
+                i = b if nl == -1 or nl > b else nl
+                continue
+            if depth == 0 and (s.startswith(sep, i) or
+                               (sep == "\\\\" and s.startswith("\\cr", i) and not s[i + 3:i + 4].isalpha())):
+                parts.append((start, i))
+                i += 3 if s.startswith("\\cr", i) else len(sep)
+                if sep == "\\\\":
+                    args, i = read_args(s, i, "o")
+                start = i
+                continue
+            if c == "\\":
+                if s.startswith("\\begin{", i):
+                    name_end = s.index("}", i)
+                    name = s[i + 7:name_end]
+                    _, i = find_env_end(s, name_end + 1, name, name in self.verbatim_envs)
+                    continue
+                i += 2
+                continue
+            if c == "{":
+                depth += 1
+            elif c == "}":
+                depth -= 1
+            i += 1
+        parts.append((start, b))
+        return parts
 
     def render(self, items):
         """Group inline items into paragraphs."""

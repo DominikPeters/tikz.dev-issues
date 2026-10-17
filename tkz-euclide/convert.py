@@ -25,7 +25,7 @@ SHARED = os.path.join(ROOT, "shared")
 sys.path.insert(0, SHARED)
 from texhtml.core import (  # noqa: E402
     DEF_COLOR, IGNORED as BASE_IGNORED, Context, Converter, code_block, convert_pages, esc,
-    find_env_end, instrument, load_images, match_brace, read_args, skip_ws,
+    instrument, load_images, match_brace, read_args, read_cs,
 )
 from texhtml.site import Manual, write_site  # noqa: E402
 
@@ -215,11 +215,6 @@ class TkzConverter(Converter):
     def cmd_red(self, k, e, out):
         return e
 
-    def cmd_vbox(self, k, e, out):
-        args, e2 = read_args(self.s, e, "m")
-        out.extend(self.group(*args[0]))
-        return e2
-
     def cmd_hypertarget(self, k, e, out):
         args, e2 = read_args(self.s, e, "mm")
         name = self.raw(args[0]).strip()
@@ -270,112 +265,22 @@ class TkzConverter(Converter):
 
     # -- tables of arguments and options -------------------------------------------
 
-    ROW_MACROS = {"TAline": 3, "TOline": 3, "TMline": 3, "TOenvline": 3}
-    RULES = re.compile(r"\\(?:toprule|midrule|bottomrule|hline|endhead|endfirsthead)\b(?:\[[^\]]*\])?"
-                       r"|\\(?:cmidrule|cline)(?:\([^)]*\))?\{[^}]*\}")
+    env_tabular = Converter.env_html_table
+    env_tabularx = Converter.env_html_table
+    table_row_macros = ("TAline", "TOline", "TMline", "TOenvline")
+    table_class = "tkz-table"
 
-    def env_tabular(self, k, a, b, after, out):
-        args, a2 = read_args(self.s, a, "om")
-        rows = []
-        for r0, r1 in self._split_top(a2, b, "\\\\"):
-            text = self.s[r0:r1]
-            if not self.RULES.sub("", re.sub(r"%[^\n]*", "", text)).strip():
-                continue
-            cells = self._row_cells(r0, r1)
-            if cells:
-                rows.extend(cells)
-        if not rows:
-            return
-        html_rows = []
-        for i, cells in enumerate(rows):
-            tag = "th" if i == 0 and self._looks_like_header(cells) else "td"
-            html_rows.append("<tr>" + "".join(f"<{tag}>{c}</{tag}>" for c in cells) + "</tr>")
-        out.append(("b", '<div class="table-scroll"><table class="tkz-table">' + "".join(html_rows) + "</table></div>"))
-
-    env_tabularx = env_tabular
-
-    @staticmethod
-    def _looks_like_header(cells):
-        plain = [re.sub(r"<[^>]+>", "", c).strip().lower() for c in cells]
-        return any(p in ("arguments", "options", "option", "argument", "macro", "macros", "default",
-                         "definition", "example", "explanation", "styles", "style", "name")
-                   for p in plain)
-
-    def _row_cells(self, r0, r1):
-        """Rows in s[r0:r1] (a row macro like \\TAline is a row of its own)."""
-        s = self.s
-        rows = []
-        i = r0
-        plain_start = r0
-        while True:
-            m = re.compile(r"\\(TAline|TOline|TMline|TOenvline)\b").search(s, i, r1)
-            if not m:
-                break
-            before = self.RULES.sub("", re.sub(r"%[^\n]*", "", s[plain_start:m.start()]))
-            if before.strip():
-                rows.append(self._cells(plain_start, m.start()))
-            args, e = read_args(s, m.end(), "mmm")
-            cells = [self.inline(args[0]), self.inline(args[1]), self.inline(args[2])]
-            if m.group(1) == "TMline":
-                cells[0] = f'<span class="texttt">\\{self.inline(args[0])}</span>'
-            else:
-                cells[0] = f'<span class="texttt">{cells[0]}</span>'
-            cells[1] = f'<span class="texttt">{cells[1]}</span>'
-            rows.append(cells)
-            i = plain_start = e
-        rest = self.RULES.sub("", re.sub(r"%[^\n]*", "", s[plain_start:r1]))
-        if rest.strip():
-            rows.append(self._cells(plain_start, r1))
-        return rows
-
-    def _cells(self, r0, r1):
-        cells = []
-        for c0, c1 in self._split_top(r0, r1, "&"):
-            text = self.s[c0:c1]
-            m = self.RULES.search(text)
-            while m:
-                text = text[:m.start()] + text[m.end():]
-                m = self.RULES.search(text)
-            sub = type(self)(self.ctx, text, self.slug, None, self.page)
-            cells.append(sub.inline((0, len(text))))
-        return cells
-
-    def _split_top(self, a, b, sep):
-        """Split s[a:b] at top-level occurrences of sep (outside braces and environments)."""
-        s = self.s
-        parts = []
-        depth = 0
-        start = a
-        i = a
-        while i < b:
-            c = s[i]
-            if c == "%":
-                nl = s.find("\n", i)
-                i = b if nl == -1 or nl > b else nl
-                continue
-            if depth == 0 and (s.startswith(sep, i) or
-                               (sep == "\\\\" and s.startswith("\\cr", i) and not s[i + 3:i + 4].isalpha())):
-                parts.append((start, i))
-                i += 3 if s.startswith("\\cr", i) else len(sep)
-                if sep == "\\\\":
-                    args, i = read_args(s, i, "o")
-                start = i
-                continue
-            if c == "\\":
-                if s.startswith("\\begin{", i):
-                    name_end = s.index("}", i)
-                    name = s[i + 7:name_end]
-                    _, i = find_env_end(s, name_end + 1, name, name in self.verbatim_envs)
-                    continue
-                i += 2
-                continue
-            if c == "{":
-                depth += 1
-            elif c == "}":
-                depth -= 1
-            i += 1
-        parts.append((start, b))
-        return parts
+    def table_row_macro(self, name, k):
+        """\\TAline{argument}{example}{explanation}, \\TOline{option}{default}{definition}, ..."""
+        _, e = read_cs(self.s, k)
+        args, e = read_args(self.s, e, "mmm")
+        cells = [self.inline(args[0]), self.inline(args[1]), self.inline(args[2])]
+        if name == "TMline":
+            cells[0] = f'<span class="texttt">\\{cells[0]}</span>'
+        else:
+            cells[0] = f'<span class="texttt">{cells[0]}</span>'
+        cells[1] = f'<span class="texttt">{cells[1]}</span>'
+        return cells, e
 
     # -- examples ----------------------------------------------------------------
 
