@@ -21,6 +21,7 @@ import argparse
 import filecmp
 import json
 import os
+from pathlib import Path
 import shutil
 import subprocess
 import sys
@@ -28,11 +29,12 @@ import tarfile
 import tempfile
 
 from illustration_audit import apply_cache_tags
+from archive_upstream import validate_snapshot
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHARED = os.path.join(ROOT, "shared")
 # files of <package>/ that are not copied into the build tree
-OWN_FILES = {"upstream.lock", "preprocess.py", "patches", "build", "README.md", ".gitignore", "__pycache__", "illustration-audit.json"}
+OWN_FILES = {"upstream.lock", "upstream.json", "preprocess.py", "patches", "build", "README.md", ".gitignore", "__pycache__", "illustration-audit.json"}
 
 
 def read_lock(pkg):
@@ -48,6 +50,14 @@ def read_lock(pkg):
 def export_upstream(pkg, dest):
     """Upstream files at the checked-out commit (without .git) into dest."""
     upstream = os.path.join(ROOT, ".upstream", pkg)
+    if read_lock(pkg).get('source') == 'archives':
+        state = validate_snapshot(pkg, Path(upstream))
+        os.makedirs(dest)
+        for name in state:
+            target = Path(dest, name)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(Path(upstream, name), target)
+        return
     if not os.path.isdir(os.path.join(upstream, ".git")):
         sys.exit(f"missing {upstream}; run scripts/fetch.sh {pkg}")
     os.makedirs(dest)

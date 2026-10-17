@@ -873,6 +873,12 @@ header .pkg-menu-list a[aria-current] {
   margin-right: 1em;
 }
 
+@media screen and (max-width: 639px) {
+  header .site-home-link {
+    display: none;
+  }
+}
+
 @media screen and (min-width: 750px) {
   #search > button {
     width: 13em;
@@ -892,6 +898,10 @@ header .pkg-menu-list a[aria-current] {
 
 .DocSearch header {
   border-bottom: 0px;
+}
+
+body .DocSearch-Container {
+  z-index: 2000; /* above the mobile contents menu */
 }
 
 .search-input {
@@ -1059,6 +1069,13 @@ h6 > .anchor-html-link > svg {
 .example-code code {
   font-family: var(--monospace-font);
   font-size: 81.25%;
+}
+.example-code .programlisting {
+  display: block;
+  white-space: pre-wrap;
+  line-height: 1.35;
+  margin: 0;
+  padding: 0;
 }
 
 .clipboardButton {
@@ -1844,6 +1861,10 @@ div.warning-see-pdf img {
   margin: 1em 0;
 }
 
+.pkg-tcolorbox .titlepagepic img {
+  max-width: 100%;
+}
+
 .pkg-tcolorbox .abstract {
   max-width: 40em;
   margin: 1.5em auto;
@@ -1920,6 +1941,10 @@ div.warning-see-pdf img {
   overflow-x: auto;
   text-align: left;
 }
+.pkg-pgf-contrib .example-image {
+  min-width: 0;
+  max-width: 100%;
+}
 .pkg-pgf-contrib .multicols {
   display: flex;
   flex-wrap: wrap;
@@ -1949,4 +1974,26 @@ div.warning-see-pdf img {
 }
 .pkg-tikz-feynman .bodyandsidetoc > header {
   background-color: #3c5770;
+}
+.pkg-wheelchart .bodyandsidetoc > header {
+  background-color: #596a35;
+}
+.pkg-wheelchart mjx-container {
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.pkg-pgfgantt .bodyandsidetoc > header {
+  background-color: #635185;
+}
+.pkg-pgfgantt .minipage {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.pkg-pgfgantt p > .hl-def {
+  margin-right: 0;
+}
+.pkg-pgfgantt .entryheadline .hl-def {
+  margin-right: 2em;
 }

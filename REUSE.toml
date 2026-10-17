@@ -40,6 +40,19 @@ precedence = "override"
 SPDX-FileCopyrightText = "Thomas F. Sturm; changes 2026 Dominik Peters"
 SPDX-License-Identifier = "LPPL-1.3c+"
 
+# Manual adapters derived from the corresponding package documentation.
+[[annotations]]
+path = ["wheelchart/wheelchart-html.sty", "wheelchart/preprocess.py"]
+precedence = "override"
+SPDX-FileCopyrightText = "2022-2026 Matthias Floré; changes 2026 Dominik Peters"
+SPDX-License-Identifier = "LPPL-1.3c+"
+
+[[annotations]]
+path = "pgfgantt/pgfgantt-html.sty"
+precedence = "override"
+SPDX-FileCopyrightText = "2024 Wolfgang Esser-Skala; changes 2026 Dominik Peters"
+SPDX-License-Identifier = "LPPL-1.3c+"
+
 # pgf-pie documentation: LPPL 1.3c or GPL 2
 [[annotations]]
 path = "pgf-pie/patches/**"

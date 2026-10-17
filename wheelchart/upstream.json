@@ -1,0 +1,22 @@
+{
+  "version": "wheelchart 6.0 (2026-04-19)",
+  "upstream": "https://ctan.org/pkg/wheelchart",
+  "distribution": "Debian TeX Live 2026.20260911-1",
+  "archives": [
+    {
+      "url": "https://deb.debian.org/debian/pool/main/t/texlive-base/texlive-pictures_2026.20260911-1_all.deb",
+      "sha256": "c4ad58be193cbdc84a16974a0451285d5d295138f8803302f234005d11f94761",
+      "files": {
+        "usr/share/texlive/texmf-dist/tex/latex/wheelchart/wheelchart.sty": "wheelchart.sty"
+      }
+    },
+    {
+      "url": "https://deb.debian.org/debian/pool/main/t/texlive-base/texlive-pictures-doc_2026.20260911-1_all.deb",
+      "sha256": "a2744e3961fd58fd383c2e5013384a80654ffc3b909431f6cc67bc597fb32b7d",
+      "files": {
+        "usr/share/doc/texlive-doc/latex/wheelchart/wheelchart.tex.gz": "wheelchart.tex",
+        "usr/share/doc/texlive-doc/latex/wheelchart/README.md": "README.md"
+      }
+    }
+  ]
+}

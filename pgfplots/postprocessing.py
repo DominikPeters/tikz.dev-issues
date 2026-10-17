@@ -8,6 +8,8 @@ import os
 import datetime
 import subprocess
 from navbar import home_url, title_menu  # shared/navbar.py
+from assets import asset_url
+from docsearch import add_docsearch
 from lwarp_html import normalize_page_layout
 
 def kilobytes(filename):
@@ -394,33 +396,13 @@ def add_header(soup):
     tikzdevlink = soup.new_tag('a', href=home_url("pgfplots", "pgf"))
     tikzdevlink.append("tikz.dev / ")
     tikzdevlink['style'] = "font-weight: normal;"
+    tikzdevlink['class'] = "site-home-link"
     h1.append(tikzdevlink)
     h1.append(BeautifulSoup(title_menu("pgfplots", "PGFplots Manual"), "html.parser"))
     header.append(h1)
     soup.find(class_="bodyandsidetoc").insert(0, header)
 
-    # Docsearch 3
-    search_input = soup.new_tag('div', id="search")
-    header.append(search_input)
-
-    link = soup.new_tag('link', rel="stylesheet", href="https://cdn.jsdelivr.net/npm/@docsearch/css@3")
-    soup.head.append(link)
-
-    script = soup.new_tag('script', src="https://cdn.jsdelivr.net/npm/@docsearch/js@3")
-    soup.body.append(script)
-    script = soup.new_tag('script')
-    script.append("""
-      docsearch({
-        apiKey: '196e8c10ec187c9ae525dd5226fb9378',
-        indexName: 'tikz',
-        appId: 'JS6V5VZSDB',
-        container: '#search',
-        searchParameters: {
-          filters: "tags:pgfplots",
-        },
-    });
-    """)
-    soup.body.append(script)
+    add_docsearch(soup)
 
 def favicon(soup):
     link = soup.new_tag('link', rel="icon", type="image/png", sizes="16x16", href="/favicon-16x16-pgfplots.png")
@@ -536,14 +518,13 @@ def rewrite_svg_links(soup):
                 tag.replace_with(object)
 
 def add_version_to_css_js(soup):
-    "to avoid caching, add a version number to the URL"
-    today = datetime.date.today().isoformat().replace("-", "")
+    "Use content hashes so same-day frontend updates invalidate cached assets."
     for tag in soup.find_all("link"):
         if tag.has_attr('href') and tag['href'] == "style.css":
-            tag['href'] += "?v=" + today
+            tag['href'] = asset_url('style.css')
     for tag in soup.find_all("script"):
         if tag.has_attr('src') and tag['src'] == "pgfmanual.js":
-            tag['src'] += "?v=" + today
+            tag['src'] = asset_url('pgfmanual.js')
 
 def semantic_tags(soup):
     for example in soup.find_all(class_="example"):

@@ -33,6 +33,8 @@ ROOT = os.path.dirname(HERE)
 SHARED = os.path.join(ROOT, "shared")
 sys.path.insert(0, SHARED)
 from navbar import home_url, title_menu  # noqa: E402
+from docsearch import DOCSEARCH_ASSETS  # noqa: E402
+from assets import asset_url  # noqa: E402
 
 # checkout of the tcolorbox repository at the pinned commit (scripts/fetch.sh tcolorbox)
 UPSTREAM = os.environ.get("UPSTREAM", os.path.join(ROOT, ".upstream", "tcolorbox"))
@@ -2055,7 +2057,8 @@ def write_instrumented_tex(ctx, pages):
 
 def page_shell(ctx, pages, page, title, main_html, local_toc, is_home=False):
     today = datetime.date.today().isoformat()
-    version = today.replace("-", "")
+    style_url = asset_url('style.css', SHARED)
+    script_url = asset_url('pgfmanual.js', SHARED)
     # chapter toc
     toc = ['<p></p>']
     cls = ' class="current"' if is_home else ""
@@ -2099,9 +2102,10 @@ This file may be distributed and/or modified under the LaTeX Project Public Lice
 <meta charset="utf-8" />
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 <title>{esc(title)}</title>
-<link href="style.css?v={version}" rel="stylesheet" type="text/css" />
+<link href="{style_url}" rel="stylesheet" type="text/css" />
+{DOCSEARCH_ASSETS}
 {mathjax}
-<script src="pgfmanual.js?v={version}"></script>
+<script src="{script_url}"></script>
 <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
 <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
 <link href="{canonical}" rel="canonical" />
@@ -2114,7 +2118,7 @@ This file may be distributed and/or modified under the LaTeX Project Public Lice
 <div class="bodyandsidetoc grid-container">
 <header>
 <div id="hamburger-button">☰</div>
-<strong><a href="{home_url("tcolorbox", "pgf")}" style="font-weight: normal">tikz.dev / </a>{title_menu("tcolorbox", "tcolorbox Manual")}</strong>
+<strong><a class="site-home-link" href="{home_url("tcolorbox", "pgf")}" style="font-weight: normal">tikz.dev / </a>{title_menu("tcolorbox", "tcolorbox Manual")}</strong>
 <div id="search"></div>
 </header>
 <div class="sidetoccontainer" id="local-toc-container">

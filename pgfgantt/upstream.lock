@@ -1,0 +1,6 @@
+repo=https://github.com/skafdasschaf/latex-pgfgantt.git
+commit=51f4e39e9dce9f8e200956144146da76782bae99
+watch=pgfgantt.dtx pgfgantt.ins
+docdir=.
+documentation=pgf
+sitepath=/pgfgantt/

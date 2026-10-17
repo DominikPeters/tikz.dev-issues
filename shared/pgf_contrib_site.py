@@ -3,7 +3,6 @@
 import copy
 import datetime
 from dataclasses import dataclass
-import hashlib
 import json
 import re
 from pathlib import Path
@@ -12,7 +11,9 @@ from xml.etree import ElementTree
 
 from bs4 import BeautifulSoup
 
+from assets import asset_url
 from check_manual_site import check_site
+from docsearch import add_docsearch
 from illustration_formats import image_format
 from lwarp_html import escape_code_angles, normalize_page_layout
 from navbar import home_url, title_menu
@@ -29,6 +30,8 @@ class Manual:
     source_url: str
     cover_title: str = ''
     ignored_html: tuple[str, ...] = ()
+    pair_adjacent_examples: bool = False
+    page_aliases: tuple[tuple[str, str], ...] = ()
 
     @property
     def images(self):
@@ -37,11 +40,6 @@ class Manual:
     @property
     def base_url(self):
         return 'https://tikz.dev/' + self.package + '/'
-
-
-def asset_url(name, root):
-    version = hashlib.sha256((root / name).read_bytes()).hexdigest()[:12]
-    return f'{name}?v={version}'
 
 
 def add_chrome(soup, filename, contents, manual):
@@ -77,7 +75,7 @@ def add_chrome(soup, filename, contents, manual):
     header.append(hamburger)
     title = soup.new_tag('strong')
     home = soup.new_tag('a', href=home_url(manual.package, 'pgf'),
-                        style='font-weight: normal;')
+                        style='font-weight: normal;', attrs={'class': 'site-home-link'})
     home.string = 'tikz.dev / '
     title.append(home)
     title.append(BeautifulSoup(title_menu(manual.package, manual.title), 'html.parser'))
@@ -141,6 +139,23 @@ def add_chrome(soup, filename, contents, manual):
 def finish_page(text, filename, formats, root, manual):
     soup = BeautifulSoup(escape_code_angles(text), 'html5lib')
     normalize_page_layout(soup)
+    aliases = dict(manual.page_aliases)
+    for link in soup.select('a[href]'):
+        target, separator, fragment = link['href'].partition('#')
+        if target in aliases:
+            link['href'] = aliases[target] + separator + fragment
+    if manual.pair_adjacent_examples:
+        for code in soup.select('.example-code'):
+            output = code.find_next_sibling()
+            if (output is None or output.name != 'p' or output.find('img') is None
+                    or output.get_text(strip=True)):
+                continue
+            example = soup.new_tag('div', attrs={'class': 'example'})
+            code.insert_before(example)
+            image = soup.new_tag('div', attrs={'class': 'example-image'})
+            image.append(output.extract())
+            example.append(image)
+            example.append(code.extract())
     soup.html['class'] = ['pkg-' + manual.package, 'pkg-pgf-contrib']
     if filename == 'index.html':
         soup.body['class'] = soup.body.get('class', []) + ['index-page']
@@ -212,6 +227,10 @@ def finish_page(text, filename, formats, root, manual):
             link.string = '¶'
             (headline.find('p') or headline).append(link)
     for area in soup.select('.example-code'):
+        for listing in area.select('pre.programlisting'):
+            # Listings already preserves its newlines and indentation. Give
+            # the common clipboard handler a code element without flattening it.
+            listing.name = 'code'
         for p in area.find_all('p', recursive=False):
             p.name = 'code'
         for token in area.find_all(string=True):
@@ -250,14 +269,17 @@ def finish_page(text, filename, formats, root, manual):
         if parent:
             parent['href'] = selected
     add_chrome(soup, filename, headings, manual)
+    add_docsearch(soup)
     return soup.decode(formatter='html5')
 
 
 def build_site(manual):
     root = Path.cwd()
     generated = {p.name for p in root.glob('*.html') if p.name not in (manual.jobname + '_html.html', *manual.ignored_html)}
-    if generated != set(manual.pages):
-        raise ValueError(f'Unexpected manual pages; review the page map: {sorted(generated ^ set(manual.pages))}')
+    aliases = dict(manual.page_aliases)
+    canonical = {aliases.get(name, name) for name in generated}
+    if canonical != set(manual.pages) or len(canonical) != len(generated):
+        raise ValueError(f'Unexpected manual pages; review the page map: {sorted(canonical ^ set(manual.pages))}')
     formats = json.loads(Path(manual.package + '-image-formats.json').read_text())['images']
     output = Path('processed')
     output.mkdir(exist_ok=True)
@@ -265,7 +287,8 @@ def build_site(manual):
         copy2(name, output / name)
     copytree(manual.images, output / manual.images, dirs_exist_ok=True)
     for filename in manual.pages:
-        text = Path(filename).read_text()
+        source = next((old for old, new in manual.page_aliases if new == filename), filename)
+        text = Path(source).read_text()
         (output / filename).write_text(finish_page(text, filename, formats, root, manual))
     result = check_site(output)
     print(f'{manual.package} site verified: {result}')

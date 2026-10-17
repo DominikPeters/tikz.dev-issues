@@ -1,5 +1,6 @@
 """Verify generated manual navigation, references, and illustration choices."""
 import importlib.util
+from dataclasses import replace
 from contextlib import chdir
 from pathlib import Path
 import sys
@@ -11,6 +12,7 @@ from bs4 import BeautifulSoup
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'shared'))
 from check_manual_site import check_site
+from pgf_contrib_site import finish_page
 
 spec = importlib.util.spec_from_file_location('tikz_cd_site', ROOT / 'tikz-cd/postprocessing.py')
 site = importlib.util.module_from_spec(spec)
@@ -67,6 +69,8 @@ class ManualSiteTests(unittest.TestCase):
         self.assertEqual(soup.select_one('.example-code .spaces').get_text(), '  ')
         self.assertNotIn('\u2007', soup.select_one('.example-code').get_text())
         self.assertIsNotNone(soup.select_one('.table-scroll[tabindex="0"] table'))
+        self.assertIsNotNone(soup.select_one('header #search'))
+        self.assertIsNotNone(soup.select_one('script[defer][src*="@docsearch/js@3"]'))
         self.assertEqual(soup.select_one('#autosec-2 .heading-title').get_text(),
                          'Another & section')
 
@@ -76,8 +80,35 @@ class ManualSiteTests(unittest.TestCase):
         self.assertEqual(len(soup.select('script[src^="lwarp-mathjax-emulation.js"]')), 1)
         self.assertIsNotNone(soup.find(id='MathJax-script'))
 
+    def test_listings_remains_copyable_and_only_adjacent_visual_output_is_paired(self):
+        html = HTML.replace('<div class="example">', '<div class="unpaired-fixture">', 1)
+        html = html.replace('<h5 id="autosec-2">', r'''<div class="example-code"><pre class="programlisting">\begin{ganttchart}
+  \ganttbar{Task}{1}{2}
+\end{ganttchart}
+</pre></div><p><img src="tikz-cd-doc-images/image-1.svg" alt="chart"></p>
+<div class="example-code"><pre class="programlisting">setup</pre></div><p>Explanation before the output.</p>
+<p><img src="tikz-cd-doc-images/image-1.svg" alt="chart"></p><h5 id="autosec-2">''')
+        manual = replace(site.MANUAL, pair_adjacent_examples=True)
+        result = finish_page(html, 'getting-started.html', {'image-1': {'format': 'svg'}}, self.root, manual)
+        soup = BeautifulSoup(result, 'html5lib')
+        paired = soup.select('figure.example')
+        self.assertEqual(len(paired), 1)
+        code = paired[0].select_one('.example-code code.programlisting')
+        self.assertEqual(code.get_text(), '\\begin{ganttchart}\n  \\ganttbar{Task}{1}{2}\n\\end{ganttchart}\n')
+        self.assertIsNotNone(paired[0].select_one('.example-image img'))
+        self.assertIsNotNone(paired[0].select_one('.example-code .clipboardButton'))
+        self.assertNotIn('Explanation before', paired[0].get_text())
+
+    def test_generated_page_aliases_update_cross_references_and_fragments(self):
+        manual = replace(site.MANUAL, page_aliases=(('References.html', 'references.html'),))
+        html = HTML.replace('href="#original-label"', 'href="References.html#original-label"')
+        result = finish_page(html, 'getting-started.html', {'image-1': {'format': 'svg'}}, self.root, manual)
+        soup = BeautifulSoup(result, 'html5lib')
+        self.assertIsNotNone(soup.select_one('a[href="references.html#original-label"]'))
+        self.assertFalse(soup.select('a[href^="References.html"]'))
+
     def test_contributed_manuals_keep_their_own_images_navigation_and_metadata(self):
-        for package in ['pgf-pie', 'tikz-feynman']:
+        for package in ['pgf-pie', 'tikz-feynman', 'wheelchart', 'pgfgantt']:
             with self.subTest(package=package):
                 spec = importlib.util.spec_from_file_location(
                     package.replace('-', '_'), ROOT / package / 'postprocessing.py')

@@ -10,6 +10,9 @@ set -euo pipefail
 root=$(cd "$(dirname "$0")/.." && pwd)
 pkg=${1:?usage: scripts/fetch.sh <package> [ref]}
 lock="$root/$pkg/upstream.lock"
+if [[ $(sed -n 's/^source=//p' "$lock") == archives ]]; then
+  exec python3 "$root/scripts/archive_upstream.py" "$pkg" "${2:-}"
+fi
 repo=$(sed -n 's/^repo=//p' "$lock")
 commit=$(sed -n 's/^commit=//p' "$lock")
 ref=${2:-$commit}

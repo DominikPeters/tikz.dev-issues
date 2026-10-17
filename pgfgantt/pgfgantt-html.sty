@@ -1,0 +1,55 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pgfgantt-html}[2026/10/17 HTML documentation adapter]
+\RequirePackage{etoolbox}
+\robustify{\meta}
+\makeindex
+\newcommand\pack[1]{\textsf{#1}}
+\newcommand\TikZ{Ti\textit{k}Z}
+\providecommand\main[1]{#1}
+\providecommand\usage[1]{#1}
+\providecommand\cs[1]{\texttt{\textbackslash#1}}
+\newcommand\subtitle[1]{\def\pgfganttsubtitle{#1}}
+\providecommand\LaTeXe{\LaTeX2e}
+\newcommand\pgfganttheader[2]{%
+  \pgfmanualentryheadline{\pgfmanualpdflabel{#1}{}#2}%
+  \pgfmanualbody}
+\newcommand\keyline[4][=]{%
+  \pgfganttheader{/pgfgantt/#2}{\definitionspan{\texttt{/pgfgantt/\declare{#2} #1}#3}%
+    \InlineClass{hl-default}{\texttt{#4}}}%
+  \index{#2@\texttt{#2}}}
+\renewenvironment{key}[4][=]{\begin{pgfmanualentry}\keyline[#1]{#2}{#3}{#4}}{\end{pgfmanualentry}}
+\ExplSyntaxOn
+\NewDocumentCommand\pgfganttcommandlabel{m}{
+  \tl_set:Nx \l_tmpa_tl {\tl_to_str:n {#1}}
+  \tl_remove_all:Nn \l_tmpa_tl {~}
+  \exp_after:wN \pgfganttcommandlabelaux \l_tmpa_tl \pgfganttstop
+}
+\ExplSyntaxOff
+\def\pgfganttcommandlabelaux#1#2\pgfganttstop{\pgfmanualpdflabel{\textbackslash#2}{}}
+\renewcommand\DescribeMacro[1]{\pgfganttcommandlabel{#1}\definitionspan{\texttt{\detokenize{#1}}}%
+  \removeats{#1}\index{\strippedat @\protect\myprintocmmand{\strippedat}}}
+\renewcommand\DescribeEnv[1]{\pgfmanualpdflabel{#1}{}\definitionspan{\texttt{#1}}\index{#1}}
+\newcommand\DescribeOpt[1]{\index{#1}}
+% Docstrip groups many related names in deeply nested macro environments.
+% Their HTML declarations are consecutive headings, rather than nested lists.
+\newcommand\pgfganttimplheader[2]{%
+  \par\begin{BlockClass}{entryheadline}%
+  \refstepcounter{pgfmanualentry}%
+  #1\definitionspan{\texttt{\detokenize{#2}}}%
+  \end{BlockClass}\par}
+\renewenvironment{macro}[1]{\pgfganttimplheader{\pgfganttcommandlabel{#1}}{#1}}{\par}
+\renewenvironment{environment}[1]{\pgfganttimplheader{\pgfmanualpdflabel{#1}{}}{#1}}{\par}
+\newenvironment{option}[1]{\pgfganttimplheader{\pgfmanualpdflabel{/pgfgantt/#1}{}}{#1}}{\par}
+\newenvironment{intmacro}[1]{\pgfganttimplheader{\pgfganttcommandlabel{#1}}{#1}}{\par}
+\lstset{language=[LaTeX]TeX,basicstyle=\small\ttfamily,columns=fullflexible,keepspaces=true,tabsize=2,
+  texcsstyle=*\color{blue},commentstyle=\color{gray},breaklines=true}
+\lstnewenvironment{texcode}[1][]{\BlockClass{example-code}\lstset{escapeinside=`',#1}}{\endBlockClass}
+\lstnewenvironment{implementationcode}{\BlockClass{example-code}\lstset{escapeinside=}}{\endBlockClass}
+\begin{warpHTML}
+\makeatletter
+\renewcommand*{\LWR@indexsection}[1]{\section*[key-index]{#1}}
+\makeatother
+% Capture the complete chart, including links and text outside its TikZ nodes.
+\BeforeBeginEnvironment{ganttchart}{\begin{lateximage}[Gantt chart]}
+\AfterEndEnvironment{ganttchart}{\end{lateximage}}
+\end{warpHTML}

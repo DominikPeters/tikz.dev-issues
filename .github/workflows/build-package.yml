@@ -56,12 +56,23 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: scripts/deploy.sh --list || echo "::warning::FTP listing failed"
 
+      - name: Restore source archive cache
+        if: inputs.package == 'wheelchart'
+        uses: actions/cache@v4
+        with:
+          path: .upstream/archive-cache
+          key: source-archives-v1-${{ hashFiles('wheelchart/upstream.json') }}
+
       - name: Fetch upstream
         id: fetch
         run: |
           git config --global --add safe.directory '*'
           scripts/fetch.sh "${{ inputs.package }}" ${{ inputs.ref }}
-          echo "commit=$(git -C .upstream/${{ inputs.package }} rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          if [[ -f .upstream/${{ inputs.package }}/.source-ref ]]; then
+            echo "commit=$(cat .upstream/${{ inputs.package }}/.source-ref)" >> "$GITHUB_OUTPUT"
+          else
+            echo "commit=$(git -C .upstream/${{ inputs.package }} rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Restore illustration cache
         if: inputs.package != 'tcolorbox'

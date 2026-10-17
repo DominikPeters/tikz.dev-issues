@@ -9,6 +9,30 @@ const PDF_MANUAL_URLS = {
 let sections;
 let navLi;
 
+function initDocSearch() {
+  const tags = {
+    pgf: "tikz",
+    pgfplots: "pgfplots",
+    tcolorbox: "tcolorbox",
+    "tikz-cd": "tikz-cd",
+    "pgf-pie": "pgf-pie",
+    "tikz-feynman": "tikz-feynman",
+    wheelchart: "wheelchart",
+    pgfgantt: "pgfgantt",
+  };
+  const tag = tags[TIKZDEV_PACKAGE];
+  if (!tag || !document.getElementById("search") || typeof window.docsearch !== "function") return;
+  const options = {
+    apiKey: "196e8c10ec187c9ae525dd5226fb9378",
+    indexName: "tikz",
+    appId: "JS6V5VZSDB",
+    container: "#search",
+    searchParameters: { filters: `tags:${tag}` },
+  };
+  if (TIKZDEV_PACKAGE === "pgf") options.maxResultsPerGroup = 8;
+  window.docsearch(options);
+}
+
 function debounce(func, timeout = 300) {
   let timer;
   return (...args) => {
@@ -108,6 +132,7 @@ function italicizeKinTikZnames() {
 }
 
 document.addEventListener("DOMContentLoaded", (event) => {
+  initDocSearch();
   sections = document.querySelectorAll("span.sectionnumber");
   navLi = document.querySelectorAll("#local-toc-container a");
 

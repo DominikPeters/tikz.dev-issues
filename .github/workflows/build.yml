@@ -6,7 +6,7 @@ on:
   push:
     # monorepo: test branch, deploys below DEPLOY_PREFIX (remove after the switch)
     branches: [main, monorepo]
-    paths: [pgf/**, pgfplots/**, tcolorbox/**, tikz-cd/**, pgf-pie/**, tikz-feynman/**, shared/**, scripts/**, .github/workflows/build*.yml]
+    paths: [pgf/**, pgfplots/**, tcolorbox/**, tikz-cd/**, pgf-pie/**, tikz-feynman/**, wheelchart/**, pgfgantt/**, shared/**, scripts/**, .github/workflows/build*.yml]
   workflow_dispatch:
     inputs:
       package:

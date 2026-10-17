@@ -5,8 +5,10 @@ Sources of [tikz.dev](https://tikz.dev), the HTML versions of the manuals of
 [pgfplots](https://github.com/pgf-tikz/pgfplots) (`tikz.dev/pgfplots/`),
 [tcolorbox](https://github.com/T-F-S/tcolorbox) (`tikz.dev/tcolorbox/`),
 [tikz-cd](https://github.com/astoff/tikz-cd) (`tikz.dev/tikz-cd/`),
-[pgf-pie](https://github.com/pgf-tikz/pgf-pie) (`tikz.dev/pgf-pie/`), and
-[TikZ-Feynman](https://github.com/JP-Ellis/tikz-feynman) (`tikz.dev/tikz-feynman/`).
+[pgf-pie](https://github.com/pgf-tikz/pgf-pie) (`tikz.dev/pgf-pie/`),
+[TikZ-Feynman](https://github.com/JP-Ellis/tikz-feynman) (`tikz.dev/tikz-feynman/`),
+[wheelchart](https://ctan.org/pkg/wheelchart) (`tikz.dev/wheelchart/`), and
+[pgfgantt](https://github.com/skafdasschaf/latex-pgfgantt) (`tikz.dev/pgfgantt/`).
 
 Feedback, suggestions and bug reports: please open an
 [issue](https://github.com/DominikPeters/tikz.dev/issues).
@@ -26,14 +28,19 @@ tcolorbox/     tcolorbox manual: dedicated converter instead of lwarp
 tikz-cd/       tikz-cd manual: lwarp with shared PGF documentation helpers
 pgf-pie/       pgf-pie manual (same structure)
 tikz-feynman/  TikZ-Feynman manual (same structure, bibliography uses Biber)
+wheelchart/    wheelchart manual (lwarp, checksum-pinned distribution sources)
+pgfgantt/      pgfgantt manual (lwarp, preprocesses documented .dtx source)
 migration/     commit maps from the old fork repositories
 .upstream/     (not committed) upstream checkouts made by fetch.sh
 build/         (not committed) build trees and generated sites
 ```
 
 The upstream package sources are not part of this repository. Each package
-pins an upstream commit in `<package>/upstream.lock`; the manual is built from
-that commit plus the package's preprocessing and patches.
+pins an upstream revision in `<package>/upstream.lock`; the manual is built from
+that revision plus the package's preprocessing and patches. Wheelchart has no
+upstream Git repository: its [source manifest](wheelchart/upstream.json) pins
+immutable distribution archives and their checksums. See its
+[build notes](wheelchart/README.md) for release updates.
 
 ## Building
 
@@ -48,7 +55,8 @@ source tree (`build/pgf/src`) without running LaTeX.
 
 Package-specific CSS and JavaScript go into the shared files, selected by the
 class on `<html>` that each build sets: `.pkg-pgf`, `.pkg-pgfplots`,
-`.pkg-tcolorbox`, `.pkg-tikz-cd`, `.pkg-pgf-pie`, `.pkg-tikz-feynman`.
+`.pkg-tcolorbox`, `.pkg-tikz-cd`, `.pkg-pgf-pie`, `.pkg-tikz-feynman`,
+`.pkg-wheelchart`, `.pkg-pgfgantt`.
 The contributed manuals also have `.pkg-pgf-contrib` for their common styles
 and use `shared/pgf_contrib_site.py` for page processing and navigation.
 
@@ -56,6 +64,22 @@ The [tikz-cd build](tikz-cd/README.md) uses the PGF in TeX Live and links to
 the main manual's HTML sections, so it can build independently. Packages whose
 locks specify `documentation=pgf` receive the shared PGF HTML documentation
 helpers before their own overlays. Other manuals retain their own helpers.
+
+### Search
+
+All manuals load DocSearch v3 through `shared/docsearch.py` and initialize it
+in `shared/pgfmanual.js`, using the existing Algolia application `JS6V5VZSDB`
+and `tikz` index. Searches use the manual's package name as the `tags` filter;
+PGF retains its existing `tikz` tag. The other tags are `pgfplots`, `tcolorbox`,
+`tikz-cd`, `pgf-pie`, `tikz-feynman`, `wheelchart`, and `pgfgantt`.
+
+The crawler must index and tag each manual before its search returns results.
+Crawler configuration and index settings are managed separately in Algolia;
+the frontend build does not change them. Keyboard shortcuts and the mobile
+search dialog are provided by DocSearch. If its CDN script is unavailable,
+the rest of the manual still initializes normally.
+Local CSS and JavaScript URLs use content hashes so browsers load updated
+frontend code even after multiple deployments on the same day.
 
 ### LaTeX formatting
 

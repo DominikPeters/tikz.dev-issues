@@ -34,6 +34,10 @@ jobs:
           updates=()
           for lock in */upstream.lock; do
             pkg=${lock%%/*}
+            if [[ $(sed -n 's/^source=//p' "$lock") == archives ]]; then
+              echo "$pkg: pinned distribution snapshot; update its source manifest for a new release"
+              continue
+            fi
             repo=$(sed -n 's/^repo=//p' "$lock")
             old=$(sed -n 's/^commit=//p' "$lock")
             read -ra watch <<< "$(sed -n 's/^watch=//p' "$lock")"

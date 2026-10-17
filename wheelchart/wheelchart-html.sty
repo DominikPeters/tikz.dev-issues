@@ -1,0 +1,15 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{wheelchart-html}[2026/10/17 HTML documentation adapter]
+\RequirePackage{etoolbox}
+\robustify{\meta}
+\begin{warpHTML}
+% Some examples consist entirely of a legend, outside any tikzpicture.
+% Capture the full output so native alignments and table libraries stay active.
+\pgfqkeys{/codeexample}{every codeexample/.append style={
+  pre={\begin{lateximage}[Wheelchart example]\begin{minipage}{\linewidth}},
+  post={\end{minipage}\end{lateximage}}
+}}
+\makeatletter
+\renewcommand*{\LWR@indexsection}[1]{\section*[key-index]{#1}}
+\makeatother
+\end{warpHTML}
