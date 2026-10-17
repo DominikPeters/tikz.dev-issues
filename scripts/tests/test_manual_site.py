@@ -62,8 +62,17 @@ class ManualSiteTests(unittest.TestCase):
         self.assertIsNotNone(soup.find(id='sec-1'))
         self.assertEqual(soup.select_one('.textbody .sectionnumber')['id'], 'sec-1')
         self.assertFalse(soup.select('#local-toc-container .sectionnumber'))
-        self.assertIsNotNone(soup.select_one('#local-toc-container a[href="#sec-1"]'))
+        # like PGF: the page's sections, not its chapter heading
+        self.assertIsNone(soup.select_one('#local-toc-container a[href="#sec-1"]'))
+        self.assertIsNotNone(soup.select_one('#local-toc-container a[href="#sec-1.1"]'))
         self.assertIsNotNone(soup.select_one('#chapter-toc-container a[aria-current="page"]'))
+        # pages are linked without .html, like the other manuals
+        self.assertEqual(soup.select_one('#chapter-toc-container a[aria-current="page"]')['href'],
+                         'getting-started')
+        self.assertEqual(soup.select_one('#chapter-toc-container a.linkintro')['href'], './')
+        self.assertTrue(soup.title.string.endswith(' - ' + site.MANUAL.title))
+        self.assertIsNotNone(soup.select_one('meta[property="og:title"]'))
+        self.assertIsNotNone(soup.select_one('link[rel="apple-touch-icon"]'))
         self.assertIsNotNone(soup.select_one('.example-code code'))
         self.assertEqual(len(soup.select('.clipboardButton')), 1)
         self.assertEqual(soup.select_one('.example-code .spaces').get_text(), '  ')
@@ -73,6 +82,18 @@ class ManualSiteTests(unittest.TestCase):
         self.assertIsNotNone(soup.select_one('script[defer][src*="@docsearch/js@3"]'))
         self.assertEqual(soup.select_one('#autosec-2 .heading-title').get_text(),
                          'Another & section')
+
+    def test_code_has_no_empty_first_line_and_math_uses_chtml(self):
+        html = HTML.replace(r'<p>\begin{tikzcd}<br>', '<p>\n<br>\n' r'\begin{tikzcd}<br>')
+        html = html.replace('https://example.org/mathjax.js',
+                            'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js')
+        result = site.finish_page(html, 'getting-started.html', {'image-1': {'format': 'svg'}}, self.root)
+        soup = BeautifulSoup(result, 'html5lib')
+        code = soup.select_one('.example-code code')
+        self.assertTrue(code.get_text().startswith('\\begin{tikzcd}'), code.get_text()[:30])
+        script = soup.find(id='MathJax-script')
+        self.assertTrue(script['src'].endswith('/tex-chtml.js'))
+        self.assertTrue(script.has_attr('async'))
 
     def test_math_customizations_survive_externalizing_the_emulation_script(self):
         soup = BeautifulSoup((self.root / 'getting-started.html').read_text(), 'html5lib')

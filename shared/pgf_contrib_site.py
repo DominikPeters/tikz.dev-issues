@@ -57,7 +57,9 @@ def add_chrome(soup, filename, contents, manual):
     toc = soup.new_tag('div', attrs={'class': 'sidetoccontents'})
     for target, label in manual.pages.items():
         p = soup.new_tag('p')
-        a = soup.new_tag('a', href=target, attrs={'class': 'tocsection'})
+        # like the parts in the PGF/PGFplots sidebars
+        a = soup.new_tag('a', href=target,
+                         attrs={'class': 'linkintro' if target == 'index.html' else 'tocpart'})
         a.string = 'Overview' if target == 'index.html' else label
         if target == filename:
             p['class'] = 'current'
@@ -91,6 +93,9 @@ def add_chrome(soup, filename, contents, manual):
     localtitle.append(p)
     localnav.append(localtitle)
     localcontents = soup.new_tag('div', attrs={'class': 'sidetoccontents'})
+    # Like PGF, list the sections of the page, not its chapter heading.
+    if [h.name for h in contents].count('h4') == 1 and contents[0].name == 'h4':
+        contents = contents[1:]
     for heading in contents:
         p = soup.new_tag('p')
         number = heading.select_one('.sectionnumber[id]')
@@ -103,7 +108,7 @@ def add_chrome(soup, filename, contents, manual):
         for child in clone.find_all(id=True):
             child.attrs.pop('id', None)
         for number in clone.select('.sectionnumber'):
-            number['class'] = 'toc-number'
+            number.decompose()
         for link in clone.select('.anchor-link'):
             link.decompose()
         for link in clone.find_all('a'):
@@ -159,13 +164,22 @@ def finish_page(text, filename, formats, root, manual):
     soup.html['class'] = ['pkg-' + manual.package, 'pkg-pgf-contrib']
     if filename == 'index.html':
         soup.body['class'] = soup.body.get('class', []) + ['index-page']
-    soup.title.string = manual.pages[filename] + ' — ' + manual.title
+    soup.title.string = manual.pages[filename] + ' - ' + manual.title
     for link in soup.select('link[rel="stylesheet"]'):
         if link.get('href') == 'style.css':
             link['href'] = asset_url('style.css', root)
     canonical = soup.new_tag('link', rel='canonical', href=manual.base_url + (
         '' if filename == 'index.html' else filename.removesuffix('.html')))
     soup.head.append(canonical)
+    for attrs in [dict(rel='icon', type='image/png', sizes='16x16', href='/favicon-16x16.png'),
+                  dict(rel='icon', type='image/png', sizes='32x32', href='/favicon-32x32.png'),
+                  dict(rel='apple-touch-icon', type='image/png', sizes='180x180', href='/apple-touch-icon.png'),
+                  dict(rel='manifest', href='/site.webmanifest')]:
+        soup.head.append(soup.new_tag('link', attrs=attrs))
+    for prop, content in [('og:url', canonical['href']), ('og:type', 'article'),
+                          ('og:title', soup.title.string)]:
+        soup.head.append(soup.new_tag('meta', attrs={'property': prop, 'content': content}))
+    soup.head.append(soup.new_tag('meta', attrs={'name': 'twitter:card', 'content': 'summary'}))
     description = soup.new_tag('meta', attrs={'name': 'description', 'content':
         f'{manual.pages[filename]}. {manual.description}'})
     soup.head.append(description)
@@ -173,6 +187,9 @@ def finish_page(text, filename, formats, root, manual):
     soup.head.append(script)
     # Keep lwarp's generated hidden math macro definitions. Only externalize
     # its large emulation script; package-specific macros still reach MathJax.
+    for script in soup.select('script[src$="/tex-svg.js"]'):
+        script['src'] = script['src'].removesuffix('tex-svg.js') + 'tex-chtml.js'
+        script['async'] = ''
     for script in soup.find_all('script'):
         if script.string and 'Lwarp MathJax emulation code' in script.string:
             script.replace_with(soup.new_tag('script', src=asset_url('lwarp-mathjax-emulation.js', root)))
@@ -233,6 +250,13 @@ def finish_page(text, filename, formats, root, manual):
             listing.name = 'code'
         for p in area.find_all('p', recursive=False):
             p.name = 'code'
+        for code in area.find_all('code', recursive=False):
+            # lwarp starts some listings with a line break: no empty first line
+            while code.contents and (code.contents[0].name == 'br' or
+                                     (isinstance(code.contents[0], str) and not code.contents[0].strip())):
+                code.contents[0].extract()
+            if code.contents and isinstance(code.contents[0], str):
+                code.contents[0].replace_with(code.contents[0].lstrip('\n'))
         for token in area.find_all(string=True):
             if '\u2007' not in token:
                 continue
@@ -270,6 +294,14 @@ def finish_page(text, filename, formats, root, manual):
             parent['href'] = selected
     add_chrome(soup, filename, headings, manual)
     add_docsearch(soup)
+    # Link to the manual's pages without .html, as the other manuals and the
+    # canonical URLs do (the server resolves /page to page.html).
+    pages = {name.removesuffix('.html') for name in manual.pages}
+    for link in soup.select('a[href]'):
+        target, separator, fragment = link['href'].partition('#')
+        name = target.removesuffix('.html')
+        if target.endswith('.html') and name in pages:
+            link['href'] = ('./' if name == 'index' else name) + separator + fragment
     return soup.decode(formatter='html5')
 
 

@@ -41,6 +41,8 @@ def check_site(directory):
                 continue
             if target.is_dir():
                 target /= 'index.html'
+            elif not target.suffix and target.with_name(target.name + '.html').is_file():
+                target = target.with_name(target.name + '.html')  # /page serves page.html
             if not target.is_file():
                 errors.append(f'{page.name}: missing file {value}')
             elif url.fragment and target in pages and unquote(url.fragment) not in anchors[target]:
