@@ -1880,6 +1880,12 @@ div.warning-see-pdf img {
 }
 
 /* tikz-cd uses the PGF documentation markup and shared navigation. */
+.pkg-tikz-cd .bodyandsidetoc > header {
+  background-color: #236b53;
+}
+.pkg-tikz-cd span.sectionnumber {
+  margin-right: 0.5em;
+}
 .pkg-tikz-cd .manual-title {
   display: block;
   text-align: center;

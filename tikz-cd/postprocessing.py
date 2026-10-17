@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 from check_manual_site import check_site
 from illustration_formats import image_format
 from lwarp_html import escape_code_angles, normalize_page_layout
-from navbar import title_menu
+from navbar import home_url, title_menu
 
 
 PAGES = {
@@ -66,17 +66,29 @@ def add_chrome(soup, filename, contents):
     hamburger.string = '☰'
     header.append(hamburger)
     title = soup.new_tag('strong')
+    home = soup.new_tag('a', href=home_url('tikz-cd', 'pgf'),
+                        style='font-weight: normal;')
+    home.string = 'tikz.dev / '
+    title.append(home)
     title.append(BeautifulSoup(title_menu('tikz-cd', 'tikz-cd Manual'), 'html.parser'))
     header.append(title)
     container.insert(0, header)
 
-    local = soup.new_tag('div', id='local-toc-container')
-    localnav = soup.new_tag('nav', attrs={'aria-label': 'On this page'})
+    local = soup.new_tag('div', id='local-toc-container',
+                         attrs={'class': 'sidetoccontainer'})
+    localnav = soup.new_tag('nav', attrs={'class': 'sidetoc', 'aria-label': 'On this page'})
+    localtitle = soup.new_tag('div', attrs={'class': 'sidetoctitle'})
+    p = soup.new_tag('p')
+    p.string = 'On this page'
+    localtitle.append(p)
+    localnav.append(localtitle)
+    localcontents = soup.new_tag('div', attrs={'class': 'sidetoccontents'})
     for heading in contents:
         p = soup.new_tag('p')
         number = heading.select_one('.sectionnumber[id]')
         target = number['id'] if number else heading['id']
-        a = soup.new_tag('a', href='#' + target)
+        level = {'h4': 'tocsection', 'h5': 'tocsubsection', 'h6': 'tocsubsubsection'}[heading.name]
+        a = soup.new_tag('a', href='#' + target, attrs={'class': level})
         clone = copy.deepcopy(heading)
         # A TOC entry must not duplicate ids or nest links in its own link.
         clone.attrs.pop('id', None)
@@ -91,7 +103,8 @@ def add_chrome(soup, filename, contents):
         clone.name = 'span'
         a.append(clone)
         p.append(a)
-        localnav.append(p)
+        localcontents.append(p)
+    localnav.append(localcontents)
     local.append(localnav)
     container.append(local)
 
@@ -108,7 +121,9 @@ def add_chrome(soup, filename, contents):
         left.append(a)
     footer.append(left)
     right = soup.new_tag('div', attrs={'class': 'footer-right'})
-    right.string = 'HTML updated ' + datetime.date.today().isoformat()
+    updated = soup.new_tag('em')
+    updated.string = 'HTML version last updated: ' + datetime.date.today().isoformat()
+    right.append(updated)
     footer.append(right)
     container.append(footer)
 
@@ -117,6 +132,8 @@ def finish_page(text, filename, formats, root):
     soup = BeautifulSoup(escape_code_angles(text), 'html5lib')
     normalize_page_layout(soup)
     soup.html['class'] = ['pkg-tikz-cd']
+    if filename == 'index.html':
+        soup.body['class'] = soup.body.get('class', []) + ['index-page']
     soup.title.string = PAGES[filename] + ' — tikz-cd Manual'
     for link in soup.select('link[rel="stylesheet"]'):
         if link.get('href') == 'style.css':
