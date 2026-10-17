@@ -431,7 +431,7 @@ def add_footer(soup):
     footer_left.append(link)
     footer_left.append(" · ")
     # Link to PDF version
-    link = soup.new_tag('a', href="https://pgfplots.sourceforge.net/pgfplots.pdf")
+    link = soup.new_tag('a', href="https://mirrors.ctan.org/graphics/pgf/contrib/pgfplots/doc/pgfplots.pdf")
     link.string = "Official PDF version"
     footer_left.append(link)
     footer_left.append(" · ")
