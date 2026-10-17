@@ -1879,58 +1879,74 @@ div.warning-see-pdf img {
   margin: 0.25em 0;
 }
 
-/* tikz-cd uses the PGF documentation markup and shared navigation. */
+/* Contributed manuals use the PGF documentation markup and shared navigation. */
 .pkg-tikz-cd .bodyandsidetoc > header {
   background-color: #236b53;
 }
-.pkg-tikz-cd span.sectionnumber {
+.pkg-pgf-contrib span.sectionnumber {
   margin-right: 0.5em;
 }
-.pkg-tikz-cd .manual-title {
+.pkg-pgf-contrib .textbody .heading-title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.pkg-pgf-contrib .manual-title {
   display: block;
   text-align: center;
   font-size: 1.9em;
   margin: 1em 0;
 }
-.pkg-tikz-cd #hamburger-button {
+.pkg-pgf-contrib .titlepage {
+  text-align: center;
+}
+.pkg-pgf-contrib #hamburger-button {
   background: transparent;
   border: 0;
   color: inherit;
   cursor: pointer;
 }
-.pkg-tikz-cd .textbody img {
+.pkg-pgf-contrib .textbody img {
   max-width: 100%;
   height: auto;
 }
-.pkg-tikz-cd .example {
+.pkg-pgf-contrib .example {
   margin-left: 0;
   margin-right: 0;
 }
-.pkg-tikz-cd .example-code {
+.pkg-pgf-contrib .example-code {
   min-width: 0;
   flex: 1 1 24em;
   overflow-x: auto;
+  text-align: left;
 }
-.pkg-tikz-cd .multicols {
+.pkg-pgf-contrib .multicols {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 1em 2em;
 }
-.pkg-tikz-cd .multicols h6 {
+.pkg-pgf-contrib .multicols h6 {
   flex-basis: 100%;
 }
-.pkg-tikz-cd .toc-number {
+.pkg-pgf-contrib .toc-number {
   margin-right: 0.3em;
 }
-.pkg-tikz-cd .bodycontainer {
+.pkg-pgf-contrib .bodycontainer {
   min-width: 0;
 }
-.pkg-tikz-cd .table-scroll {
+.pkg-pgf-contrib .table-scroll {
   min-width: 0;
   max-width: 100%;
   overflow-x: auto;
 }
-.pkg-tikz-cd .textbody a {
+.pkg-pgf-contrib .textbody a {
   overflow-wrap: anywhere;
+}
+
+.pkg-pgf-pie .bodyandsidetoc > header {
+  background-color: #855017;
+}
+.pkg-tikz-feynman .bodyandsidetoc > header {
+  background-color: #3c5770;
 }

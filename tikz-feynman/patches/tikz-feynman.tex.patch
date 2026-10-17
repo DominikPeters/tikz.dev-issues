@@ -1,0 +1,188 @@
+--- a/tikz-feynman.tex
++++ b/tikz-feynman.tex
+@@ -21,7 +21,17 @@
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+ \def\pgfautoxrefs{1}
++\PassOptionsToPackage{nomulticol,nohyperref}{doc}
+ \documentclass[a4paper,final]{ltxdoc}
++\usepackage[latexmk,mathjax,IndexRef=nameref,HomeHTMLFilename=index]{lwarp}
++\usepackage{tikz-dev-fast-lwarp}
++\CSSFilename{style.css}
++\setcounter{FileDepth}{1}
++\boolfalse{CombineHigherDepths}
++\begin{warpMathJax}
++\CustomizeMathJax{\newcommand{\meta}[1]{\langle\textit{#1}\rangle}}
++\end{warpMathJax}
++
+ 
+ \usepackage{etex}
+ 
+@@ -42,10 +52,10 @@
+   Contextuals={Alternate},
+   Numbers=OldStyle,
+ ]
+-\setmonofont{Inconsolata-g}[
++\setmonofont{Inconsolatazi4-Regular.otf}[
+   Scale=MatchLowercase,
+ ]
+-\newfontface\swshape{EB Garamond 12 Italic}[Style=Swash]
++% Unused print-only swash font omitted.
+ 
+ \usepackage{microtype}   % Fine small typographical details
+ \usepackage{titlesec}    % Change section heading font
+@@ -81,6 +91,7 @@
+ \graphicspath{{./img/}}
+ 
+ \usepackage{tikz}       % Powerful drawing language
++\usepackage{multicol}
+ \usepackage{tikz-feynman}
+ \makeatletter
+ \tikzfeynmanset{compat=\tikzfeynman@version@major.\tikzfeynman@version@minor.\tikzfeynman@version@patch}
+@@ -175,6 +186,7 @@
+ directory}{}}
+ 
+ \makeindex
++\usepackage{tikz-feynman-html}
+ 
+ \pgfkeys{
+   /pdflinks/search key prefixes in={/tikzfeynman/}
+@@ -185,14 +197,7 @@
+   /pdflinks/show labels=false,
+ }
+ 
+-\makeatletter
+-%% Make table of content heading smaller
+-\renewcommand\tableofcontents{%
+-    \section*{\normalfont\large\scshape\contentsname}%
+-    \vspace{-1.5\baselineskip}%
+-    \@starttoc{toc}%
+-}
+-\makeatother
++% Use the HTML table of contents provided by lwarp.
+ 
+ %% Define some slightly nicer colors
+ \definecolor{link-color}{RGB}{96 0 0}
+@@ -257,18 +262,7 @@
+   {\ttfamily(}\meta{#1}{\ttfamily)}}
+ 
+ 
+-%% Center codeexample
+-\makeatletter
+-\let\codeexample@orig=\codeexample
+-\let\endcodeexample@orig=\endcodeexample
+-\def\codeexample{
+-  \begin{center}
+-    \codeexample@orig
+-}
+-\def\endcodeexample{
+-    \endcodeexample@orig
+-  \end{center}
+-}
++% HTML examples use the shared responsive layout.
+ 
+ %% Document Information
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@@ -358,7 +352,7 @@
+ \end{abstract}
+ \fi
+ 
+-\section{Introduction}
++\section[introduction]{Introduction}
+ \label{sec:introduction}
+ 
+ \tikzfeynmanname{} provides a new way to draw Feynman diagrams in \LaTeX{} that
+@@ -489,7 +483,7 @@
+ 
+ 
+ \clearpage
+-\section{Tutorial}
++\section[tutorial]{Tutorial}
+ \label{sec:tutorial}
+ 
+ \subsection{Loading the Package}
+@@ -795,7 +789,7 @@
+ \end{codeexample}
+ 
+ \clearpage
+-\section{Documentation}
++\section[documentation]{Documentation}
+ \label{sec:documentation}
+ 
+ \subsection{Commands \emph{\&} Environments}
+@@ -854,8 +848,7 @@
+   \begin{command}{\diagram\opt{\oarg{options}}\marg{diagram instructions}}
+     Begins a new diagram using the |spring layout|.  Keys passed through
+     \meta{options} can include general \tikzname{} keys, graph-specific keys and
+-    any applicable \tikzfeynmanname{} keys too.  Other algorithms (such as |tree
+-    layout|) can be passed through \meta{options} and that will override the
++    any applicable \tikzfeynmanname{} keys too.  Other algorithms (such as |tree layout|) can be passed through \meta{options} and that will override the
+     |spring layout|.
+ 
+     The syntax for the \meta{diagram instructions} is thoroughly described in
+@@ -995,13 +988,17 @@
+   in an equation more nicely; if you do not wish to have these additional
+   styles, use the |baseline| key.
+ 
+-  \begin{equation}
++  \begin{lateximage}[Feynman diagram in an equation]
++\begin{minipage}{.8\linewidth}
++\begin{equation}
+     \feynmandiagram [inline=(d.base), horizontal=d to b] {
+       a -- [fermion] b -- [fermion] c,
+       b -- [boson] d [particle=\(\gamma\)],
+     };
+     = i g_{e} \gamma^{\mu}
+   \end{equation}
++\end{minipage}
++\end{lateximage}
+ 
+ \begin{codeexample}[execute code=false]
+ \begin{equation}
+@@ -1019,13 +1016,17 @@
+   baseline is at the node specified.  This works in the same way as
+   |inline=|\meta{node}, but it does not apply any additional styles (notice how
+   the following example is larger than the one above).
+-  \begin{equation}
++  \begin{lateximage}[Feynman diagram in an equation]
++\begin{minipage}{.8\linewidth}
++\begin{equation}
+     \feynmandiagram [baseline=(d.base), horizontal=d to b] {
+       a -- [fermion] b -- [fermion] c,
+       b -- [boson] d [particle=\(\gamma\)],
+     };
+     = i g_{e} \gamma^{\mu}
+   \end{equation}
++\end{minipage}
++\end{lateximage}
+ 
+ \begin{codeexample}[execute code=false]
+ \begin{equation}
+@@ -1620,7 +1621,7 @@
+ \end{key}
+ 
+ \clearpage
+-\section{Examples}
++\section[examples]{Examples}
+ \label{sec:examples}
+ 
+ Below are a few diagrams which demonstrate how the package can be used in some
+@@ -1838,6 +1839,7 @@
+ %% Index
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ \clearpage
++\ForceHTMLPage
+ \printindex
+ 
+ %% Bibliography (and acknowledgements)
+@@ -1849,7 +1851,9 @@
+ \acknowledgements
+ \fi
+ 
+-\printbibliography
++\ForceHTMLPage
++\section*[references]{References}
++\printbibliography[heading=none]
+ 
+ \end{document}
+ 

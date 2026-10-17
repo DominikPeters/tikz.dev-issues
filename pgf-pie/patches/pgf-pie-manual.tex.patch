@@ -1,0 +1,79 @@
+--- a/doc/latex/pgf-pie/pgf-pie-manual.tex
++++ b/doc/latex/pgf-pie/pgf-pie-manual.tex
+@@ -11,7 +11,17 @@
+   menucolor=red,
+   urlcolor=blue
+ }{hyperref}
++\PassOptionsToPackage{nomulticol,nohyperref}{doc}
+ \documentclass{ltxdoc}
++\usepackage[latexmk,mathjax,IndexRef=nameref,HomeHTMLFilename=index]{lwarp}
++\usepackage{tikz-dev-fast-lwarp}
++\CSSFilename{style.css}
++\setcounter{FileDepth}{1}
++\boolfalse{CombineHigherDepths}
++\begin{warpMathJax}
++\CustomizeMathJax{\newcommand{\meta}[1]{\langle\textit{#1}\rangle}}
++\end{warpMathJax}
++
+ 
+ \usepackage{pgf-pie}
+ \usetikzlibrary{babel, shadows}
+@@ -19,22 +29,11 @@
+ \usepackage[a4paper,left=2.25cm,right=2.25cm,top=2.5cm,bottom=2.5cm,nohead]{geometry}
+ \usepackage{calc}
+ \usepackage{graphicx}
++\usepackage{hyperref}
+ \input{pgfmanual-en-macros.tex}
+ 
+-\pgfqkeys{/codeexample}{%
+-  scale/.store in=\pgfpieexamplescale,
+-  scale=1,
+-  every codeexample/.style={%
+-    width=.4\textwidth+7pt,
+-    pre={
+-      \setbox\codeexamplebox=\hbox\bgroup
+-    },
+-    post={
+-      \egroup
+-      \resizebox{\pgfpieexamplescale\textwidth}{!}{\box\codeexamplebox}%
+-    },
+-  },
+-}
++% The shared renderer handles illustration layout in HTML.
++\pgfqkeys{/codeexample}{scale/.store in=\pgfpieexamplescale,scale=1}
+ 
+ \newcommand\pgfpiename{\texttt{pgf-pie}}
+ 
+@@ -56,7 +55,7 @@
+ 
+ \tableofcontents
+ 
+-\section{Usage}
++\section[usage]{Usage}
+ 
+ \subsection{First Pie}
+ |\pie| is the only command that provided by
+@@ -148,7 +147,7 @@
+ \subsubsection{shadow}
+ \codeexample[scale=0.25,from file={demo/shadow.tex}]
+ 
+-\section{Variant Charts}
++\section[variant-charts]{Variant Charts}
+ \subsection{Polar area diagram}
+ The polar area diagram is similar to a usual pie chart, except sectors
+ are equal angles and differ rather in how far each sector extends from
+@@ -166,12 +165,12 @@
+ 
+ \codeexample[scale=0.25,from file={demo/cloud.tex}]
+ 
+-\section{Examples}
++\section[examples]{Examples}
+ 
+ % \subsection{Population of the world}
+ % \example{population}
+ 
+-\section{Acknowledgements}
++\section[acknowledgements]{Acknowledgements}
+ Many people contributed to \pgfpiename\ by reporting problems,
+ suggesting various improvements or submitting code. Here is a list of
+ these people:

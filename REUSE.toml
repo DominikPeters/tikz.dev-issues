@@ -40,6 +40,20 @@ precedence = "override"
 SPDX-FileCopyrightText = "Thomas F. Sturm; changes 2026 Dominik Peters"
 SPDX-License-Identifier = "LPPL-1.3c+"
 
+# pgf-pie documentation: LPPL 1.3c or GPL 2
+[[annotations]]
+path = "pgf-pie/patches/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Xu Yuan and the pgf-pie contributors; changes 2026 Dominik Peters"
+SPDX-License-Identifier = "LPPL-1.3c OR GPL-2.0-only"
+
+# TikZ-Feynman documentation: GPL 3 or later
+[[annotations]]
+path = "tikz-feynman/patches/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2016 Joshua Ellis; changes 2026 Dominik Peters"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
 # tikz-cd documentation: LPPL 1.3c or later
 [[annotations]]
 path = "tikz-cd/patches/**"

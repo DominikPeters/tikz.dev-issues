@@ -29,6 +29,8 @@ def check_site(directory):
             value = tag.get(attribute)
             if not value:
                 continue
+            if '\\' in value:
+                errors.append(f'{page.name}: unexpanded TeX in URL {value}')
             url = urlsplit(value)
             if url.scheme or url.netloc or value.startswith('/'):
                 continue

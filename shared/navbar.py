@@ -12,6 +12,8 @@ PACKAGES = [
     ("pgfplots", "PGFplots", "pgfplots/"),
     ("tcolorbox", "tcolorbox", "tcolorbox/"),
     ("tikz-cd", "tikz-cd", "tikz-cd/"),
+    ("pgf-pie", "pgf-pie", "pgf-pie/"),
+    ("tikz-feynman", "TikZ-Feynman", "tikz-feynman/"),
 ]
 FOLDERS = {pkg: folder for pkg, _, folder in PACKAGES}
 

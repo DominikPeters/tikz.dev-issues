@@ -1,0 +1,24 @@
+% Keep metavariables in key names safe when they are written to the index.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tikz-feynman-html}[2026/10/17 TikZ-Feynman HTML manual]
+\RequirePackage{etoolbox}
+\robustify{\meta}
+
+% Avoid the collision between the cover's index.html and the printed Index.
+\begin{warpHTML}
+\makeatletter
+\renewcommand*{\LWR@indexsection}[1]{\section*[key-index]{#1}}
+\makeatother
+
+% biblatex-phys constructs links from expandable field-access commands.
+% Expand those URLs before lwarp detokenizes the href argument.
+\let\tikzfeynmanhtmloriginalhref\href
+\newcommand{\tikzfeynmanhtmlhref}[2]{%
+  \begingroup
+  \edef\tikzfeynmanhtmlurl{#1}%
+  \expandafter\tikzfeynmanhtmloriginalhref\expandafter{\tikzfeynmanhtmlurl}{#2}%
+  \endgroup
+}
+\AtEveryBibitem{\let\href\tikzfeynmanhtmlhref}
+\AtEveryCitekey{\let\href\tikzfeynmanhtmlhref}
+\end{warpHTML}

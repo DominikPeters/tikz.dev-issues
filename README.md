@@ -3,8 +3,10 @@
 Sources of [tikz.dev](https://tikz.dev), the HTML versions of the manuals of
 [PGF/TikZ](https://github.com/pgf-tikz/pgf) (`tikz.dev/`),
 [pgfplots](https://github.com/pgf-tikz/pgfplots) (`tikz.dev/pgfplots/`),
-[tcolorbox](https://github.com/T-F-S/tcolorbox) (`tikz.dev/tcolorbox/`) and
-[tikz-cd](https://github.com/astoff/tikz-cd) (`tikz.dev/tikz-cd/`).
+[tcolorbox](https://github.com/T-F-S/tcolorbox) (`tikz.dev/tcolorbox/`),
+[tikz-cd](https://github.com/astoff/tikz-cd) (`tikz.dev/tikz-cd/`),
+[pgf-pie](https://github.com/pgf-tikz/pgf-pie) (`tikz.dev/pgf-pie/`), and
+[TikZ-Feynman](https://github.com/JP-Ellis/tikz-feynman) (`tikz.dev/tikz-feynman/`).
 
 Feedback, suggestions and bug reports: please open an
 [issue](https://github.com/DominikPeters/tikz.dev/issues).
@@ -13,7 +15,7 @@ Feedback, suggestions and bug reports: please open an
 
 ```
 shared/        style.css, pgfmanual.js, lwarp-mathjax-emulation.js for all manuals
-  pgfmanual/   HTML documentation helpers shared by PGF and tikz-cd
+  pgfmanual/   HTML documentation helpers shared by PGF and contributed manuals
 scripts/       fetch.sh, prepare.py, build.sh, deploy.sh
 pgf/           pgf manual: lwarp build scripts, postprocessing, standalone images, ...
   upstream.lock    upstream repository and the commit the site is built from
@@ -22,6 +24,8 @@ pgf/           pgf manual: lwarp build scripts, postprocessing, standalone image
 pgfplots/      pgfplots manual (same structure, no preprocess.py)
 tcolorbox/     tcolorbox manual: dedicated converter instead of lwarp
 tikz-cd/       tikz-cd manual: lwarp with shared PGF documentation helpers
+pgf-pie/       pgf-pie manual (same structure)
+tikz-feynman/  TikZ-Feynman manual (same structure, bibliography uses Biber)
 migration/     commit maps from the old fork repositories
 .upstream/     (not committed) upstream checkouts made by fetch.sh
 build/         (not committed) build trees and generated sites
@@ -44,7 +48,9 @@ source tree (`build/pgf/src`) without running LaTeX.
 
 Package-specific CSS and JavaScript go into the shared files, selected by the
 class on `<html>` that each build sets: `.pkg-pgf`, `.pkg-pgfplots`,
-`.pkg-tcolorbox`, `.pkg-tikz-cd`.
+`.pkg-tcolorbox`, `.pkg-tikz-cd`, `.pkg-pgf-pie`, `.pkg-tikz-feynman`.
+The contributed manuals also have `.pkg-pgf-contrib` for their common styles
+and use `shared/pgf_contrib_site.py` for page processing and navigation.
 
 The [tikz-cd build](tikz-cd/README.md) uses the PGF in TeX Live and links to
 the main manual's HTML sections, so it can build independently. Packages whose
@@ -150,7 +156,7 @@ Set `TIKZ_IMAGE_JOBS` to change the default of four workers, or
 `build/image-cache` forces conversion on the next build. The cache stores
 unoptimized SVGs so postprocessing and SVGO can be changed independently.
 
-For PGF and tikz-cd, SVGO runs before choosing the HTML image format. An illustration uses
+For PGF and the contributed manuals, SVGO runs before choosing the HTML image format. An illustration uses
 SVG when its optimized file is no larger than the PNG, except for PDF features
 that convert poorly: knockout groups, luminosity/transfer soft masks, function
 or mesh shadings, and blend modes outside Normal/Multiply/Screen/Darken/Lighten.

@@ -1,0 +1,6 @@
+repo=https://github.com/pgf-tikz/pgf-pie.git
+commit=ede5ceea348b0b1c1bbe8ccd0d75167ee3cc53bf
+watch=doc/latex/pgf-pie tex/latex/pgf-pie
+docdir=doc/latex/pgf-pie
+documentation=pgf
+sitepath=/pgf-pie/

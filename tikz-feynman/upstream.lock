@@ -1,0 +1,6 @@
+repo=https://github.com/JP-Ellis/tikz-feynman.git
+commit=ccf6c94e913e350e395be9cad9c2e49a3422d90d
+watch=tikz-feynman.tex references.bib tikz-feynman.sty tikzlibraryfeynman.code.tex tikzfeynman.keys.code.tex tikzfeynman.patch.3.0.0.lua tikzfeynman.patch.3.0.1.lua
+docdir=.
+documentation=pgf
+sitepath=/tikz-feynman/

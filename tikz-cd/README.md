@@ -29,7 +29,8 @@ blocks, 13 tables and the index. It converts all 86 illustrations through the
 shared persistent image cache, runs SVGO, and applies the shared PDF-feature
 and size policy. Unreviewed drawings execute on every LaTeX pass.
 
-`postprocessing.py` adds the package menu, responsive navigation, section and
+`postprocessing.py` configures `shared/pgf_contrib_site.py`, which adds the
+package menu, responsive navigation, section and
 definition permalinks, copy buttons, image dimensions, and the shared MathJax
 configuration. `check_manual_site.py` rejects missing local files, broken
 anchors, duplicate ids, missing image dimensions and unresolved reference

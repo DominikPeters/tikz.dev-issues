@@ -1,5 +1,5 @@
 // tikz.dev page scripts, shared by all manuals. The manual a page belongs to
-// is given by the class on <html> (pkg-pgf, pkg-pgfplots, pkg-tcolorbox, pkg-tikz-cd).
+// is given by the first pkg-* class on <html> (for example pkg-pgfplots).
 const TIKZDEV_PACKAGE = (Array.from(document.documentElement.classList)
   .find((c) => c.startsWith("pkg-")) || "pkg-pgf").slice(4);
 const PDF_MANUAL_URLS = {

@@ -5,7 +5,6 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
 
 from bs4 import BeautifulSoup
 
@@ -28,7 +27,7 @@ HTML = r'''<!doctype html><html><head><title>Manual</title>
 <div class="example"><div class="example-image"><p>
 <a href="tikz-cd-doc-images/image-1.svg"><img src="tikz-cd-doc-images/image-1.svg" alt="diagram"></a>
 </p></div><div class="example-code"><p>\begin{tikzcd}<br>A  B<br>\end{tikzcd}</p></div></div>
-<h5 id="autosec-2"><span class="sectionnumber">1.1 </span>Another section</h5>
+<h5 id="autosec-2"><span class="sectionnumber">1.1 </span>Another <em>&amp;</em> section</h5>
 <table><tr><td>First column</td><td>Second column</td></tr></table>
 </section></main></div></body></html>'''
 
@@ -44,10 +43,9 @@ class ManualSiteTests(unittest.TestCase):
         (images / 'image-1.png').write_bytes(b'png')
         for name in ['style.css', 'pgfmanual.js', 'lwarp-mathjax-emulation.js']:
             (self.root / name).write_text('fixture')
-        with patch.object(site, 'asset_url', side_effect=lambda name: name + '?v=fixture'):
-            for name in site.PAGES:
-                result = site.finish_page(HTML, name, {'image-1': {'format': 'png'}}, self.root)
-                (self.root / name).write_text(result)
+        for name in site.PAGES:
+            result = site.finish_page(HTML, name, {'image-1': {'format': 'png'}}, self.root)
+            (self.root / name).write_text(result)
 
     def test_site_preserves_anchors_and_uses_selected_images_with_dimensions(self):
         result = check_site(self.root)
@@ -69,12 +67,45 @@ class ManualSiteTests(unittest.TestCase):
         self.assertEqual(soup.select_one('.example-code .spaces').get_text(), '  ')
         self.assertNotIn('\u2007', soup.select_one('.example-code').get_text())
         self.assertIsNotNone(soup.select_one('.table-scroll[tabindex="0"] table'))
+        self.assertEqual(soup.select_one('#autosec-2 .heading-title').get_text(),
+                         'Another & section')
 
     def test_math_customizations_survive_externalizing_the_emulation_script(self):
         soup = BeautifulSoup((self.root / 'getting-started.html').read_text(), 'html5lib')
         self.assertIn(r'\custommacro', soup.select_one('[data-nosnippet]').get_text())
         self.assertEqual(len(soup.select('script[src^="lwarp-mathjax-emulation.js"]')), 1)
         self.assertIsNotNone(soup.find(id='MathJax-script'))
+
+    def test_contributed_manuals_keep_their_own_images_navigation_and_metadata(self):
+        for package in ['pgf-pie', 'tikz-feynman']:
+            with self.subTest(package=package):
+                spec = importlib.util.spec_from_file_location(
+                    package.replace('-', '_'), ROOT / package / 'postprocessing.py')
+                manual = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(manual)
+                root = self.root / package
+                root.mkdir()
+                images = root / manual.IMAGES
+                images.mkdir()
+                for suffix in ['svg', 'png']:
+                    (images / ('image-1.' + suffix)).write_bytes(
+                        (self.root / site.IMAGES / ('image-1.' + suffix)).read_bytes())
+                for asset in ['style.css', 'pgfmanual.js', 'lwarp-mathjax-emulation.js']:
+                    (root / asset).write_text('fixture')
+                for filename in manual.PAGES:
+                    html = HTML.replace(site.IMAGES, manual.IMAGES)
+                    (root / filename).write_text(manual.finish_page(
+                        html, filename, {'image-1': {'format': 'png'}}, root))
+                self.assertEqual(check_site(root)['pages'], len(manual.PAGES))
+                soup = BeautifulSoup((root / 'index.html').read_text(), 'html5lib')
+                self.assertEqual(soup.img['src'], manual.IMAGES + '/image-1.png')
+                self.assertEqual(soup.select_one('header strong > a')['href'], '../')
+                current = soup.select_one('header .pkg-menu a[aria-current="page"]')
+                self.assertEqual(current['href'], './')
+                self.assertIn('pkg-' + package, soup.html['class'])
+                self.assertEqual(soup.select_one('link[rel="canonical"]')['href'],
+                                 'https://tikz.dev/' + package + '/')
+                self.assertIn(manual.MANUAL.title, soup.title.get_text())
 
     def test_validator_rejects_missing_asset(self):
         (self.root / site.IMAGES / 'image-1.png').unlink()
@@ -99,6 +130,14 @@ class ManualSiteTests(unittest.TestCase):
             check_site(self.root)
         path.write_text(original.replace('</body>', '<code class="example-code">??</code></body>'))
         check_site(self.root)
+
+    def test_validator_rejects_unexpanded_tex_even_in_external_links(self):
+        path = self.root / 'index.html'
+        original = path.read_text()
+        path.write_text(original.replace('</body>',
+            r'<a href="https://doi.org/\thefield{doi}">Journal</a></body>'))
+        with self.assertRaisesRegex(ValueError, 'unexpanded TeX in URL'):
+            check_site(self.root)
 
     def test_new_upstream_page_cannot_be_silently_omitted(self):
         (self.root / 'new-chapter.html').write_text(HTML)
