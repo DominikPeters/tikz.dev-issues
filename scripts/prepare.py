@@ -28,7 +28,7 @@ import sys
 import tarfile
 import tempfile
 
-from illustration_audit import apply_cache_tags
+from illustration_audit import apply_cache_tags, implementation_fingerprint, PROSE_POLICY
 from archive_upstream import validate_snapshot
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -141,10 +141,13 @@ def prepare(pkg, dest, patches=True, reject=False, illustration_cache=True):
             text=True).strip()
         if not review.get("enabled", True):
             print(f"{pkg}: drawing cache disabled by illustration review policy")
-        elif review.get("upstream_commit") != commit:
+        elif (review.get("context_policy") != PROSE_POLICY and
+              review.get("upstream_commit") != commit):
             print(f"{pkg}: upstream changed since illustration review; drawing cache disabled")
         else:
-            counts = apply_cache_tags(os.path.join(dest, lock["docdir"]), review)
+            counts = apply_cache_tags(os.path.join(dest, lock["docdir"]), review,
+                                      implementation_fingerprint(dest, lock["docdir"])
+                                      if review.get("context_policy") == PROSE_POLICY else None)
             print(f"{pkg}: illustration review: {counts['tagged']} cache candidates, "
                   f"{counts['stale']} changed examples left uncached")
 

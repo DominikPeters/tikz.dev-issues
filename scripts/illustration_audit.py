@@ -9,6 +9,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import subprocess
 from collections import Counter
 
 
@@ -280,49 +281,184 @@ def cache_id(example):
     return hashlib.sha256(material).hexdigest()
 
 
-def context_fingerprint(docdir):
-    """Fingerprint the prepared source context, including cross-chapter helpers.
+def scoped_cache_id(example):
+    material = ("render-cache-v2\0" + example["file"] + "\0" +
+                str(example["ordinal"]) + "\0" + example["source_span_sha256"])
+    return hashlib.sha256(material.encode()).hexdigest()
 
-    Reviews run on a fresh, untagged tree. Hash paths as well as bytes so edits
-    to a preamble/helper, additions and removals all require another review.
+
+PROSE_POLICY = "tex-prose-v1"
+
+
+def _protect_document_code(source, prose_envs):
+    """Keep verbatim/example/unknown environments byte-exact, including %."""
+    begin_pattern = re.compile(r"\\begin\s*\{([^{}]+)\}")
+    edits, cursor = [], 0
+    while (begin := _find_token(begin_pattern, source, cursor)) is not None:
+        name = begin[1]
+        cursor = begin.end()
+        if name in prose_envs:
+            continue
+        pattern = re.compile(r"\\(begin|end)\s*\{" + re.escape(name) + r"\}")
+        depth = 1
+        # Raw matching also respects verbatim end markers, where % is data.
+        for end in pattern.finditer(source, cursor):
+            depth += 1 if end[1] == "begin" else -1
+            if depth == 0:
+                payload = source[begin.start():end.end()]
+                edits.append((begin.start(), end.end(), "<protected-" + hashlib.sha256(payload.encode("utf-8", errors="surrogateescape")).hexdigest() + ">"))
+                cursor = end.end()
+                break
+        else:
+            return None
+    for start, end, replacement in reversed(edits):
+        source = source[:start] + replacement + source[end:]
+    return source
+
+
+def _remove_tex_comments(source):
+    result, cursor = [], 0
+    while cursor < len(source):
+        end = _comment_end(source, cursor)
+        if end is None:
+            result.append(source[cursor])
+            cursor += 1
+        else:
+            # A TeX comment consumes its newline, including inside definitions.
+            cursor = end + (end < len(source))
+    return "".join(result)
+
+
+def prose_independent_source(source):
+    """Ignore only plain prose outside groups and executable environments.
+
+    This is deliberately not a TeX interpreter: macro arguments, examples,
+    unknown commands/environments and their continuations remain exact. New
+    commands in previously plain prose therefore invalidate the review.
     """
+    prose_envs = {"document", "itemize", "enumerate", "description", "quote", "quotation",
+                  "center", "flushleft", "flushright", "abstract", "multicols"}
+    protected_source = _protect_document_code(source, prose_envs)
+    if protected_source is None:
+        return source
+    clean = _remove_tex_comments(protected_source)
+    plain = re.compile(r"[A-Za-z][A-Za-z0-9 \t\n.,;:!?\"'()–—-]*\Z")
+    tokens = re.compile(r"\\(?:begin|end)\s*\{([^{}]+)\}|\\.|[{}]")
+    depth, stack, result = 0, [], []
+    # Blank-line boundaries are significant inside code/groups, but line
+    # wrapping within an ordinary paragraph is not executable setup.
+    for match in re.finditer(r"([\s\S]*?)(\n[ \t]*\n|\Z)", clean):
+        paragraph, separator = match.groups()
+        if not paragraph and not separator:
+            continue
+        protected = depth > 0 or any(name not in prose_envs for name in stack)
+        for token in tokens.finditer(paragraph):
+            value = token.group()
+            if token[1] is not None:
+                if value.startswith(r"\begin"):
+                    stack.append(token[1])
+                elif stack and stack[-1] == token[1]:
+                    stack.pop()
+                else:
+                    # Unknown/malformed nesting cannot establish prose scope.
+                    return source
+            elif value == "{":
+                depth += 1
+            elif value == "}":
+                depth -= 1
+                if depth < 0:
+                    return source
+        if not protected and depth == 0 and not any(name not in prose_envs for name in stack):
+            text = paragraph.strip()
+            if plain.fullmatch(text) and len(text.split()) >= 2:
+                paragraph = "<plain prose>"
+        result.append(paragraph + separator)
+    if depth or stack:
+        # Included chapters may omit the document environment, but genuine
+        # unterminated groups/other environments must stay exact.
+        return source
+    return "".join(result).strip()
+
+
+def context_fingerprint(docdir, policy="exact-v1"):
     root = Path(docdir)
-    digest = hashlib.sha256(b"illustration-review-context-v1\0")
+    prefix = b"illustration-review-context-v1\0" if policy == "exact-v1" else b"illustration-review-context-prose-v1\0"
+    if policy not in ("exact-v1", PROSE_POLICY):
+        raise ValueError("Unknown illustration context policy: " + policy)
+    digest = hashlib.sha256(prefix)
     for path in sorted(root.rglob("*")):
         if path.is_file() and path.suffix in {".tex", ".sty", ".cfg", ".lua"}:
+            content = path.read_bytes()
+            if policy == PROSE_POLICY and path.suffix == ".tex":
+                content = prose_independent_source(content.decode("utf-8", errors="surrogateescape")).encode("utf-8", errors="surrogateescape")
             digest.update(path.relative_to(root).as_posix().encode("utf-8") + b"\0")
+            digest.update(hashlib.sha256(content).digest())
+    return digest.hexdigest()
+
+
+def implementation_fingerprint(tree, docdir):
+    """Package code outside the documentation must not silently change."""
+    tree, docs = Path(tree), (Path(tree) / docdir).resolve()
+    digest = hashlib.sha256(b"illustration-package-code-v1\0")
+    for path in sorted(tree.rglob("*")):
+        if (path.is_file() and not path.resolve().is_relative_to(docs)
+                and path.suffix in {".tex", ".sty", ".cls", ".clo", ".cfg", ".def", ".dtx", ".lua"}):
+            digest.update(path.relative_to(tree).as_posix().encode() + b"\0")
             digest.update(hashlib.sha256(path.read_bytes()).digest())
     return digest.hexdigest()
 
 
-def apply_cache_tags(docdir, audit_manifest):
+def upgrade_manifest(docdir, manifest, implementation_sha256):
+    """Migrate existing decisions only at their exact previously reviewed tree."""
+    if manifest.get("context_policy", "exact-v1") != "exact-v1":
+        raise ValueError("Manifest already uses a scoped context policy")
+    if manifest.get("context_sha256") != context_fingerprint(docdir):
+        raise ValueError("Cannot migrate stale review: exact original context required")
+    current = {(e["file"], e["line"], e["source_sha256"], e["source_span_sha256"]): e["ordinal"]
+               for e in enumerate_examples(docdir)}
+    if any(tuple(e.get(k) for k in ("file", "line", "source_sha256", "source_span_sha256")) not in current
+           for e in manifest["examples"]):
+        raise ValueError("Cannot migrate stale example decisions")
+    return dict(manifest, format=2, context_policy=PROSE_POLICY,
+                legacy_context_sha256=manifest["context_sha256"],
+                context_sha256=context_fingerprint(docdir, PROSE_POLICY),
+                implementation_sha256=implementation_sha256,
+                examples=[dict(e, ordinal=current[tuple(e.get(k) for k in
+                          ("file", "line", "source_sha256", "source_span_sha256"))]) for e in manifest["examples"]])
+
+
+def apply_cache_tags(docdir, audit_manifest, implementation_sha256=None):
     """Insert render-cache options only for exact, reviewed eligible examples.
 
-    Manifest findings are matched by relative file, begin line, complete file
-    hash, and exact example-span hash. All offsets are computed from the
-    original file, then edits are applied backwards to preserve other bytes.
+    Legacy manifests match file, line and both hashes. Scoped manifests match
+    file, ordinal and exact span, with a prose-independent global context and
+    exact package implementation. Apply edits backwards to preserve offsets.
     """
     root = Path(docdir)
     by_location = {}
     records = audit_manifest.get("examples", [])
     manifest_context = audit_manifest.get("context_sha256")
+    policy = audit_manifest.get("context_policy", "exact-v1")
     if (not isinstance(manifest_context, str) or not manifest_context.strip() or
-            manifest_context != context_fingerprint(root)):
+            manifest_context != context_fingerprint(root, policy) or
+            (policy == PROSE_POLICY and (not implementation_sha256 or
+             audit_manifest.get("implementation_sha256") != implementation_sha256))):
         return {"tagged": 0, "stale": sum(r.get("status") == "eligible" for r in records),
                 "ineligible": 0}
     for record_id, record in enumerate(records):
-        key = (record.get("file"), record.get("line"))
+        key = (record.get("file"), (record.get("ordinal"), record.get("source_span_sha256")) if policy == PROSE_POLICY else record.get("line"))
         by_location.setdefault(key, []).append((record_id, record))
 
     grouped = {}
     counts = {"tagged": 0, "stale": 0, "ineligible": 0}
     matched_manifest_ids = set()
     for example in enumerate_examples(root):
-        candidates = by_location.get((example["file"], example["line"]), [])
+        location = (example["ordinal"], example["source_span_sha256"]) if policy == PROSE_POLICY else example["line"]
+        candidates = by_location.get((example["file"], location), [])
         if not candidates:
             continue
         matching = [(record_id, record) for record_id, record in candidates
-                    if record.get("source_sha256") == example["source_sha256"] and
+                    if (policy == PROSE_POLICY or record.get("source_sha256") == example["source_sha256"]) and
                     record.get("source_span_sha256") == example["source_span_sha256"]]
         if not matching:
             if not any(record.get("status") == "eligible" for _, record in candidates):
@@ -344,7 +480,8 @@ def apply_cache_tags(docdir, audit_manifest):
             counts["ineligible"] += 1
             continue
         insertion = example["options_end"] - 1 if example["has_options"] else example["begin_end"]
-        option = ("," if example["has_options"] and example["options"].strip() else "") + "render cache=" + cache_id(example)
+        identity = scoped_cache_id(example) if policy == PROSE_POLICY else cache_id(example)
+        option = ("," if example["has_options"] and example["options"].strip() else "") + "render cache=" + identity
         grouped.setdefault(example["file"], []).append((insertion, "[" + option + "]" if not example["has_options"] else option))
         counts["tagged"] += 1
 
@@ -362,13 +499,15 @@ def apply_cache_tags(docdir, audit_manifest):
     return counts
 
 
-def build_inventory(package, docdir):
+def build_inventory(package, docdir, policy="exact-v1", implementation_sha256=None):
     root = Path(docdir)
     examples = list(enumerate_examples(root))
     return {
         "package": package,
         "docdir": str(root.resolve()),
-        "context_sha256": context_fingerprint(root),
+        "context_sha256": context_fingerprint(root, policy),
+        "context_policy": policy,
+        "implementation_sha256": implementation_sha256,
         "examples": examples,
         "screening_summary": {
             status: sum(e["screening"]["status"] == status for e in examples)
@@ -384,13 +523,22 @@ def merge_reviews(inventory, reviews, upstream_commit):
     never approves a drawing; missing decisions remain explicitly unreviewed.
     """
     fields = ("file", "line", "source_sha256", "source_span_sha256")
+    if inventory.get("context_policy") == PROSE_POLICY:
+        fields += ("ordinal",)
     statuses = ("unsafe", "uncertain", "listing_only", "unsupported", "unreviewed", "eligible")
     indexed = {tuple(example[field] for field in fields): example
                for example in inventory["examples"]}
     decisions = {}
+    policy = inventory.get("context_policy", "exact-v1")
     for review in reviews:
         if review.get("package") != inventory["package"]:
             raise ValueError("review package does not match inventory")
+        if any(record.get("status") == "eligible" for record in review.get("examples", [])):
+            if review.get("context_policy", "exact-v1") != policy:
+                raise ValueError("Review context policy differs from the inventory")
+            if policy == PROSE_POLICY and (not inventory.get("implementation_sha256") or
+                    review.get("implementation_sha256") != inventory.get("implementation_sha256")):
+                raise ValueError("Package implementation changed since the review")
         review_context = review.get("context_sha256")
         if (review_context is not None and
                 (not isinstance(review_context, str) or not review_context.strip() or
@@ -422,8 +570,10 @@ def merge_reviews(inventory, reviews, upstream_commit):
                 record.update(status="unsupported", reason=screen_example(example)["reason"])
         records.append(record)
     return {
-        "format": 1, "package": inventory["package"], "upstream_commit": upstream_commit,
+        "format": 2 if policy == PROSE_POLICY else 1, "package": inventory["package"], "upstream_commit": upstream_commit,
         "context_sha256": inventory["context_sha256"],
+        "context_policy": policy,
+        "implementation_sha256": inventory.get("implementation_sha256"),
         "enabled": True,
         "scope": "Drawing payloads only, between LaTeX passes of one freshly prepared build. Setup, hooks and listings remain live.",
         "default": "uncached",
@@ -437,14 +587,51 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("package", help="package label, for example pgf")
     parser.add_argument("docdir", type=Path, help="prepared manual documentation directory")
-    parser.add_argument("--output", "-o", type=Path, required=True, help="JSON inventory destination")
+    parser.add_argument("--output", "-o", type=Path, help="JSON inventory destination")
+    parser.add_argument("--context-policy", choices=["exact-v1", PROSE_POLICY], default=PROSE_POLICY)
+    parser.add_argument("--source-root", type=Path, help="prepared exported upstream tree (before docdir)")
+    parser.add_argument("--upgrade-manifest", type=Path,
+                        help="migrate an existing review at its exact original source/context; no new approvals")
     parser.add_argument("--review", type=Path, action="append", default=[],
                         help="fingerprint-matched source review JSON (repeat for independent batches)")
     parser.add_argument("--manifest-output", type=Path,
                         help="also write a complete audit manifest from the supplied reviews")
     parser.add_argument("--upstream-commit", help="upstream revision covered by the reviews")
     args = parser.parse_args(argv)
-    inventory = build_inventory(args.package, args.docdir)
+    source_root = args.source_root
+    lock_path = Path(__file__).resolve().parents[1] / args.package / "upstream.lock"
+    values = dict(line.split("=", 1) for line in lock_path.read_text().splitlines()
+                  if "=" in line and not line.startswith("#"))
+    if source_root is None:
+        suffix = Path(values["docdir"]).parts
+        if suffix and args.docdir.resolve().parts[-len(suffix):] == suffix:
+            source_root = args.docdir.resolve().parents[len(suffix) - 1]
+        elif values["docdir"] == ".":
+            source_root = args.docdir
+        else:
+            parser.error("--source-root is required for a nonstandard documentation path")
+    implementation = implementation_fingerprint(source_root, values["docdir"])
+    if args.upgrade_manifest:
+        if not args.manifest_output:
+            parser.error("--upgrade-manifest requires --manifest-output")
+        old = json.loads(args.upgrade_manifest.read_text())
+        if not args.upstream_commit or args.upstream_commit != old.get("upstream_commit"):
+            parser.error("Migration requires the exact reviewed --upstream-commit")
+        upstream = lock_path.parent.parent / ".upstream" / args.package
+        actual_commit = subprocess.check_output(["git", "-C", str(upstream), "rev-parse", "HEAD"], text=True).strip()
+        if actual_commit != args.upstream_commit:
+            parser.error("Fetch the exact reviewed upstream commit before migrating")
+        try:
+            upgraded = upgrade_manifest(args.docdir, old, implementation)
+        except ValueError as error:
+            parser.error(str(error))
+        args.manifest_output.parent.mkdir(parents=True, exist_ok=True)
+        args.manifest_output.write_text(json.dumps(upgraded, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        print("Preserved existing review decisions with the prose-independent context policy")
+        return
+    if not args.output:
+        parser.error("--output is required for an inventory")
+    inventory = build_inventory(args.package, args.docdir, args.context_policy, implementation)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(inventory, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"Wrote {len(inventory['examples'])} examples to {args.output}")

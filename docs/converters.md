@@ -31,6 +31,12 @@ crops these pages and converts them to SVG or PNG; every SVG is compared with
 a raster of the PDF page and replaced by the PNG if it renders differently or
 is much larger.
 
+Conversion results persist in `build/image-cache/texhtml`, keyed by PDF page
+content, resources and the converter/tool versions. Warm runs convert only
+missing pages; renumbering captures does not invalidate unchanged pages.
+`TIKZ_IMAGE_CACHE` changes the parent cache directory. The top-level build also
+reuses compiled captures for frontend-only edits; see [caching.md](caching.md).
+
 ## Adding a manual
 
 A manual's folder has its `upstream.lock`, a `build.sh` (instrumented sources,

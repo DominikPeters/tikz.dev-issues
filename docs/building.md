@@ -31,6 +31,12 @@ anchors, missing image dimensions, unresolved references), as are tcolorbox,
 tkz-euclide and chemfig before their sites are published. To check a built
 manual directly, run `python3 shared/check_manual_site.py build/<package>/site`.
 
+Successful builds cache the compiled inputs. A subsequent frontend-only change
+reruns HTML processing and checks while skipping LaTeX and image conversion.
+Set `TIKZ_COMPILED_CACHE_ENABLED=0` to force a full build. Illustration
+conversion also has a persistent content cache, including for the Python
+manuals. See [caching.md](caching.md) for keys, review rules and cache controls.
+
 ## Fixing a patch
 
 When upstream changes a place one of the patches touches, the build stops

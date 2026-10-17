@@ -1,8 +1,38 @@
-# Drawing reuse and image conversion
+# Build caches
 
-Two caches make builds faster without changing their output: reuse of
-drawings between the LaTeX passes of one build, and a persistent cache of
-converted illustrations.
+Three caches avoid repeated work: reuse of drawings between LaTeX passes,
+persistent illustration conversion, and reuse of compiled manuals when only
+the frontend changes. Drawing reuse requires source review; the other two
+caches use content fingerprints and do not require an example to be reviewed.
+
+## Frontend-only builds
+
+`scripts/build.sh <package>` saves the compiled inputs in
+`build/compiled-cache/<package>` after a successful build. With the same native
+inputs, the next build restores those inputs and runs only HTML postprocessing
+and site checks. CSS, JavaScript, navbar, search, page-shell and package
+`postprocessing.py` changes take this path, skipping LaTeX and image conversion.
+Python converters restore both the captured images and the LaTeX auxiliary
+files used to resolve references and indexes.
+
+The key includes the upstream revision, package patches and TeX helpers,
+converter and build code, review manifests, relevant environment settings,
+tool versions, the TeX Live package database, local TeX trees and system fonts.
+Changes to these inputs require a full build. Python `convert.py` files mix
+capture and HTML logic, so edits to them also require a full build. Modified
+Git checkouts used directly by Python converters and custom `TEXINPUTS` or
+`LUAINPUTS` disable compiled reuse. Edits to a disposable prepared tree are not
+inputs; use patches or package files instead.
+
+CI restores this cache between runs. It sets `SOURCE_DATE_EPOCH` to the upstream
+commit date (archive release date for archive sources) and `FORCE_SOURCE_DATE=1`
+so TeX's date remains reproducible across builds. Local builds without a forced
+epoch include today's UTC date in the key and rebuild on the next day.
+
+Set `TIKZ_COMPILED_CACHE_ENABLED=0` to force a full native build, or
+`TIKZ_COMPILED_CACHE` to change the cache directory. Entries are checksummed;
+missing or damaged entries fall back to a full build. Only the two most recent
+compiled snapshots per package are retained. Deleting the cache is safe.
 
 ## Drawing reuse between LaTeX passes
 
@@ -14,10 +44,18 @@ reference bookkeeping still run in every pass.
 Which examples may be reused is recorded in `<package>/illustration-audit.json`.
 An example is reused only if it was reviewed as safe (no labels, remembered
 nodes, random numbers, global definitions, file access, shell commands or
-other dependencies on state), and only while its source, its chapter and the
-prepared source context (other chapters, preambles, helper code) are unchanged
-since the review. Anything else is drawn live, as are unreviewed examples and
-drawings cheaper than 0.05 CPU seconds.
+other dependencies on state). Its exact example source and occurrence in the
+file must still match the review. The prepared context (other chapters,
+preambles, helpers) and package implementation must also match, except that
+comments outside executable environments and edits within plain prose
+paragraphs may change. Line shifts alone do not invalidate approvals.
+
+This is deliberately conservative: formatted prose containing TeX commands,
+headings, macro arguments and unknown environments remain exact. Any change
+to executable examples, setup or package code invalidates the context and
+keeps the drawings live until reviewed again. Unreviewed examples and drawings
+cheaper than 0.05 CPU seconds also stay live. No edit automatically grants a new
+approval.
 
 Environment variables:
 
@@ -49,14 +87,31 @@ python3 scripts/illustration_audit.py pgfplots build/pgfplots/review/doc/latex/p
 The hazard hints in the inventory are prompts for review, not proof of safety.
 Merge review results into a manifest with `--review` (repeatable),
 `--manifest-output` and `--upstream-commit`. Every review record must match
-the inventory's file, line and hashes; negative findings win, and anything not
-reviewed stays live.
+the inventory's file, line, ordinal and hashes; copy its `context_policy`,
+`context_sha256` and `implementation_sha256` into the review JSON. Negative
+findings win, and anything not reviewed stays live. Use `--source-root` if the
+prepared documentation path does not end in the lock file's `docdir`.
+
+The PGF and PGFplots manifests use format 2 (`tex-prose-v1`). A legacy manifest
+can be migrated without changing its decisions only at its exact original
+prepared source and reviewed upstream commit:
+
+```bash
+python3 scripts/illustration_audit.py pgfplots build/pgfplots/review/doc/latex/pgfplots \
+  --upgrade-manifest pgfplots/illustration-audit.json \
+  --upstream-commit <full-reviewed-commit> \
+  --manifest-output build/pgfplots/migrated-audit.json
+```
+
+Migration refuses stale sources. Legacy manifests otherwise keep their exact
+file/context/upstream matching behavior.
 
 Before committing a new manifest, compare a cached build with an uncached one
 (`TIKZ_RENDER_CACHE=0`, with `TIKZ_RENDER_CACHE_MIN_SECONDS=0` for the cached
-one so that every reviewed drawing is reused). Use the same `SOURCE_DATE_EPOCH`
-for both, and seed Lua's random number generator in both drivers, since its
-initial state varies between runs. The HTML, the auxiliary, index and
+one so that every reviewed drawing is reused). Disable compiled reuse with
+`TIKZ_COMPILED_CACHE_ENABLED=0`. Use the same `SOURCE_DATE_EPOCH` and
+`FORCE_SOURCE_DATE=1` for both, and seed Lua's random number generator in both
+drivers, since its initial state varies between runs. The HTML, the auxiliary, index and
 bibliography files, the image lists and every converted SVG/PNG should match
 byte for byte.
 
@@ -64,15 +119,25 @@ byte for byte.
 
 The lwarp manuals extract, crop (one-point margin) and convert illustrations
 to SVG and 300 dpi PNG in a pool of workers (`TIKZ_IMAGE_JOBS`, default 4).
-tcolorbox has its own converter (see [tcolorbox/README.md](../tcolorbox/README.md)).
+The Python manuals (tcolorbox, tkz-euclide, chemfig, forest, nicematrix) use the
+shared `texhtml/extract_images.py` pipeline: missing pages are batched through
+MuPDF, pdfcrop and pdftocairo, with SVG verification before format selection.
 
 Results are cached in `build/image-cache` (`TIKZ_IMAGE_CACHE` to change), which
 CI restores between builds. An entry is keyed by the PDF page and its resources
 (fonts, images), the converter code, its settings and the tool versions; page
 numbers, file names and timestamps do not matter. Entries are checked against
 their checksums and rebuilt if incomplete. Deleting the folder forces a full
-conversion. The cache holds unoptimized SVGs, so SVGO and postprocessing can
-change independently.
+conversion. Identical pages can reuse results after renaming or renumbering;
+empty Python captures are cached without publishing placeholder images.
+Python conversion stages a complete image directory before replacing the old
+one, so a failed conversion leaves the published images intact.
+
+The lwarp cache holds unoptimized SVGs, so SVGO and postprocessing can change
+independently. The Python cache (`build/image-cache/texhtml`) includes optimized
+SVGs and the verification/format decision; optimizer and verifier versions are
+therefore part of its key. Resource changes, including shared font subsets,
+still cause conversion misses even when the page's drawing operators match.
 
 To rerun only the conversion on an existing prepared tree:
 

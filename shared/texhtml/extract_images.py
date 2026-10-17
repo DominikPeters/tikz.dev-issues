@@ -17,7 +17,11 @@ pdftocairo's SVG output is not used: it renders most pages up to ~1% too
 narrow. Writes dims.json with the display size of every image
 (1pt = 4/3 CSS px) and the measured SVG difference.
 """
+import argparse
 import gzip
+import hashlib
+import importlib.metadata
+from pathlib import Path
 import json
 import os
 import re
@@ -26,6 +30,10 @@ import subprocess
 import sys
 import tempfile
 from concurrent.futures import ThreadPoolExecutor
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from convert_illustrations import Cache, page_bytes
+from pypdf import PdfReader
 
 SVG_MAX_FACTOR = 2
 SVG_MAX_BLOCK_DIFF = 60
@@ -70,20 +78,8 @@ def verify_svgs(cropped, svgs, tmp):
         return list(pool.map(one, enumerate(svgs, 1)))
 
 
-def main():
-    pdf, log, outdir = sys.argv[1:4]
-    entries = []
-    seen = set()
-    with open(log) as f:
-        for line in f:
-            parts = line.split()
-            if len(parts) != 2 or parts[0] in seen:
-                continue
-            seen.add(parts[0])
-            entries.append((parts[0], int(parts[1])))
-    print(f"{len(entries)} images")
-    if os.path.isdir(outdir):
-        shutil.rmtree(outdir)
+def convert_uncached(pdf, entries, outdir):
+    """Batch the missing PDF pages through the existing rendering pipeline."""
     os.makedirs(outdir)
     with tempfile.TemporaryDirectory() as tmp:
         # 1. collect the image pages into one PDF
@@ -103,6 +99,8 @@ def main():
             keep.append((image_id, len(keep) + 1, x1 - x0 + 2 * MARGIN, y1 - y0 + 2 * MARGIN,
                          entries.index((image_id, _)) + 1))
         print(f"{len(entries) - len(keep)} empty images skipped")
+        if not keep:
+            return {}
         nonempty = os.path.join(tmp, "nonempty.pdf")
         run(["mutool", "merge", "-o", nonempty, sel, ",".join(str(k[4]) for k in keep)])
         # 3. crop
@@ -142,7 +140,10 @@ def main():
             else:
                 use_svg = svg_transfer <= SVG_MAX_FACTOR * os.path.getsize(png)
             name = image_id + (".svg" if use_svg else ".png")
-            shutil.copy(svg if use_svg else png, os.path.join(outdir, name))
+            # Cache both formats so publication can select one without exposing
+            # placeholders or losing the SVG-verification decision.
+            shutil.copy(svg, os.path.join(outdir, image_id + ".svg"))
+            shutil.copy(png, os.path.join(outdir, image_id + ".png"))
             dims[image_id] = {"file": name, "width": w_pt * 4 / 3, "height": h_pt * 4 / 3}
             if diff is not None:
                 dims[image_id]["svgdiff"] = round(diff, 1)
@@ -150,7 +151,122 @@ def main():
             print(f"{len(rejected)} SVGs differ from the PDF, using PNG: {', '.join(rejected)}")
     with open(os.path.join(outdir, "dims.json"), "w") as f:
         json.dump(dims, f, indent=0)
+    return dims
+
+
+def conversion_signature():
+    tools = {}
+    for name, option in [("mutool", "-v"), ("gs", "--version"), ("pdfcrop", "--version"),
+                         ("pdftex", "--version"), ("pdftocairo", "-v"), ("svgo", "--version"),
+                         ("pngquant", "--version"), ("rsvg-convert", "--version")]:
+        if shutil.which(name):
+            result = subprocess.run([name, option], capture_output=True, text=True, check=False)
+            tools[name] = result.stdout + result.stderr
+        else:
+            tools[name] = None
+    versions = {}
+    for name in ["pypdf", "numpy", "Pillow"]:
+        try:
+            versions[name] = importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            versions[name] = None
+    material = {"pipeline": "texhtml-images-v1", "tools": tools, "python": versions,
+                "source": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                "margin": MARGIN, "max_factor": SVG_MAX_FACTOR, "max_diff": SVG_MAX_BLOCK_DIFF}
+    return hashlib.sha256(json.dumps(material, sort_keys=True).encode()).digest()
+
+
+def read_entries(log):
+    entries = {}
+    for line in Path(log).read_text().splitlines():
+        parts = line.split()
+        if len(parts) != 2:
+            if line.strip():
+                raise ValueError("Invalid image record: " + line)
+            continue
+        name, number = parts
+        if not re.fullmatch(r"[A-Za-z0-9_.-]+", name) or name in (".", "..") or not number.isdigit() or int(number) < 1:
+            raise ValueError("Invalid image record: " + line)
+        entries.setdefault(name, int(number))
+    if not entries:
+        raise ValueError("No captured images; refusing to replace existing output")
+    return entries
+
+
+def convert(pdf, log, outdir, cache_root):
+    pdf, outdir, cache_root = Path(pdf), Path(outdir), Path(cache_root)
+    if cache_root.resolve().is_relative_to(outdir.resolve()):
+        raise ValueError("Image cache must be outside the published image directory")
+    entries = read_entries(log)
+    reader = PdfReader(pdf)
+    signature = conversion_signature()
+    cache = Cache(cache_root, (".json", ".svg", ".png"))
+    keys = {}
+    for name, number in entries.items():
+        if number > len(reader.pages):
+            raise ValueError(f"Missing PDF page {number} for {name}")
+        keys[name] = hashlib.sha256(signature + page_bytes(reader.pages[number - 1])).hexdigest()
+    valid = {key: cache.valid(key) for key in set(keys.values())}
+    missing = {key: entries[name] for name, key in keys.items() if not valid[key]}
+    print(f"Illustrations: {len(entries)} total, {sum(valid[k] for k in keys.values())} cached, "
+          f"{len(missing)} unique pages to convert", flush=True)
+    outdir.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=outdir.parent) as tmp:
+        tmp = Path(tmp)
+        if missing:
+            rendered = tmp / "rendered"
+            dims = convert_uncached(str(pdf), list(missing.items()), str(rendered))
+            for key in missing:
+                info = dict(dims.get(key, {}))
+                if info:
+                    info["suffix"] = Path(info.pop("file")).suffix
+                else:
+                    info["empty"] = True
+                    # Nonempty sentinels exist only inside the cache, never the
+                    # published output. Empty captures remain absent as before.
+                    (rendered / (key + ".svg")).write_bytes(b"empty capture")
+                    (rendered / (key + ".png")).write_bytes(b"empty capture")
+                (rendered / (key + ".json")).write_text(json.dumps(info))
+                cache.store(key, rendered / key)
+        staged = tmp / "images"
+        staged.mkdir()
+        restored = tmp / "restored"
+        restored.mkdir()
+        dims = {}
+        for name, key in keys.items():
+            cache.restore(key, restored, name)
+            info = json.loads((restored / (name + ".json")).read_text())
+            if info.pop("empty", False):
+                continue
+            suffix = info.pop("suffix")
+            if suffix not in (".svg", ".png"):
+                raise ValueError("Invalid cached image format")
+            info["file"] = name + suffix
+            shutil.copyfile(restored / info["file"], staged / info["file"])
+            dims[name] = info
+        (staged / "dims.json").write_text(json.dumps(dims, indent=0))
+        previous = tmp / "previous"
+        if outdir.exists():
+            outdir.rename(previous)
+        try:
+            staged.rename(outdir)
+        except BaseException:
+            if previous.exists():
+                previous.rename(outdir)
+            raise
     print(f"Wrote {len(dims)} images to {outdir}")
+    return {"total": len(entries), "converted": len(missing), "cached": len(entries) - sum(k in missing for k in keys.values())}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("pdf", type=Path)
+    parser.add_argument("log", type=Path)
+    parser.add_argument("outdir", type=Path)
+    default = Path(os.environ.get("TIKZ_IMAGE_CACHE", Path(__file__).resolve().parents[2] / "build/image-cache")) / "texhtml"
+    parser.add_argument("--cache", type=Path, default=default)
+    args = parser.parse_args()
+    convert(args.pdf, args.log, args.outdir, args.cache)
 
 
 if __name__ == "__main__":

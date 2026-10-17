@@ -74,14 +74,28 @@ jobs:
             echo "commit=$(git -C .upstream/${{ inputs.package }} rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Set reproducible TeX date
+        run: |
+          if [[ -z ${SOURCE_DATE_EPOCH:-} ]]; then
+            echo "SOURCE_DATE_EPOCH=$(python3 scripts/native_cache.py epoch '${{ inputs.package }}')" >> "$GITHUB_ENV"
+          fi
+          echo "FORCE_SOURCE_DATE=1" >> "$GITHUB_ENV"
+
       - name: Restore illustration cache
-        if: hashFiles(format('{0}/convert.py', inputs.package)) == ''
         uses: actions/cache@v4
         with:
           path: build/image-cache
           key: illustrations-v1-${{ runner.os }}-${{ inputs.package }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             illustrations-v1-${{ runner.os }}-${{ inputs.package }}-
+
+      - name: Restore compiled manual cache
+        uses: actions/cache@v4
+        with:
+          path: build/compiled-cache/${{ inputs.package }}
+          key: compiled-v1-${{ runner.os }}-${{ inputs.package }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            compiled-v1-${{ runner.os }}-${{ inputs.package }}-
 
       - name: Build
         run: scripts/build.sh "${{ inputs.package }}"
