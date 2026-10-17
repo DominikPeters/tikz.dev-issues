@@ -14,6 +14,7 @@ PGF/TikZ and related packages:
 | wheelchart | [/wheelchart/](https://tikz.dev/wheelchart/) | [CTAN](https://ctan.org/pkg/wheelchart) |
 | pgfgantt | [/pgfgantt/](https://tikz.dev/pgfgantt/) | [skafdasschaf/latex-pgfgantt](https://github.com/skafdasschaf/latex-pgfgantt) |
 | tkz-euclide | [/tkz-euclide/](https://tikz.dev/tkz-euclide/) | [CTAN](https://ctan.org/pkg/tkz-euclide) |
+| chemfig | [/chemfig/](https://tikz.dev/chemfig/) | [CTAN](https://ctan.org/pkg/chemfig) |
 
 Feedback, suggestions and bug reports are welcome as
 [issues](https://github.com/DominikPeters/tikz.dev/issues).
@@ -23,8 +24,8 @@ Feedback, suggestions and bug reports are welcome as
 The package sources are not stored here. Each manual pins an upstream commit
 in `<package>/upstream.lock`, and is built from that commit plus the edits in
 its folder (patches, HTML adaptations, postprocessing). Most manuals are
-converted with [lwarp](https://ctan.org/pkg/lwarp); tcolorbox and tkz-euclide
-are converted by a Python converter. All manuals share one stylesheet, one script and one header.
+converted with [lwarp](https://ctan.org/pkg/lwarp); tcolorbox, tkz-euclide and
+chemfig are converted by a Python converter. All manuals share one stylesheet, one script and one header.
 
 GitHub Actions builds and deploys a manual whenever its folder changes, and
 checks every six hours for new upstream commits to its documentation. A new
@@ -59,7 +60,7 @@ More detail:
 
 * [docs/building.md](docs/building.md): building, patches, the shared frontend
 * [docs/caching.md](docs/caching.md): drawing reuse, image conversion and formats
-* [docs/converters.md](docs/converters.md): manuals converted without lwarp (tcolorbox, tkz-euclide)
+* [docs/converters.md](docs/converters.md): manuals converted without lwarp (tcolorbox, tkz-euclide, chemfig)
 * [docs/automation.md](docs/automation.md): GitHub Actions, upstream updates, deployment
 * [docs/migration.md](docs/migration.md): moving from the old fork repositories
 

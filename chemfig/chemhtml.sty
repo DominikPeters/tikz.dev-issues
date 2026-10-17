@@ -1,0 +1,30 @@
+% chemhtml.sty -- instrumentation for the HTML version of the chemfig manual.
+%
+% The capture machinery is in tikzdev-capture.sty (shared/texhtml). This file
+% redefines the last step of the manual's \exemple: the code given to an
+% example is run into a box, as in the manual (with the light gray baseline
+% the manual mentions), and the box is shipped for the identifier that the
+% converter announces with \HTMLnext before the example.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{chemhtml}[2026/10/17 HTML extraction for the chemfig manual]
+\RequirePackage{tikzdev-capture}
+
+\newbox\chemhtml@box
+\AtBeginDocument{%
+  \def\exemple@@@#1#2#3{%
+    \xdef\the@code{#3}%
+    \endgroup
+    \setbox\chemhtml@box\vbox{%
+      \if@exstar\else
+        \hsize\dimexpr\linewidth-0.#1\linewidth-\fboxsep-\fboxrule\relax
+      \fi
+      \parskip\z@ \parindent\z@
+      \everypar{{\color{lightgray}\rlap{\vrule height0.1pt width\hsize depth0.1pt}}}%
+      \footnotesize\newlinechar`\^^M\everyeof{\noexpand}\scantokens{#3}\par}%
+    \HTMLshipnext\chemhtml@box
+    \par\noindent\box\chemhtml@box
+    \medbreak
+    \endgroup}%
+}
+
+\endinput

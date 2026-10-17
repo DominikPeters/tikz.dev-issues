@@ -20,6 +20,7 @@ function initDocSearch() {
     wheelchart: "wheelchart",
     pgfgantt: "pgfgantt",
     "tkz-euclide": "tkz-euclide",
+    chemfig: "chemfig",
   };
   const tag = tags[TIKZDEV_PACKAGE];
   if (!tag || !document.getElementById("search") || typeof window.docsearch !== "function") return;

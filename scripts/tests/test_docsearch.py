@@ -66,7 +66,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const source = fs.readFileSync(process.argv[1], 'utf8');
 const cases = [];
-for (const packageName of ['pgf', 'pgfplots', 'tcolorbox', 'tikz-cd', 'pgf-pie', 'tikz-feynman', 'wheelchart', 'pgfgantt', 'tkz-euclide', 'unknown']) {
+for (const packageName of ['pgf', 'pgfplots', 'tcolorbox', 'tikz-cd', 'pgf-pie', 'tikz-feynman', 'wheelchart', 'pgfgantt', 'tkz-euclide', 'chemfig', 'unknown']) {
   const calls = [];
   const sandbox = {
     document: {

@@ -1,0 +1,14 @@
+{
+  "version": "chemfig 1.82 (2026-09-19)",
+  "upstream": "https://ctan.org/pkg/chemfig",
+  "archives": [
+    {
+      "url": "https://mirrors.ctan.org/macros/generic/chemfig.zip",
+      "format": "zip",
+      "sha256": "57e704d6332e8d6f6b3dcc674486ecd316dd1b68a9def02aff3ed10209092e2f",
+      "trees": {
+        "chemfig/": ""
+      }
+    }
+  ]
+}

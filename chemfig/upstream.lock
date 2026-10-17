@@ -1,0 +1,8 @@
+# The CTAN package archive, pinned by upstream.json (chemfig has no public
+# repository). "commit" is the SHA-256 of upstream.json; to update, put the
+# new archive's checksum and version there.
+source=archives
+manifest=upstream.json
+commit=81f66e6b26ad82630090c72a62d706593a18b71c8af9974d5d1a5f825e3a62a5
+docdir=.
+sitepath=/chemfig/

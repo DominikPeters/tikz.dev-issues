@@ -1982,6 +1982,35 @@ div.warning-see-pdf img {
   overflow-y: hidden;
 }
 /* ************************************************************************ */
+/* chemfig                                                                  */
+/* ************************************************************************ */
+
+.pkg-chemfig .bodyandsidetoc > header {
+  background-color: #202838;
+}
+
+/* the package name, as printed by the manual's \CF */
+.chemfig-name {
+  font-family: var(--main-font), sans-serif;
+}
+
+.pkg-chemfig table.chemfig-table {
+  border-collapse: collapse;
+  margin: 0.6em 0 1em;
+}
+
+.pkg-chemfig table.chemfig-table th,
+.pkg-chemfig table.chemfig-table td {
+  text-align: left;
+  vertical-align: middle;
+  padding: 0.15em 1.2em 0.15em 0;
+}
+
+.pkg-chemfig table.chemfig-table th {
+  border-bottom: 1px solid #999;
+}
+
+/* ************************************************************************ */
 /* tkz-euclide                                                              */
 /* ************************************************************************ */
 

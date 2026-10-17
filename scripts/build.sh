@@ -11,7 +11,7 @@ out="$root/build/$pkg/site"
 export TIKZ_IMAGE_CACHE="${TIKZ_IMAGE_CACHE:-$root/build/image-cache}"
 
 case $pkg in
-  tcolorbox|tkz-euclide)
+  tcolorbox|tkz-euclide|chemfig)
     # converted without lwarp (docs/converters.md), reads the upstream checkout directly
     UPSTREAM="$root/.upstream/$pkg" "$root/$pkg/build.sh"
     site="$root/$pkg/build/site/$pkg"
