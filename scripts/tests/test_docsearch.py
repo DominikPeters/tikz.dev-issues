@@ -60,7 +60,7 @@ class DocSearchTests(unittest.TestCase):
         self.check_assets(BeautifulSoup(result, 'html5lib'))
 
     @unittest.skipUnless(shutil.which('node'), 'Node.js is required to test browser configuration')
-    def test_each_manual_searches_only_its_package_and_handles_missing_cdn(self):
+    def test_each_manual_searches_its_package_or_all_and_handles_missing_cdn(self):
         script = r'''
 const fs = require('node:fs');
 const vm = require('node:vm');
@@ -77,10 +77,24 @@ for (const packageName of ['pgf', 'pgfplots', 'tcolorbox', 'tikz-cd', 'pgf-pie',
     window: {docsearch: options => calls.push(options), addEventListener: () => {}},
   };
   vm.runInNewContext(source + '\ninitDocSearch();', sandbox);
+  // The requests sent for this manual alone and for all manuals.
+  const sent = {};
+  if (calls.length) {
+    const client = {search: (query) => {
+      sent[sandbox.scope] = query.requests;
+      return Promise.resolve({results: query.requests.map(() => ({hits: [], nbHits: 0}))});
+    }};
+    const search = calls[0].transformSearchClient(client).search;
+    for (const scope of ['package', 'all']) {
+      sandbox.scope = scope;
+      vm.runInNewContext('searchScope = scope;', sandbox);
+      search({requests: [{indexName: 'tikz', query: 'x'}]});
+    }
+  }
   // An unavailable CDN must not break navigation or the rest of the page.
   delete sandbox.window.docsearch;
   vm.runInNewContext('initDocSearch();', sandbox);
-  cases.push({packageName, calls});
+  cases.push({packageName, calls, sent});
 }
 process.stdout.write(JSON.stringify(cases));
 '''
@@ -95,7 +109,13 @@ process.stdout.write(JSON.stringify(cases));
                 self.assertEqual(len(case['calls']), 1)
                 options = case['calls'][0]
                 tag = 'tikz' if package == 'pgf' else package
-                self.assertEqual(options['searchParameters'], {'filters': 'tags:' + tag})
+                self.assertEqual([r['filters'] for r in case['sent']['package']], ['tags:' + tag])
+                # all manuals: one request per manual, this page's manual first
+                filters = [r['filters'] for r in case['sent']['all']]
+                self.assertEqual(filters[0], 'tags:' + tag)
+                self.assertEqual(len(filters), len(set(filters)))
+                self.assertIn('tags:tikz', filters)
+                self.assertIn('tags:pgfplots', filters)
                 self.assertEqual((options['appId'], options['indexName'], options['container']),
                                  ('JS6V5VZSDB', 'tikz', '#search'))
 

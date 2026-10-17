@@ -9,32 +9,135 @@ const PDF_MANUAL_URLS = {
 let sections;
 let navLi;
 
+// The manuals in the search index: package -> [DocSearch tag, name]
+const SEARCH_MANUALS = {
+  pgf: ["tikz", "PGF/TikZ"],
+  pgfplots: ["pgfplots", "PGFplots"],
+  tcolorbox: ["tcolorbox", "tcolorbox"],
+  "tikz-cd": ["tikz-cd", "tikz-cd"],
+  "pgf-pie": ["pgf-pie", "pgf-pie"],
+  "tikz-feynman": ["tikz-feynman", "TikZ-Feynman"],
+  wheelchart: ["wheelchart", "wheelchart"],
+  pgfgantt: ["pgfgantt", "pgfgantt"],
+  "tkz-euclide": ["tkz-euclide", "tkz-euclide"],
+  chemfig: ["chemfig", "chemfig"],
+  forest: ["forest", "forest"],
+  nicematrix: ["nicematrix", "nicematrix"],
+};
+const SEARCH_SCOPE_KEY = "tikzdev-search-scope";
+// "package": only the manual of this page; "all": all manuals on tikz.dev
+let searchScope = "package";
+
 function initDocSearch() {
-  const tags = {
-    pgf: "tikz",
-    pgfplots: "pgfplots",
-    tcolorbox: "tcolorbox",
-    "tikz-cd": "tikz-cd",
-    "pgf-pie": "pgf-pie",
-    "tikz-feynman": "tikz-feynman",
-    wheelchart: "wheelchart",
-    pgfgantt: "pgfgantt",
-    "tkz-euclide": "tkz-euclide",
-    chemfig: "chemfig",
-    forest: "forest",
-    nicematrix: "nicematrix",
-  };
-  const tag = tags[TIKZDEV_PACKAGE];
-  if (!tag || !document.getElementById("search") || typeof window.docsearch !== "function") return;
+  const manual = SEARCH_MANUALS[TIKZDEV_PACKAGE];
+  if (!manual || !document.getElementById("search") || typeof window.docsearch !== "function") return;
+  try {
+    if (localStorage.getItem(SEARCH_SCOPE_KEY) === "all") searchScope = "all";
+  } catch (e) {}
   const options = {
     apiKey: "196e8c10ec187c9ae525dd5226fb9378",
     indexName: "tikz",
     appId: "JS6V5VZSDB",
     container: "#search",
-    searchParameters: { filters: `tags:${tag}` },
+    // the scope is applied to each request, so that it can change while the search is open
+    transformSearchClient: (client) => ({ ...client, search: (query) => scopedSearch(client, query) }),
   };
   if (TIKZDEV_PACKAGE === "pgf") options.maxResultsPerGroup = 8;
   window.docsearch(options);
+  addSearchScopeToggle(manual[1]);
+}
+
+// The search for this page's manual, or for all manuals. Searching all
+// manuals in a single query would let one large manual (or one page of it)
+// fill all results, so each manual is searched separately, in one HTTP
+// request: this page's manual first, then a few hits from each of the others.
+function scopedSearch(client, query) {
+  const own = SEARCH_MANUALS[TIKZDEV_PACKAGE][0];
+  if (searchScope !== "all" || query.requests.length !== 1) {
+    return client.search({
+      ...query,
+      requests: query.requests.map((request) => ({ ...request, filters: `tags:${own}` })),
+    });
+  }
+  const request = query.requests[0];
+  const order = [TIKZDEV_PACKAGE].concat(Object.keys(SEARCH_MANUALS).filter((p) => p !== TIKZDEV_PACKAGE));
+  const requests = order.map((pkg) => ({
+    ...request,
+    filters: `tags:${SEARCH_MANUALS[pkg][0]}`,
+    hitsPerPage: pkg === TIKZDEV_PACKAGE ? request.hitsPerPage || 20 : 8,
+  }));
+  return client.search({ ...query, requests }).then((response) => {
+    const merged = { ...response.results[0], hits: [], nbHits: 0 };
+    response.results.forEach((result, i) => {
+      merged.hits.push(...labelSearchHits(result.hits || [], SEARCH_MANUALS[order[i]][1]));
+      merged.nbHits += result.nbHits || 0;
+    });
+    return { ...response, results: [merged] };
+  });
+}
+
+// With all manuals, results are grouped under "Manual › Part"
+function labelSearchHits(hits, name) {
+  for (const hit of hits) {
+    if (hit.hierarchy && hit.hierarchy.lvl0) hit.hierarchy.lvl0 = `${name} › ${hit.hierarchy.lvl0}`;
+    const highlighted = hit._highlightResult && hit._highlightResult.hierarchy && hit._highlightResult.hierarchy.lvl0;
+    if (highlighted && highlighted.value) highlighted.value = `${name} › ${highlighted.value}`;
+  }
+  return hits;
+}
+
+// A "This manual | All manuals" switch below the search field of the search window
+function addSearchScopeToggle(manualName) {
+  if (typeof MutationObserver === "undefined" || !document.body) return;
+  const build = () => {
+    const toggle = document.createElement("div");
+    toggle.className = "search-scope";
+    toggle.setAttribute("role", "group");
+    toggle.setAttribute("aria-label", "Search in");
+    toggle.innerHTML =
+      '<span class="search-scope-label">Search in</span>' +
+      `<button type="button" data-scope="package">${manualName}</button>` +
+      '<button type="button" data-scope="all">All manuals</button>';
+    toggle.addEventListener("mousedown", (e) => e.preventDefault()); // keep the focus in the search field
+    toggle.addEventListener("click", (e) => {
+      const button = e.target.closest("button[data-scope]");
+      if (!button || button.dataset.scope === searchScope) return;
+      searchScope = button.dataset.scope;
+      try {
+        localStorage.setItem(SEARCH_SCOPE_KEY, searchScope);
+      } catch (err) {}
+      update(toggle);
+      rerunSearch();
+    });
+    return toggle;
+  };
+  const update = (toggle) => {
+    for (const button of toggle.querySelectorAll("button")) {
+      button.setAttribute("aria-pressed", String(button.dataset.scope === searchScope));
+    }
+  };
+  // the search window is created each time it opens
+  new MutationObserver(() => {
+    const bar = document.querySelector(".DocSearch-Modal .DocSearch-SearchBar");
+    if (bar && !(bar.nextElementSibling && bar.nextElementSibling.classList.contains("search-scope"))) {
+      const toggle = build();
+      update(toggle);
+      bar.after(toggle);
+    }
+  }).observe(document.body, { childList: true, subtree: true });
+}
+
+// Search again with the current query (after the scope changed)
+function rerunSearch() {
+  const input = document.querySelector(".DocSearch-Input");
+  if (!input) return;
+  const query = input.value;
+  const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set;
+  setValue.call(input, query + " ");
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+  setValue.call(input, query);
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+  input.focus();
 }
 
 function debounce(func, timeout = 300) {

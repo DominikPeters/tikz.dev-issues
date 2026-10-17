@@ -904,6 +904,44 @@ body .DocSearch-Container {
   z-index: 2000; /* above the mobile contents menu */
 }
 
+/* "Search in: This manual | All manuals" below the search field, styled
+   like DocSearch's result cards (selected: like the selected result) */
+.DocSearch-Modal .search-scope {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px var(--docsearch-spacing) 2px;
+  font-size: 0.85em;
+}
+.DocSearch-Modal .search-scope-label {
+  color: var(--docsearch-muted-color);
+  margin-right: 2px;
+}
+.DocSearch-Modal .search-scope button {
+  font: inherit;
+  line-height: 1.5;
+  color: var(--docsearch-hit-color);
+  background: var(--docsearch-hit-background);
+  border: 0;
+  border-radius: 4px;
+  box-shadow: var(--docsearch-hit-shadow);
+  padding: 3px 10px;
+  cursor: pointer;
+}
+.DocSearch-Modal .search-scope button:hover {
+  color: var(--docsearch-highlight-color);
+}
+.DocSearch-Modal .search-scope button:focus-visible {
+  outline: 2px solid var(--docsearch-highlight-color);
+  outline-offset: 1px;
+}
+.DocSearch-Modal .search-scope button[aria-pressed="true"] {
+  background: var(--docsearch-highlight-color);
+  color: var(--docsearch-hit-active-color);
+  box-shadow: none;
+  cursor: default;
+}
+
 .search-input {
   margin-right: 0.3em;
   width: 10em;
