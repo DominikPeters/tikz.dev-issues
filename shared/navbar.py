@@ -6,6 +6,10 @@ relative, so that a copy of the site below another path (tikz.dev/monorepo/)
 links to itself.
 """
 
+# The tikz.dev repository (issues, "About this HTML version")
+REPO_URL = "https://github.com/DominikPeters/tikz.dev-issues"
+ISSUES_URL = REPO_URL + "/issues"
+
 # package, name in the menu, folder below the site root
 PACKAGES = [
     ("pgf", 'PGF/<span class="tikzname">TikZ</span>', ""),

@@ -32,7 +32,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 SHARED = os.path.join(ROOT, "shared")
 sys.path.insert(0, SHARED)
-from navbar import home_url, title_menu  # noqa: E402
+from navbar import ISSUES_URL, REPO_URL, home_url, title_menu  # noqa: E402
 from docsearch import DOCSEARCH_ASSETS  # noqa: E402
 from assets import asset_url  # noqa: E402
 
@@ -2147,7 +2147,8 @@ This file may be distributed and/or modified under the LaTeX Project Public Lice
 <a href="https://www.latex-project.org/lppl/">License</a> &middot; <a href="https://ctan.org/pkg/tcolorbox">CTAN</a> &middot;
 <a href="https://mirrors.ctan.org/macros/latex/contrib/tcolorbox/tcolorbox.pdf">Official PDF version</a> &middot;
 <a href="https://github.com/T-F-S/tcolorbox">tcolorbox on GitHub</a> &middot;
-<a href="https://github.com/DominikPeters/tikz.dev-issues/issues">Feedback and issues</a>
+<a href="{ISSUES_URL}">Feedback and issues</a> &middot;
+<a href="{REPO_URL}">About this HTML version</a>
 </div>
 <div class="footer-right"><em>HTML version last updated: {today}</em></div>
 </footer>

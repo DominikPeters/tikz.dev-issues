@@ -7,7 +7,7 @@ import re
 import os
 import datetime
 import subprocess
-from navbar import home_url, title_menu  # shared/navbar.py
+from navbar import ISSUES_URL, REPO_URL, home_url, title_menu  # shared/navbar.py
 from assets import asset_url
 from docsearch import add_docsearch
 from lwarp_html import normalize_page_layout
@@ -112,10 +112,10 @@ def add_copyright_comment_block(filename, soup):
     copyright_lines.insert(0, "Package pgfplots.sty documentation.")
     copyright_lines.append("")
     copyright_lines.append("Translated to HTML using the lwarp package:")
-    copyright_lines.append("Copyright 2016-2024 Brian Dunn - BD Tech Concepts LLC")
+    copyright_lines.append("Copyright 2016-2026 Brian Dunn - BD Tech Concepts LLC")
     copyright_lines.append("")
     copyright_lines.append("tikz.dev:")
-    copyright_lines.append("Copyright 2021-2024 Dominik Peters")
+    copyright_lines.append("Copyright 2021-2026 Dominik Peters")
     copyright_lines.append("This file may be redistributed and/or modified under the GNU General Public License.")
     # add copyright block to html
     comment = Comment("\n".join(copyright_lines))
@@ -436,12 +436,12 @@ def add_footer(soup):
     footer_left.append(link)
     footer_left.append(" · ")
     # Issue tracker
-    link = soup.new_tag('a', href="https://github.com/DominikPeters/tikz.dev-issues/issues")
+    link = soup.new_tag('a', href=ISSUES_URL)
     link.string = "Feedback and issues"
     footer_left.append(link)
     footer_left.append(" · ")
     # Link to About the HTML version
-    link = soup.new_tag('a', href="https://github.com/DominikPeters/pgfplots-html-manual")
+    link = soup.new_tag('a', href=REPO_URL)
     link.string = "About this HTML version"
     footer_left.append(link)
     #

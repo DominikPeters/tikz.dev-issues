@@ -9,14 +9,14 @@ from pathlib import Path
 from shutil import copy2, copytree
 from xml.etree import ElementTree
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 
 from assets import asset_url
 from check_manual_site import check_site
 from docsearch import add_docsearch
 from illustration_formats import image_format
 from lwarp_html import escape_code_angles, normalize_page_layout
-from navbar import home_url, title_menu
+from navbar import ISSUES_URL, REPO_URL, home_url, title_menu
 
 
 @dataclass(frozen=True)
@@ -28,6 +28,7 @@ class Manual:
     description: str
     pdf_url: str
     source_url: str
+    notice: str  # copyright and license of the documentation, for the comment atop each page
     cover_title: str = ''
     ignored_html: tuple[str, ...] = ()
     pair_adjacent_examples: bool = False
@@ -124,9 +125,10 @@ def add_chrome(soup, filename, contents, manual):
     footer = soup.new_tag('footer')
     left = soup.new_tag('div', attrs={'class': 'footer-left'})
     for label, url in [('CTAN', 'https://ctan.org/pkg/' + manual.package),
-                       ('Official PDF', manual.pdf_url),
+                       ('Official PDF version', manual.pdf_url),
                        ('Source and license', manual.source_url),
-                       ('Feedback and issues', 'https://github.com/DominikPeters/tikz.dev-issues/issues')]:
+                       ('Feedback and issues', ISSUES_URL),
+                       ('About this HTML version', REPO_URL)]:
         if left.contents:
             left.append(' · ')
         a = soup.new_tag('a', href=url)
@@ -294,6 +296,15 @@ def finish_page(text, filename, formats, root, manual):
             parent['href'] = selected
     add_chrome(soup, filename, headings, manual)
     add_docsearch(soup)
+    soup.html.insert(0, Comment(f'''{manual.notice.strip()}
+
+Translated to HTML using the lwarp package:
+Copyright 2016-2026 Brian Dunn - BD Tech Concepts LLC
+
+tikz.dev:
+Copyright 2021-2026 Dominik Peters
+This file may be distributed and/or modified under the same license as the
+documentation.'''))
     # Link to the manual's pages without .html, as the other manuals and the
     # canonical URLs do (the server resolves /page to page.html).
     pages = {name.removesuffix('.html') for name in manual.pages}

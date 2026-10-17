@@ -73,6 +73,13 @@ class ManualSiteTests(unittest.TestCase):
         self.assertTrue(soup.title.string.endswith(' - ' + site.MANUAL.title))
         self.assertIsNotNone(soup.select_one('meta[property="og:title"]'))
         self.assertIsNotNone(soup.select_one('link[rel="apple-touch-icon"]'))
+        # copyright comment atop the page, footer like the other manuals
+        page = (self.root / 'getting-started.html').read_text()
+        self.assertRegex(page, r'^<!DOCTYPE html>\s*<html[^>]*>\s*<!--tikz-cd documentation:')
+        self.assertIn('Augusto Stoffel', page[:1000])
+        footer = [a.get_text() for a in soup.select('footer a')]
+        self.assertEqual(footer, ['CTAN', 'Official PDF version', 'Source and license',
+                                  'Feedback and issues', 'About this HTML version'])
         self.assertIsNotNone(soup.select_one('.example-code code'))
         self.assertEqual(len(soup.select('.clipboardButton')), 1)
         self.assertEqual(soup.select_one('.example-code .spaces').get_text(), '  ')

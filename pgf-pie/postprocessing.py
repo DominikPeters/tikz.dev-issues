@@ -19,6 +19,13 @@ MANUAL = Manual(
     description='Documentation and examples for pgf-pie, pie charts with TikZ.',
     pdf_url='https://mirrors.ctan.org/graphics/pgf/contrib/pgf-pie/pgf-pie-manual.pdf',
     source_url='https://github.com/pgf-tikz/pgf-pie',
+    notice='''\
+pgf-pie documentation:
+Copyright 2011-2020 Yuan Xu
+
+pgf-pie is licensed under the terms of the LaTeX Project Public License (LPPL)
+1.3c, or alternatively under the terms of the GNU General Public License (GPL)
+version 2.''',
     cover_title='',
     ignored_html=('description.html',),
 )

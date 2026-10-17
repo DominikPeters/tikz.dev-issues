@@ -21,6 +21,14 @@ MANUAL = Manual(
     description='Documentation and examples for TikZ-Feynman, Feynman diagrams with TikZ.',
     pdf_url='https://mirrors.ctan.org/graphics/pgf/contrib/tikz-feynman/tikz-feynman.pdf',
     source_url='https://github.com/JP-Ellis/tikz-feynman',
+    notice='''\
+TikZ-Feynman documentation:
+Copyright (C) 2016 Joshua Ellis
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.''',
     cover_title='Feynman diagrams',
     ignored_html=(),
 )

@@ -56,7 +56,7 @@ SPDX-License-Identifier = "LPPL-1.3c+"
 [[annotations]]
 path = "pgf-pie/patches/**"
 precedence = "override"
-SPDX-FileCopyrightText = "Xu Yuan and the pgf-pie contributors; changes 2026 Dominik Peters"
+SPDX-FileCopyrightText = "2011-2020 Yuan Xu and the pgf-pie contributors; changes 2026 Dominik Peters"
 SPDX-License-Identifier = "LPPL-1.3c OR GPL-2.0-only"
 
 # TikZ-Feynman documentation: GPL 3 or later

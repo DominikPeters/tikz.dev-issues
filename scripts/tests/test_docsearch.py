@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'shared'))
 from docsearch import DOCSEARCH_ASSETS, add_docsearch
 from assets import asset_url
-from navbar import home_url, title_menu
+from navbar import ISSUES_URL, REPO_URL, home_url, title_menu
 
 
 def load_function(path, name, namespace):
@@ -56,7 +56,8 @@ class DocSearchTests(unittest.TestCase):
         namespace = dict(datetime=datetime, esc=html.escape, PARTS=[],
                          BASE_URL='https://tikz.dev/tcolorbox/', home_url=home_url,
                          title_menu=title_menu, DOCSEARCH_ASSETS=DOCSEARCH_ASSETS,
-                         asset_url=asset_url, SHARED=ROOT / 'shared')
+                         asset_url=asset_url, SHARED=ROOT / 'shared',
+                         ISSUES_URL=ISSUES_URL, REPO_URL=REPO_URL)
         page_shell = load_function(ROOT / 'tcolorbox/convert.py', 'page_shell', namespace)
         result = page_shell(None, [], None, 'Manual', '<p>Content</p>', [], is_home=True)
         self.check_assets(BeautifulSoup(result, 'html5lib'))
