@@ -158,7 +158,8 @@ def write_site(manual, ctx, pages, home_html):
         with open(os.path.join(manual.site_dir, part_id + ".html"), "w", encoding="utf-8") as f:
             f.write(page_shell(manual, pages, part_page, f"{part_name} - {manual.title}", main, []))
     if ctx.cited:
-        write_references(manual, ctx, pages)
+        # in the appendix part if the manual has one (tcolorbox)
+        write_references(manual, ctx, pages, part="appendix" if "appendix" in dict(manual.parts) else None)
     home_page = Page(None, "index", None, "")
     with open(os.path.join(manual.site_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(page_shell(manual, pages, home_page, manual.home_title or manual.title, home_html(ctx, pages), [],

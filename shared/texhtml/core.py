@@ -71,10 +71,13 @@ IGNORED = {
     "lstMakeShortInline": "m", "thispagestyle": "m",
     "pagestyle": "m", "selectlanguage": "m", "BeginAccSupp": "m", "EndAccSupp": "m",
     "nocite": "m", "displaystyle": "", "normalfont": "", "upshape": "", "mdseries": "",
+    "@": "", "box": "m", "copy": "m", "tolerance": "", "noexpand": "", "long": "",
+    "bibliographystyle": "m", "bibliography": "m",
 }
-for _name in ("NewDocumentCommand", "RenewDocumentCommand", "DeclareDocumentCommand",
-              "NewDocumentEnvironment", "RenewDocumentEnvironment"):
+for _name in ("NewDocumentCommand", "RenewDocumentCommand", "DeclareDocumentCommand"):
     IGNORED[_name] = "mmm"
+for _name in ("NewDocumentEnvironment", "RenewDocumentEnvironment", "DeclareDocumentEnvironment"):
+    IGNORED[_name] = "mmmm"
 for _name in ("newcommand", "renewcommand", "providecommand", "newrobustcmd"):
     IGNORED[_name] = "*mo" + "om"
 for _name in ("newenvironment", "renewenvironment"):
@@ -410,8 +413,9 @@ def _top_level_eq(s, a, b):
     return None
 
 
-def split_items(s, a, b, cmd="\\item", verbatim_envs=()):
-    """Split s[a:b] at top-level occurrences of cmd. Returns list of (start, end)."""
+def split_items(s, a, b, cmd="\\item", verbatim_envs=(), short_verb=""):
+    """Split s[a:b] at top-level occurrences of cmd. Returns list of (start, end).
+    Text between short_verb characters (|...|) is skipped."""
     positions = []
     depth = 0
     i = a
@@ -420,6 +424,11 @@ def split_items(s, a, b, cmd="\\item", verbatim_envs=()):
         if c == "%":
             i = skip_comment(s, i)
             continue
+        if c in short_verb and short_verb:
+            j = s.find(c, i + 1, b)
+            if j != -1:
+                i = j + 1
+                continue
         if c == "\\":
             if s.startswith("\\begin{", i):
                 name_end = s.index("}", i)
@@ -945,7 +954,8 @@ class Converter:
     def cmd_url(self, k, e, out):
         args, e2 = read_args(self.s, e, "m")
         u = self.raw(args[0])
-        out.append(("i", f'<a href="{esc(u)}">{esc(u)}</a>'))
+        href = "mailto:" + u if "@" in u and ":" not in u else u
+        out.append(("i", f'<a href="{esc(href)}">{esc(u)}</a>'))
         return e2
 
     def cmd_href(self, k, e, out):
@@ -1176,6 +1186,13 @@ class Converter:
     cmd_endgroup = cmd_bgroup
     cmd_sloppy = cmd_bgroup
 
+    def cmd_iffalse(self, k, e, out):
+        """\\iffalse ... \\fi: skipped (no nesting)."""
+        end = self.s.find("\\fi", e)
+        while end != -1 and self.s[end + 3:end + 4].isalpha():
+            end = self.s.find("\\fi", end + 3)
+        return end + 3 if end != -1 else e
+
     def cmd_endinput(self, k, e, out):
         # the rest of the file is not read
         return len(self.s)
@@ -1186,6 +1203,8 @@ class Converter:
     def cmd_string(self, k, e, out):
         """\\string\\cs prints \\cs."""
         s = self.s
+        while e < len(s) and s[e] == " ":  # spaces after a control word are skipped
+            e += 1
         if e < len(s) and s[e] == "\\":
             _, e2 = read_cs(s, e)
             out.append(("i", esc(s[e:e2])))
@@ -1194,6 +1213,8 @@ class Converter:
         return e + 1
 
     def cmd_char(self, k, e, out):
+        while e < len(self.s) and self.s[e] == " ":
+            e += 1
         m = re.match(r"`\\?(.)|(\d+)", self.s[e:])
         if not m:
             return e
@@ -1251,9 +1272,13 @@ class Converter:
     def cmd_subsubsection(self, k, e, out):
         return self.heading(k, e, out, 3)
 
-    def heading(self, k, e, out, level):
-        args, e2 = read_args(self.s, e, "*om")
-        title = self.inline(args[2])
+    def heading(self, k, e, out, level, title=None):
+        """A section heading; title (HTML) for macros that make up their own title."""
+        if title is None:
+            args, e2 = read_args(self.s, e, "*om")
+            title = self.inline(args[2])
+        else:
+            e2 = e
         # look for a label right after the heading
         k2 = skip_ws(self.s, e2)
         labels = []

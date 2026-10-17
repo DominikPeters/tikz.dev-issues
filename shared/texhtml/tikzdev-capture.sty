@@ -67,10 +67,14 @@
     \immediate\write\tdcap@log{#1 \directlua{tex.sprint(status.total_pages)}}%
   \endgroup}
 
-% Floats cannot live inside the capture box; typeset them in place instead.
+% Floats cannot live inside the capture box; typeset them in place instead
+% (with or without a placement argument), with a plain caption.
 \def\tdcap@nofloats{%
-  \def\@float##1[##2]{}\let\end@float\relax
-  \def\@dblfloat##1[##2]{}\let\end@dblfloat\relax}
+  \def\@float##1{\@ifnextchar[\tdcap@gobbleopt\relax}\let\end@float\relax
+  \def\@dblfloat##1{\@ifnextchar[\tdcap@gobbleopt\relax}\let\end@dblfloat\relax
+  \def\caption{\@dblarg\tdcap@caption}}
+\def\tdcap@gobbleopt[#1]{}
+\long\def\tdcap@caption[#1]#2{\par{\centering\small#2\par}}
 
 % Block-level capture (running text boxes, tikzpictures, tables, ...).
 \newenvironment{HTMLcapture}[1]{%
