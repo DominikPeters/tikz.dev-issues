@@ -58,6 +58,7 @@ More detail:
 
 * [docs/building.md](docs/building.md): building, patches, the shared frontend
 * [docs/caching.md](docs/caching.md): drawing reuse, image conversion and formats
+* [docs/converters.md](docs/converters.md): manuals converted without lwarp (tcolorbox, ...)
 * [docs/automation.md](docs/automation.md): GitHub Actions, upstream updates, deployment
 * [docs/migration.md](docs/migration.md): moving from the old fork repositories
 

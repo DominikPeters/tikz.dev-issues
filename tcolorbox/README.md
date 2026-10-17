@@ -10,7 +10,9 @@ lwarp. The tcolorbox manual is built almost entirely from the macros of
 tcolorbox's own `documentation` library, so a dedicated converter is simpler
 and more robust:
 
-* `convert.py` parses the LaTeX sources directly and maps `docCommand`,
+* `convert.py` parses the LaTeX sources directly, with the shared converter
+  in `../shared/texhtml` (see [docs/converters.md](../docs/converters.md)), and
+  maps `docCommand`,
   `docTcbKey`, `dispExample`, `\refKey`, ... onto the HTML structure that the
   tikz.dev pipeline produces (`manualentry`, `entryheadline`, `example`,
   side tables of contents, ...), so the shared `style.css` and `pgfmanual.js`
@@ -20,10 +22,11 @@ and more robust:
   environment linked to its definition.
 * Everything visual becomes an image. `convert.py tex` writes an instrumented
   copy of the manual to `build/tex` in which each visual fragment carries an
-  identifier. `tcbhtml.sty` typesets the manual as usual but also ships every
-  marked fragment (the compiled part of each example, boxes in running text,
-  inline boxes, ...) as an extra PDF page, in context, and logs
-  `identifier → page`. `extract_images.py` crops these pages and converts
+  identifier. `tikzdev-capture.sty` (with `tcbhtml.sty` for the examples)
+  typesets the manual as usual but also ships every marked fragment (the
+  compiled part of each example, boxes in running text, inline boxes, ...) as
+  an extra PDF page, in context, and logs `identifier → page`.
+  `extract_images.py` crops these pages and converts
   them to SVG (MuPDF + svgo) or PNG. Every SVG is checked against a raster
   of the PDF page; SVGs that render differently (MuPDF gets a few shadings
   and soft masks wrong) or are much larger than the PNG fall back to PNG.

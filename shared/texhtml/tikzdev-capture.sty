@@ -1,0 +1,114 @@
+% tikzdev-capture.sty -- image capture for the tikz.dev LaTeX-to-HTML converters.
+%
+% The converter (shared/texhtml) writes an instrumented copy of a manual in
+% which every visual fragment (example output, boxes and pictures in running
+% text, ...) is marked with an identifier. This package typesets each marked
+% fragment in place, as usual, but additionally ships a copy of it out as an
+% extra PDF page and logs "<identifier> <pdf page number>" to
+% \jobname.htmlimages. extract_images.py later crops and converts the pages.
+%
+% Must be compiled with LuaLaTeX (uses \pagewidth and status.total_pages).
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tikzdev-capture}[2026/10/17 Image capture for tikz.dev HTML manuals]
+
+\newbox\tdcap@box
+\newbox\tdcap@copy
+
+% The image page receives a copy of the fragment without \write, \openout and
+% \closeout whatsits; otherwise these would be executed twice (duplicate
+% labels, broken table of contents entries, ...).
+\directlua{
+  local whatsit = node.id("whatsit")
+  local drop = {[node.subtype("write")] = true, [node.subtype("open")] = true,
+                [node.subtype("close")] = true}
+  local function strip(head)
+    local n = head
+    while n do
+      local nxt = n.next
+      if n.id == whatsit and drop[n.subtype] then
+        head = node.remove(head, n)
+        node.free(n)
+      elseif (n.id == node.id("hlist") or n.id == node.id("vlist")) and n.list then
+        n.list = strip(n.list)
+      end
+      n = nxt
+    end
+    return head
+  end
+  function tikzdev_capture_copy(src, dst)
+    local b = tex.box[src]
+    if b then
+      b = node.copy(b)
+      b.list = strip(b.list)
+    end
+    tex.box[dst] = b
+  end
+}
+\newwrite\tdcap@log
+\immediate\openout\tdcap@log=\jobname.htmlimages\relax
+\gdef\tdcap@next{}
+\def\tdcap@cur{}
+\newdimen\tdcap@margin
+\tdcap@margin=40pt
+
+% Ship a copy of \tdcap@box as a separate page, with a generous margin so
+% that shadows and overlays drawn outside the bounding box survive. The page
+% is cropped to its visible ink afterwards.
+\def\tdcap@ship#1{%
+  \begingroup
+    \pagewidth=\dimexpr\wd\tdcap@box+2\tdcap@margin\relax
+    \pageheight=\dimexpr\ht\tdcap@box+\dp\tdcap@box+2\tdcap@margin\relax
+    \hoffset=-1in
+    \voffset=-1in
+    \directlua{tikzdev_capture_copy(\number\tdcap@box, \number\tdcap@copy)}%
+    \csname tex_shipout:D\endcsname\vbox{%
+      \vskip\tdcap@margin
+      \moveright\tdcap@margin\box\tdcap@copy}%
+    \immediate\write\tdcap@log{#1 \directlua{tex.sprint(status.total_pages)}}%
+  \endgroup}
+
+% Floats cannot live inside the capture box; typeset them in place instead.
+\def\tdcap@nofloats{%
+  \def\@float##1[##2]{}\let\end@float\relax
+  \def\@dblfloat##1[##2]{}\let\end@dblfloat\relax}
+
+% Block-level capture (running text boxes, tikzpictures, tables, ...).
+\newenvironment{HTMLcapture}[1]{%
+  \par
+  \tdcap@nofloats
+  \edef\tdcap@cur{#1}%
+  \setbox\tdcap@box\vbox\bgroup\color@begingroup
+}{%
+  \par\color@endgroup\egroup
+  \tdcap@ship{\tdcap@cur}%
+  \unvbox\tdcap@box
+}
+
+% Inline capture (\tcbox in running text, inline math with boxes, ...).
+\def\HTMLinlinebegin#1{%
+  \leavevmode
+  \begingroup
+  \tdcap@nofloats
+  \edef\tdcap@cur{#1}%
+  \setbox\tdcap@box\hbox\bgroup\color@begingroup}
+\def\HTMLinlineend{%
+  \color@endgroup\egroup
+  \tdcap@ship{\tdcap@cur}%
+  \box\tdcap@box
+  \endgroup}
+
+% Examples: the converter announces the identifier before the example
+% environment; the manual's adaptation wraps the compiled output of the
+% example in \HTMLexamplebegin ... \HTMLexampleend.
+\newcommand\HTMLnext[1]{\gdef\tdcap@next{#1}}
+
+\def\HTMLexamplebegin{%
+  \edef\tdcap@cur{\tdcap@next}%
+  \gdef\tdcap@next{}%
+  \setbox\tdcap@box\vbox\bgroup\color@begingroup}
+\def\HTMLexampleend{%
+  \par\color@endgroup\egroup
+  \ifx\tdcap@cur\@empty\else\tdcap@ship{\tdcap@cur}\fi
+  \unvbox\tdcap@box}
+
+\endinput

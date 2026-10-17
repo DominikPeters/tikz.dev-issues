@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Turn the pages shipped out by tcbhtml.sty into cropped PNG/SVG images.
+"""Turn the pages shipped out by tikzdev-capture.sty into cropped PNG/SVG images.
 
 Usage: extract_images.py <pdf> <htmlimages log> <output dir>
 

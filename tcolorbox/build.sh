@@ -39,7 +39,7 @@ if [[ $STEP == all ]]; then
 fi
 
 if [[ $STEP == all || $STEP == images ]]; then
-  python3 extract_images.py "$TEX/tcolorbox-html.pdf" "$TEX/tcolorbox-html.htmlimages" "$IMG"
+  python3 ../shared/texhtml/extract_images.py "$TEX/tcolorbox-html.pdf" "$TEX/tcolorbox-html.htmlimages" "$IMG"
   # cover page from the official PDF
   pdftocairo -png -r 60 -f 1 -l 1 -singlefile "$UPSTREAM/doc/latex/tcolorbox/tcolorbox.pdf" "$IMG/cover"
 fi

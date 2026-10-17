@@ -1,121 +1,18 @@
 % tcbhtml.sty -- instrumentation for the HTML version of the tcolorbox manual.
 %
-% convert.py writes an instrumented copy of the manual sources in which every
-% visual fragment (example output, boxes in running text, inline boxes, ...)
-% is marked with an identifier. This package typesets each marked fragment
-% in place, as usual, but additionally ships a copy of it out as an extra PDF
-% page and logs "<identifier> <pdf page number>" to \jobname.htmlimages.
-% The pages are later cropped and converted to SVG/PNG by build.sh.
-%
-% Must be compiled with LuaLaTeX (uses \pagewidth and status.total_pages).
+% The generic capture machinery is in tikzdev-capture.sty (shared/texhtml);
+% this file only hooks the examples of tcolorbox's documentation library into
+% it: the compiled lower part of a dispExample box is captured.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{tcbhtml}[2026/10/16 HTML extraction for the tcolorbox manual]
-
-\newbox\tcbhtml@box
-\newbox\tcbhtml@copy
-
-% The image page receives a copy of the fragment without \write, \openout and
-% \closeout whatsits; otherwise these would be executed twice (duplicate
-% labels, broken table of contents entries, ...).
-\directlua{
-  local whatsit = node.id("whatsit")
-  local drop = {[node.subtype("write")] = true, [node.subtype("open")] = true,
-                [node.subtype("close")] = true}
-  local function strip(head)
-    local n = head
-    while n do
-      local nxt = n.next
-      if n.id == whatsit and drop[n.subtype] then
-        head = node.remove(head, n)
-        node.free(n)
-      elseif (n.id == node.id("hlist") or n.id == node.id("vlist")) and n.list then
-        n.list = strip(n.list)
-      end
-      n = nxt
-    end
-    return head
-  end
-  function tcbhtml_copy(src, dst)
-    local b = tex.box[src]
-    if b then
-      b = node.copy(b)
-      b.list = strip(b.list)
-    end
-    tex.box[dst] = b
-  end
-}
-\newwrite\tcbhtml@log
-\immediate\openout\tcbhtml@log=\jobname.htmlimages\relax
-\gdef\tcbhtml@next{}
-\def\tcbhtml@cur{}
-\newdimen\tcbhtml@margin
-\tcbhtml@margin=40pt
-
-% Ship a copy of \tcbhtml@box as a separate page, with a generous margin so
-% that shadows and overlays drawn outside the bounding box survive. The page
-% is cropped to its visible ink afterwards.
-\def\tcbhtml@ship#1{%
-  \begingroup
-    \pagewidth=\dimexpr\wd\tcbhtml@box+2\tcbhtml@margin\relax
-    \pageheight=\dimexpr\ht\tcbhtml@box+\dp\tcbhtml@box+2\tcbhtml@margin\relax
-    \hoffset=-1in
-    \voffset=-1in
-    \directlua{tcbhtml_copy(\number\tcbhtml@box, \number\tcbhtml@copy)}%
-    \csname tex_shipout:D\endcsname\vbox{%
-      \vskip\tcbhtml@margin
-      \moveright\tcbhtml@margin\box\tcbhtml@copy}%
-    \immediate\write\tcbhtml@log{#1 \directlua{tex.sprint(status.total_pages)}}%
-  \endgroup}
-
-% Floats cannot live inside the capture box; typeset them in place instead.
-\def\tcbhtml@nofloats{%
-  \def\@float##1[##2]{}\let\end@float\relax
-  \def\@dblfloat##1[##2]{}\let\end@dblfloat\relax}
-
-% Block-level capture (running text boxes, tikzpictures, tables, ...).
-\newenvironment{HTMLcapture}[1]{%
-  \par
-  \tcbhtml@nofloats
-  \edef\tcbhtml@cur{#1}%
-  \setbox\tcbhtml@box\vbox\bgroup\color@begingroup
-}{%
-  \par\color@endgroup\egroup
-  \tcbhtml@ship{\tcbhtml@cur}%
-  \unvbox\tcbhtml@box
-}
-
-% Inline capture (\tcbox in running text, inline math with boxes, ...).
-\def\HTMLinlinebegin#1{%
-  \leavevmode
-  \begingroup
-  \tcbhtml@nofloats
-  \edef\tcbhtml@cur{#1}%
-  \setbox\tcbhtml@box\hbox\bgroup\color@begingroup}
-\def\HTMLinlineend{%
-  \color@endgroup\egroup
-  \tcbhtml@ship{\tcbhtml@cur}%
-  \box\tcbhtml@box
-  \endgroup}
-
-% Examples: the identifier is announced before \begin{dispExample}; the
-% compiled lower part of the example box is captured.
-\newcommand\HTMLnext[1]{\gdef\tcbhtml@next{#1}}
-
-\def\tcbhtml@exbegin{%
-  \edef\tcbhtml@cur{\tcbhtml@next}%
-  \gdef\tcbhtml@next{}%
-  \setbox\tcbhtml@box\vbox\bgroup\color@begingroup}
-\def\tcbhtml@exend{%
-  \par\color@endgroup\egroup
-  \ifx\tcbhtml@cur\@empty\else\tcbhtml@ship{\tcbhtml@cur}\fi
-  \unvbox\tcbhtml@box}
+\ProvidesPackage{tcbhtml}[2026/10/17 HTML extraction for the tcolorbox manual]
+\RequirePackage{tikzdev-capture}
 
 \def\enddispExample{%
   \endtcbwritetemp\endgroup%
   \begin{tcolorbox}%
   \tcb@doc@usetemplisting%
   \tcblower%
-  \tcbhtml@exbegin\tcbusetemp\tcbhtml@exend%
+  \HTMLexamplebegin\tcbusetemp\HTMLexampleend%
   \end{tcolorbox}%
 }
 
