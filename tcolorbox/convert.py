@@ -23,6 +23,7 @@ Usage:
 import os
 import re
 import shutil
+import struct
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -30,7 +31,7 @@ ROOT = os.path.dirname(HERE)
 SHARED = os.path.join(ROOT, "shared")
 sys.path.insert(0, SHARED)
 from texhtml.core import (  # noqa: E402
-    DEF_COLOR, LATEX_LOGO, Context, Converter, code_block, convert_pages, esc, instrument,
+    DEF_COLOR, LATEX_LOGO, Context, Converter, ParseError, code_block, convert_pages, esc, instrument,
     load_images, match_brace, parse_bib, pretty_id, read_args, skip_ws, split_kv,
 )
 from texhtml.site import Manual, sort_citations, write_site  # noqa: E402
@@ -217,6 +218,9 @@ class TcbConverter(Converter):
             # the code defines things which must stay visible afterwards, so it
             # cannot run inside a capture group; it gets no image
             return e
+        anchors = self._register_rendered_labels(self.last_temp)
+        if anchors:
+            out.append(("b", anchors))
         return self.inline_image(k, e, "tcbusetemp", out)
 
     def env_tcbwritetemp(self, k, a, b, after, out):
@@ -435,17 +439,142 @@ class TcbConverter(Converter):
         out.append(("b", f'<div class="deprecated">{self.render(self.items(a, b))}</div>'))
 
     # examples
+    def _register_rendered_labels(self, code):
+        """Register labels produced by compiled example/image code.
+
+        The code itself is rendered as an image, so labels inside it do not
+        pass through the normal LaTeX parser. Keep an HTML anchor immediately
+        before the image so cross references still reach the example.
+        """
+        if self.page is None:
+            return ""
+
+        # Ignore comments before looking for labels; a commented-out example
+        # command must not create an active link target.
+        code = re.sub(r"(?<!\\)%[^\n]*", "", code)
+        executable_code = self._without_macro_definitions(code)
+        labels = []
+
+        def add(label):
+            label = label.strip()
+            if label and label not in labels:
+                labels.append(label)
+
+        # Ordinary labels, including labels attached to commands such as
+        # \tcblistof that are executed while an example image is captured.
+        for match in re.finditer(r"\\label\s*\{([^}]*)\}", executable_code):
+            add(match.group(1))
+
+        # tcolorbox's exercise helper defines exe:<marker> labels implicitly.
+        for match in re.finditer(r"\\begin\s*\{texercise\}", executable_code):
+            try:
+                args, _ = read_args(executable_code, match.end(), "m")
+            except (ParseError, IndexError):
+                continue
+            if args[0]:
+                add("exe:" + executable_code[args[0][0]:args[0][1]].strip())
+
+        # A newtcbtheorem declaration supplies a label prefix as its final
+        # argument; instances then contribute <prefix>:<marker>.
+        definitions = []
+        for match in re.finditer(r"\\(?:new|renew)tcbtheorem\b", code, re.IGNORECASE):
+            try:
+                args, _ = read_args(code, match.end(), "ommmm")
+            except (ParseError, IndexError):
+                continue
+            env_name = code[args[1][0]:args[1][1]].strip()
+            prefix = code[args[4][0]:args[4][1]].strip()
+            if env_name and prefix:
+                definitions.append((env_name, prefix))
+        for env_name, prefix in definitions:
+            for match in re.finditer(r"\\begin\s*\{" + re.escape(env_name) + r"\}", executable_code):
+                try:
+                    args, _ = read_args(executable_code, match.end(), "mm")
+                except (ParseError, IndexError):
+                    continue
+                marker = executable_code[args[1][0]:args[1][1]].strip()
+                if marker:
+                    add(prefix + ":" + marker)
+
+        anchors = []
+        registered = getattr(self, "_rendered_label_ids", None)
+        if registered is None:
+            registered = self._rendered_label_ids = set()
+        native_numbers = self._native_label_numbers()
+        for label in labels:
+            if native_numbers and label not in native_numbers:
+                continue
+            if label in registered:
+                continue
+            registered.add(label)
+            self.ctx.add_label(label, slug=self.slug, anchor=label,
+                               text=native_numbers.get(label, self.page.current_number),
+                               kind="label", containing_section=self.page.current_number)
+            anchors.append(f'<a id="{esc(label)}"></a>')
+        return "".join(anchors)
+
+    def _native_label_numbers(self):
+        """Read true label values from the compiled chapter aux files when present."""
+        cached = getattr(self.ctx, "_tcolorbox_native_label_numbers", None)
+        if cached is not None:
+            return cached
+        cached = self.ctx._tcolorbox_native_label_numbers = {}
+        tex_dir = os.path.join(BUILD, "tex")
+        try:
+            aux_files = [name for name in os.listdir(tex_dir)
+                         if name.startswith("tcolorbox.doc.") and name.endswith(".aux")]
+        except OSError:
+            return cached
+        for name in aux_files:
+            try:
+                with open(os.path.join(tex_dir, name), encoding="utf-8") as f:
+                    source = f.read()
+            except OSError:
+                continue
+            for match in re.finditer(r"\\zref@newlabel\{([^{}]+)\}\{\\default\{([^{}]+)\}", source):
+                cached.setdefault(match.group(1), match.group(2))
+            for match in re.finditer(r"\\newlabel\{([^{}]+)\}\{\{([^{}]+)\}\{", source):
+                cached.setdefault(match.group(1), match.group(2))
+        return cached
+
+    @staticmethod
+    def _without_macro_definitions(code):
+        """Blank common command/environment definitions before scanning labels."""
+        masked = list(code)
+        definitions = (
+            (r"\\(?:newcommand|renewcommand|providecommand)\b", "*moom"),
+            (r"\\(?:newenvironment|renewenvironment)\b", "*moomm"),
+        )
+        for pattern, spec in definitions:
+            for match in re.finditer(pattern, code):
+                try:
+                    _, end = read_args(code, match.end(), spec)
+                except (ParseError, IndexError):
+                    continue
+                for i in range(match.start(), end):
+                    if masked[i] != "\n":
+                        masked[i] = " "
+        return "".join(masked)
+
     def _example(self, k, code_start, b, out, opts=None, listing=False):
         code = self.s[code_start:b]
         self.last_temp = code
         options = self.raw(opts) if opts else ""
         listing_only = "listing only" in options or listing
         anchors = ""
+        registered = getattr(self, "_rendered_label_ids", None)
+        if registered is None:
+            registered = self._rendered_label_ids = set()
+        native_numbers = self._native_label_numbers() if self.page is not None else {}
         for m in re.finditer(r"(?:phantom)?label=\{?([\w:.-]+)", options):
-            if self.page is not None:
+            if (self.page is not None and (not native_numbers or m.group(1) in native_numbers)
+                    and m.group(1) not in registered):
+                registered.add(m.group(1))
                 self.ctx.add_label(m.group(1), slug=self.slug, anchor=m.group(1),
-                                   text=self.page.current_number, kind="label")
+                                   text=native_numbers.get(m.group(1), self.page.current_number),
+                                   kind="label", containing_section=self.page.current_number)
                 anchors += f'<a id="{esc(m.group(1))}"></a>'
+        anchors += self._register_rendered_labels(code)
         text_only = "text only" in options
         parts = []
         if not listing_only:
@@ -473,7 +602,8 @@ class TcbConverter(Converter):
 
     def env_dispListing(self, k, a, b, after, out):
         self.last_temp = self.s[a:b]
-        out.append(("b", '<figure class="example">' + code_block(self.s[a:b], self.ctx, self.slug) + "</figure>"))
+        anchors = self._register_rendered_labels(self.s[a:b])
+        out.append(("b", anchors + '<figure class="example">' + code_block(self.s[a:b], self.ctx, self.slug) + "</figure>"))
 
     def env_dispListing_(self, k, a, b, after, out):
         args, a2 = read_args(self.s, a, "m")
@@ -797,8 +927,13 @@ def home_html(ctx, pages):
                 "part of the box displays the source code and the other part shows the output. Another common use "
                 "case is the setting of theorems. The package supports saving and reuse of source code and text parts.</p>")
     cover = ""
-    if os.path.exists(os.path.join(SITE, IMGDIR_NAME, "cover.png")):
-        cover = f'<div class="titlepagepic"><img alt="tcolorbox cover" src="{IMGDIR_NAME}/cover.png" width="420" /></div>'
+    cover_path = os.path.join(SITE, IMGDIR_NAME, "cover.png")
+    if os.path.exists(cover_path):
+        with open(cover_path, "rb") as f:
+            f.seek(16)
+            cover_width, cover_height = struct.unpack(">II", f.read(8))
+        cover = (f'<div class="titlepagepic"><img alt="tcolorbox cover" '
+                 f'src="{IMGDIR_NAME}/cover.png" width="{cover_width}" height="{cover_height}" /></div>')
     sections = []
     for part_id, part_name in PARTS:
         lis = "".join(f'<li><a href="{p.slug}">{p.section_number}&ensp;{toc_title(p)}</a></li>'

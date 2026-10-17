@@ -190,6 +190,21 @@ class ManualSiteTests(unittest.TestCase):
         path.write_text(original.replace('</body>', '<code class="example-code">??</code></body>'))
         check_site(self.root)
 
+    def test_validator_allows_literal_command_anchors_but_checks_their_targets(self):
+        path = self.root / 'index.html'
+        original = path.read_text()
+        extra = r'<span id="\tkzDefPoint"></span><a href="#\tkzDefPoint">command</a>'
+        path.write_text(original.replace('</body>', extra + '</body>'))
+        check_site(self.root)
+        path.write_text(original.replace('</body>', r'<a href="#\missing">bad</a></body>'))
+        with self.assertRaisesRegex(ValueError, 'missing anchor'):
+            check_site(self.root)
+
+    def test_validator_allows_question_mark_punctuation_in_historical_prose(self):
+        path = self.root / 'index.html'
+        path.write_text(path.read_text().replace('</body>', '<p>Quoi ???</p></body>'))
+        check_site(self.root)
+
     def test_validator_rejects_unexpanded_tex_even_in_external_links(self):
         path = self.root / 'index.html'
         original = path.read_text()

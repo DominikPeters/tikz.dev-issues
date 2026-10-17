@@ -57,7 +57,28 @@ class DocSearchTests(unittest.TestCase):
                         parts=[], notice='notice', footer_links=[], build_dir='', site_dir='',
                         img_dir='images')
         result = page_shell(manual, [], None, 'Manual', '<p>Content</p>', [], is_home=True)
-        self.check_assets(BeautifulSoup(result, 'html5lib'))
+        soup = BeautifulSoup(result, 'html5lib')
+        self.check_assets(soup)
+        button = soup.find(id='hamburger-button')
+        self.assertEqual(button.name, 'button')
+        self.assertEqual(button['type'], 'button')
+        self.assertEqual(button['aria-controls'], 'chapter-toc-container')
+        self.assertEqual(button['aria-expanded'], 'false')
+
+    def test_references_are_in_the_converted_manual_navigation(self):
+        from texhtml.core import Page
+        from texhtml.site import Manual, page_shell
+        manual = Manual(package='tcolorbox', title='tcolorbox Manual', name_html='tcolorbox',
+                        parts=[], notice='notice', footer_links=[], build_dir='', site_dir='',
+                        img_dir='images', has_references=True)
+        for slug in ['introduction', 'references']:
+            with self.subTest(slug=slug):
+                page = Page(slug, slug, None, '')
+                result = page_shell(manual, [], page, slug, '', [])
+                soup = BeautifulSoup(result, 'html5lib')
+                link = soup.select_one('#chapter-toc-container a[href="references"]')
+                self.assertIsNotNone(link)
+                self.assertEqual('current' in link.parent.get('class', []), slug == 'references')
 
     @unittest.skipUnless(shutil.which('node'), 'Node.js is required to test browser configuration')
     def test_each_manual_searches_its_package_or_all_and_handles_missing_cdn(self):

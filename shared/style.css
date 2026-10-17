@@ -1893,6 +1893,19 @@ div.warning-see-pdf img {
   text-indent: 0;
 }
 
+/* Let long signatures shrink alongside their defaults and change notes. */
+.pkg-tcolorbox .entryheadline .hl-def,
+.pkg-tcolorbox .entryheadline .hl-default {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.pkg-tcolorbox .textbody a,
+.pkg-tkz-euclide .textbody a,
+.pkg-chemfig .textbody a {
+  overflow-wrap: anywhere;
+}
+
 /* home page */
 .pkg-tcolorbox .titlepagepic {
   text-align: center;
@@ -1959,7 +1972,10 @@ div.warning-see-pdf img {
 .pkg-pgf-contrib .titlepage {
   text-align: center;
 }
-.pkg-pgf-contrib #hamburger-button {
+.pkg-pgf-contrib #hamburger-button,
+.pkg-tcolorbox #hamburger-button,
+.pkg-tkz-euclide #hamburger-button,
+.pkg-chemfig #hamburger-button {
   background: transparent;
   border: 0;
   color: inherit;
@@ -1995,7 +2011,9 @@ div.warning-see-pdf img {
 .pkg-pgf-contrib .bodycontainer {
   min-width: 0;
 }
-.pkg-pgf-contrib .table-scroll {
+.pkg-pgf-contrib .table-scroll,
+.pkg-tkz-euclide .table-scroll,
+.pkg-chemfig .table-scroll {
   min-width: 0;
   max-width: 100%;
   overflow-x: auto;
@@ -2013,7 +2031,8 @@ div.warning-see-pdf img {
 .pkg-wheelchart .bodyandsidetoc > header {
   background-color: #596a35;
 }
-.pkg-wheelchart mjx-container {
+.pkg-wheelchart mjx-container,
+.pkg-tkz-euclide mjx-container {
   display: inline-block;
   max-width: 100%;
   overflow-x: auto;
@@ -2148,6 +2167,13 @@ div.warning-see-pdf img {
 
 .pkg-tkz-euclide table.tkz-table th {
   border-bottom: 1px solid #999;
+}
+
+.pkg-tkz-euclide .example-code,
+.pkg-chemfig .example-code {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .pkg-pgfgantt .bodyandsidetoc > header {

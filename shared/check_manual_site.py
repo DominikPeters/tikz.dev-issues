@@ -1,6 +1,8 @@
 """Validate files and anchors inside a generated manual, without network access."""
+import argparse
 from collections import Counter
 from pathlib import Path
+import re
 from urllib.parse import unquote, urlsplit
 
 from bs4 import BeautifulSoup
@@ -29,9 +31,12 @@ def check_site(directory):
             value = tag.get(attribute)
             if not value:
                 continue
-            if '\\' in value:
-                errors.append(f'{page.name}: unexpanded TeX in URL {value}')
             url = urlsplit(value)
+            # Converted manuals deliberately use literal command names as
+            # anchors (e.g. #\tkzDefPoint). Validate those against actual IDs
+            # below, while still rejecting unexpanded TeX in URL paths.
+            if '\\' in value.partition('#')[0] or ('\\' in value and (url.scheme or url.netloc)):
+                errors.append(f'{page.name}: unexpanded TeX in URL {value}')
             if url.scheme or url.netloc or value.startswith('/'):
                 continue
             target = (page.parent / unquote(url.path)).resolve() if url.path else page
@@ -49,8 +54,16 @@ def check_site(directory):
                 errors.append(f'{page.name}: missing anchor {value}')
         for tag in soup.select('script, style, [data-nosnippet], .example-code'):
             tag.decompose()
-        if '??' in soup.get_text():
+        # Three question marks in chemfig's historical prose are punctuation,
+        # unlike the standalone two-character unresolved-reference marker.
+        if re.search(r'(?<!\?)\?\?(?!\?)', soup.get_text()):
             errors.append(f'{page.name}: unresolved reference marker')
     if errors:
         raise ValueError('Invalid manual site:\n' + '\n'.join(errors))
     return dict(counts)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('directory', type=Path)
+    print(check_site(parser.parse_args().directory))

@@ -856,9 +856,14 @@ class Converter:
             if name == "LaTeXe":
                 val = LATEX_LOGO + "2<sub>ε</sub>"
             out.append(("i", val))
-            # swallow a following empty group or control space
+            # A control word consumes its delimiter whitespace. In particular,
+            # \textbackslash chemfig prints \chemfig, not "\ chemfig". An
+            # empty group ends the word explicitly, so space after {} remains.
             if s.startswith("{}", e):
                 e += 2
+            else:
+                delimiter = re.compile(r"[ \t]*(?:\n(?![ \t]*\n)[ \t]*)?").match(s, e)
+                e = delimiter.end()
             return e
         if name in self.ignored:
             args, e2 = read_args(s, e, self.ignored[name])
@@ -1056,7 +1061,13 @@ class Converter:
         return e2
 
     def cmd_pageref(self, k, e, out):
-        return self.cmd_ref(k, e, out)
+        args, e2 = read_args(self.s, e, "*m")
+        label = self.raw(args[1]).strip()
+        info = self.ctx.labels.get(label, {})
+        # A PDF page reference becomes a link to its containing HTML section,
+        # even when the target itself is an independently numbered example.
+        out.append(("i", self._label_link(label, info.get("containing_section"))))
+        return e2
 
     def _zref(self, k, e, out, with_type=True):
         args, e2 = read_args(self.s, e, "*om")

@@ -27,7 +27,9 @@ compiled with.
 `scripts/build.sh` refuses to publish a site whose LaTeX run failed or that
 has no `index.html`. The manuals processed by `shared/pgf_contrib_site.py`
 are also checked by `shared/check_manual_site.py` (missing files, broken
-anchors, missing image dimensions, unresolved references).
+anchors, missing image dimensions, unresolved references), as are tcolorbox,
+tkz-euclide and chemfig before their sites are published. To check a built
+manual directly, run `python3 shared/check_manual_site.py build/<package>/site`.
 
 ## Fixing a patch
 

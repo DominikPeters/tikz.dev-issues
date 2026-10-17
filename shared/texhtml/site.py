@@ -4,7 +4,7 @@ import datetime
 import os
 import shutil
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Callable
 
 SHARED = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,6 +29,7 @@ class Manual:
     img_dir: str                 # folder of the images on the site
     home_title: str = ""         # <title> of the start page
     toc_title: Callable = field(default=lambda page: page.title_html)
+    has_references: bool = False
 
     @property
     def base_url(self):
@@ -63,6 +64,9 @@ def page_shell(manual, pages, page, title, main_html, local_toc, is_home=False):
                     continue
                 c = ' class="current current-part"' if p is page else ' class="current-part"'
                 toc.append(f'<p{c}><a class="tocsection" href="{p.slug}">{manual.toc_title(p)}</a></p>')
+    if manual.has_references:
+        cls = ' class="current"' if page is not None and page.slug == 'references' else ''
+        toc.append(f'<p{cls}><a class="linkintro" href="references">References</a></p>')
     local = "".join(f'<p><a class="{c}" href="#{a}">{t}</a></p>' for c, a, t in local_toc)
     mathjax = ""
     if page is not None and page.uses_math:
@@ -96,7 +100,7 @@ def page_shell(manual, pages, page, title, main_html, local_toc, is_home=False):
 <body{' class="index-page"' if is_home else ''}>
 <div class="bodyandsidetoc grid-container">
 <header>
-<div id="hamburger-button">☰</div>
+<button id="hamburger-button" type="button" aria-label="Toggle manual contents" aria-controls="chapter-toc-container" aria-expanded="false">☰</button>
 <strong><a class="site-home-link" href="{home_url(manual.package, "pgf")}" style="font-weight: normal">tikz.dev / </a>{title_menu(manual.package, manual.title)}</strong>
 <div id="search"></div>
 </header>
@@ -137,6 +141,7 @@ def write_site(manual, ctx, pages, home_html):
     """Write the chapter pages, part pages, references (if anything is cited)
     and the start page. home_html(ctx, pages) returns the start page's main
     content; it is called after the images have been copied to the site."""
+    manual = replace(manual, has_references=bool(ctx.cited_sorted))
     os.makedirs(manual.site_dir, exist_ok=True)
     for name in ("style.css", "pgfmanual.js"):
         shutil.copy(os.path.join(SHARED, name), manual.site_dir)

@@ -289,6 +289,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
     if (e.key === "Escape") {
       closePackageMenus(null);
       if (document.activeElement.closest(".pkg-menu")) document.activeElement.blur();
+      if (chapterMenu.classList.contains("show-menu")) {
+        toggleMenu();
+        hamburger.focus();
+      }
     }
   });
 
@@ -303,8 +307,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 });
 
 window.addEventListener("load", () => {
-  document
-    .querySelector("#chapter-toc-container p.current")
-    .scrollIntoView({ block: "nearest" });
+  const currentChapter = document.querySelector("#chapter-toc-container p.current");
+  if (currentChapter) currentChapter.scrollIntoView({ block: "nearest" });
   updateTOC();
 });

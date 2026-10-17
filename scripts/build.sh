@@ -15,6 +15,7 @@ case $pkg in
     # converted without lwarp (docs/converters.md), reads the upstream checkout directly
     UPSTREAM="$root/.upstream/$pkg" "$root/$pkg/build.sh"
     site="$root/$pkg/build/site/$pkg"
+    python3 "$root/shared/check_manual_site.py" "$site"
     ;;
   *)
     # lwarp-based manuals: build in the prepared upstream tree
