@@ -87,6 +87,47 @@ assert.equal(config.initialIndexSettings.tikz.attributeForDistinct, "search_grou
 assert.equal(config.initialIndexSettings.tikz.distinct, 2);
 assert.equal(config.startUrls.length, 12);
 
+const symbolFixture = `<section class="textbody"><h4 id="page">Paths</h4><h5 id="lines">Lines</h5>
+  <div class="entryheadline"><li><p><a id="pgf.--"></a><span class="hl-def">
+    <span style="color:#808080"><kbd>;</kbd></span><kbd>--</kbd></span></p></li></div><p>A straight line.</p>
+  <div class="entryheadline"><li><p><a id="horizontal-vertical"></a><span class="hl-def"><kbd>-|</kbd></span></p></li></div>
+  <div class="entryheadline"><li><p><a id="vertical-horizontal"></a><span class="hl-def"><kbd>|-</kbd></span></p></li></div>
+  <h5 id="relative">Relative</h5><p>Prefix a coordinate with <span class="verb">++</span> or <span class="verb">+</span>.</p>
+  <p>An arrow <span class="verb">&lt;-&gt;</span>, unicode <kbd>∥</kbd>, and a command <kbd>\\draw</kbd>.</p>
+  <div class="entryheadline"><li><p><a id="named-key"></a><span class="hl-def"><kbd>/tcb/title</kbd><kbd>=</kbd></span></p></li></div>
+  <div class="example"><p><kbd>!!!</kbd></p></div>
+  <h5 id="unrelated">Unrelated</h5><p>No operators here.</p></section>`;
+const symbolRecords = extract(symbolFixture, "/tikz-paths").records;
+const line = symbolRecords.find(r => r.type === "lvl4" && r.anchor === "pgf.--");
+assert.deepEqual(Array.from(line.symbol_tokens), ["2d_2d"]);
+assert.deepEqual(Array.from(line.defined_symbol_tokens), ["2d_2d"]);
+assert.ok(symbolRecords.filter(r => r.type === "content").every(r => !r.defined_symbol_tokens));
+const horizontal = symbolRecords.find(r => r.type === "lvl4" && r.anchor === "horizontal-vertical");
+const vertical = symbolRecords.find(r => r.type === "lvl4" && r.anchor === "vertical-horizontal");
+assert.deepEqual(Array.from(horizontal.symbol_tokens), ["2d_7c"]);
+assert.deepEqual(Array.from(vertical.symbol_tokens), ["7c_2d"]);
+assert.ok(symbolRecords.find(r => r.anchor === "relative").symbol_tokens.includes("2b_2b"));
+assert.ok(symbolRecords.find(r => r.anchor === "relative").symbol_tokens.includes("3c_2d_3e"));
+assert.ok(symbolRecords.find(r => r.anchor === "relative").symbol_tokens.includes("2225"));
+assert.ok(symbolRecords.filter(r => r.anchor === "unrelated").every(r => !r.symbol_tokens));
+assert.ok(!symbolRecords.some(r => r.symbol_tokens && r.symbol_tokens.includes("21_21_21")));
+assert.ok(!symbolRecords.find(r => r.type === "lvl4" && r.anchor === "named-key").defined_symbol_tokens);
+
+const browser = {
+  document: {documentElement: {classList: ["pkg-pgf"]}, addEventListener: () => {}},
+  window: {addEventListener: () => {}}, URL,
+};
+vm.runInNewContext(fs.readFileSync(path.join(__dirname, "../../shared/pgfmanual.js"), "utf8"), browser);
+for (const [symbol, record] of [["--", line], ["-|", horizontal], ["|-", vertical],
+  ["++", symbolRecords.find(r => r.anchor === "relative")], ["∥", symbolRecords.find(r => r.anchor === "relative")]]) {
+  browser.query = {query: symbol};
+  const params = vm.runInNewContext("symbolSearchParameters(query)", browser);
+  const token = params.facetFilters[0].slice("symbol_tokens:".length);
+  assert.ok(record.symbol_tokens.includes(token), `Frontend/crawler mismatch for ${symbol}`);
+}
+assert.ok(config.initialIndexSettings.tikz.attributesForFaceting.includes("filterOnly(symbol_tokens)"));
+assert.ok(config.initialIndexSettings.tikz.attributesForFaceting.includes("filterOnly(defined_symbol_tokens)"));
+
 if (process.argv[2]) {
   const pages = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
   const totals = {};
@@ -94,8 +135,9 @@ if (process.argv[2]) {
     const pathname = "/" + name.replace(/index\.html$/, "").replace(/\.html$/, "");
     const {records, selectedDefinitions} = extract(html, pathname);
     assert.ok(records.length, `No records: ${name}`);
-    const pkg = name.split("/")[0];
-    assert.ok(records.every(r => r.manual === pkg && r.tags[0] === pkg), `Wrong manual: ${name}`);
+    const pkg = name.includes("/") ? name.split("/")[0] : "pgf";
+    const tag = pkg === "pgf" ? "tikz" : pkg;
+    assert.ok(records.every(r => r.manual === pkg && r.tags[0] === tag), `Wrong manual: ${name}`);
     totals[pkg] = (totals[pkg] || 0) + records.length;
     const sourceDefinitions = cheerio.load(html)("section.textbody .entryheadline").length;
     assert.equal(selectedDefinitions, sourceDefinitions, `Missing definitions: ${name}`);

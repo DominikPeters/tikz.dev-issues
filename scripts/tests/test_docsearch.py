@@ -187,6 +187,50 @@ vm.runInNewContext(fs.readFileSync(process.argv[1], 'utf8'), sandbox);
 '''
         subprocess.run(['node', '-e', script, str(ROOT / 'shared/pgfmanual.js')], check=True)
 
+    @unittest.skipUnless(shutil.which('node'), 'Node.js is required to test symbol searches')
+    def test_symbol_queries_use_exact_filters_and_preserve_scope(self):
+        script = r'''
+const fs = require('node:fs');
+const vm = require('node:vm');
+const assert = require('node:assert/strict');
+const sent = [];
+const sandbox = {
+  document: {documentElement: {classList: ['pkg-pgf']}, addEventListener: () => {}},
+  window: {addEventListener: () => {}}, URL,
+  client: {search: query => {sent.push(query); return Promise.resolve({results: [{hits: []}]});}},
+};
+vm.runInNewContext(fs.readFileSync(process.argv[1], 'utf8'), sandbox);
+for (const [query, token] of [['--', '2d_2d'], ['-|', '2d_7c'], ['|-', '7c_2d'],
+  ['++', '2b_2b'], ['..', '2e_2e'], ['<->', '3c_2d_3e'], [':', '3a'],
+  ['\\', '5c'], ['"', '22'], ['∥', '2225'], ['§§', 'a7_a7'], [' -- ', '2d_2d']]) {
+  sandbox.request = {query, filters: 'lang:en-US', facetFilters: [['type:lvl4', 'type:content']], optionalFilters: 'tags:tikz'};
+  vm.runInNewContext('searchScope = "package"; scopedSearch(client, {requests: [request]});', sandbox);
+  const batch = sent.at(-1);
+  assert.equal(batch.requests.length, 1);
+  const actual = batch.requests[0];
+  assert.equal(actual.query, '');
+  assert.equal(actual.filters, '(lang:en-US) AND tags:tikz');
+  assert.equal(actual.facetFilters[1], 'symbol_tokens:' + token);
+  assert.equal(actual.facetFilters[0], sandbox.request.facetFilters[0]);
+  assert.equal(actual.optionalFilters[0], 'tags:tikz');
+  assert.equal(actual.optionalFilters[1], 'defined_symbol_tokens:' + token);
+  assert.equal(actual.distinct, 2);
+  assert.equal(sandbox.request.query, query);
+  assert.equal(sandbox.request.facetFilters.length, 1);
+  vm.runInNewContext('searchScope = "all"; scopedSearch(client, {requests: [request]});', sandbox);
+  assert.equal(sent.at(-1).requests[0].filters, 'lang:en-US');
+}
+for (const query of ['node', 'line-to', '\\draw', 'a+b', '-- line', '"exact phrase"', '', '   ']) {
+  sandbox.request = {query};
+  vm.runInNewContext('scopedSearch(client, {requests: [request]});', sandbox);
+  const actual = sent.at(-1).requests[0];
+  assert.equal(actual.query, query);
+  assert.ok(!('facetFilters' in actual));
+  assert.ok(!('optionalFilters' in actual));
+}
+'''
+        subprocess.run(['node', '-e', script, str(ROOT / 'shared/pgfmanual.js')], check=True)
+
 
 if __name__ == '__main__':
     unittest.main()

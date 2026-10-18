@@ -54,6 +54,7 @@ function scopedSearch(client, query) {
   const own = SEARCH_MANUALS[TIKZDEV_PACKAGE][0];
   const requests = query.requests.map((request) => ({
     ...request,
+    ...symbolSearchParameters(request),
     ...(all ? {} : { filters: request.filters ? `(${request.filters}) AND tags:${own}` : `tags:${own}` }),
     distinct: 2,
     hitsPerPage: 10,
@@ -65,6 +66,21 @@ function scopedSearch(client, query) {
       ...result, hits: labelSearchHits(result.hits || []),
     })) };
   });
+}
+
+// Exact facets preserve punctuation sequences, including order and repetition.
+// Hex code points avoid Algolia's minus/escape syntax in facet values. Keep the
+// encoding in sync with scripts/algolia-crawler.js.
+function symbolSearchParameters(request) {
+  const symbol = (request.query || "").trim();
+  if (!/^[\p{P}\p{S}]+$/u.test(symbol)) return {};
+  const token = Array.from(symbol, (c) => c.codePointAt(0).toString(16)).join("_");
+  const asArray = (filters) => typeof filters === "string" ? [filters] : filters || [];
+  return {
+    query: "",
+    facetFilters: [...asArray(request.facetFilters), `symbol_tokens:${token}`],
+    optionalFilters: [...asArray(request.optionalFilters), `defined_symbol_tokens:${token}`],
+  };
 }
 
 // With all manuals, results are grouped under "Manual › Part"

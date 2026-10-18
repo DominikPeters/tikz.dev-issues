@@ -45,18 +45,47 @@ new Crawler({
       const groups = new Map();
       const targets = new Map();
       const hierarchyGroups = new Map();
+      const symbolsByAnchor = new Map();
+      const definedSymbolsByAnchor = new Map();
+      const symbolToken = (symbol) => Array.from(symbol, (c) => c.codePointAt(0).toString(16)).join("_");
+      const isSymbol = (text) => /^[\p{P}\p{S}]+$/u.test(text);
+      const symbolName = (name) => {
+        // PGF documentation anchors encode names as pgf.NAME or pgf.back/NAME.
+        const literal = name.replace(/^[A-Za-z][\w-]*\./, "").replace(/back\//g, "\\");
+        if (isSymbol(literal)) return literal;
+        // A symbolic key can also have a namespace, for example /tikz/graphs/->.
+        const tail = literal.slice(literal.lastIndexOf("/") + 1);
+        return literal.includes("/") && isSymbol(tail) ? tail : null;
+      };
 
+      // Keep lookups local to each definition: whole-page scans can time out on large manuals.
       // Preserve definition permalinks before removing the decorative ¶ links.
       const entries = $("section.textbody .entryheadline");
       entries.each((i) => {
         const entry = entries.eq(i);
-        entry.attr("data-docsearch-entry", String(i));
-        const scope = `[data-docsearch-entry="${i}"]`;
-        const anchor = $(`${scope} .anchor-link[href^='#']`).eq(0).attr("href");
-        const id = (anchor && anchor.slice(1)) || $(`${scope} [id]`).eq(0).attr("id") || entry.attr("id");
+        const anchor = entry.find(".anchor-link[href^='#']").eq(0).attr("href");
+        const id = (anchor && anchor.slice(1)) || entry.find("[id]").eq(0).attr("id") || entry.attr("id");
         const helperId = id || `docsearch-definition-${i}`;
         entry.attr("data-docsearch-id", helperId);
         if (id) targets.set(helperId, id);
+        const defined = new Set();
+        const aliases = entry.find("[id]");
+        aliases.each((j) => {
+          const name = symbolName(aliases.eq(j).attr("id"));
+          if (name) defined.add(name);
+        });
+        const code = entry.find(".hl-def kbd, .hl-def .verb, .hl-def .keyname, .hl-def .texttt");
+        let primaryFound = false;
+        code.each((j) => {
+          const node = code.eq(j);
+          if (node.closest('[style*="808080"]').length) return; // surrounding syntax, not the defined name
+          if (primaryFound) return;
+          const name = normalText(node.text());
+          if (!name) return;
+          primaryFound = true; // later punctuation can be a delimiter or default value
+          if (isSymbol(name)) defined.add(name);
+        });
+        definedSymbolsByAnchor.set(helperId, defined);
       });
 
       // Keep text extraction inside the manual, excluding examples and UI chrome.
@@ -99,7 +128,7 @@ new Crawler({
       entries.each((i) => {
         const entry = entries.eq(i);
         const id = entry.attr("data-docsearch-id");
-        const children = $(`[data-docsearch-entry="${i}"] [id]`);
+        const children = entry.find("[id]");
         children.each((j) => {
           const child = children.eq(j);
           if (child.attr("id") === id) child.removeAttr("id");
@@ -108,17 +137,27 @@ new Crawler({
       });
 
       let currentGroup = pageUrl;
+      let currentAnchor = "";
       let headings = [null, null, null];
       const elements = $("section.textbody *");
       elements.each((i) => {
         const node = elements.eq(i);
         const level = ["h4", "h5", "h6"].findIndex((tag) => node.is(tag));
         if (level !== -1) {
+          currentAnchor = node.attr("id");
           headings = headings.slice(0, level);
           headings[level] = normalText(node.text());
           const target = targets.get(node.attr("id"));
           currentGroup = target ? `${pageUrl}#${target}` : pageUrl;
           hierarchyGroups.set(JSON.stringify(headings), currentGroup);
+        }
+        if (node.is(".entryheadline")) currentAnchor = node.attr("id");
+        if (!symbolsByAnchor.has(currentAnchor)) {
+          symbolsByAnchor.set(currentAnchor, new Set(definedSymbolsByAnchor.get(currentAnchor) || []));
+        }
+        if (node.is("kbd, .verb, .keyname, .texttt") && !node.closest('[style*="808080"]').length) {
+          const literal = normalText(node.text());
+          if (isSymbol(literal)) symbolsByAnchor.get(currentAnchor).add(literal);
         }
         const id = node.attr("id") || node.attr("name");
         if (id) {
@@ -152,6 +191,12 @@ new Crawler({
         while (headingPath.length && !headingPath[headingPath.length - 1]) headingPath.pop();
         const fallbackGroup = hierarchyGroups.get(JSON.stringify(headingPath.map((h) => h && normalText(h))));
         record.search_group = groups.get(anchor) || fallbackGroup || pageUrl;
+        const symbols = symbolsByAnchor.get(anchor);
+        if (symbols && symbols.size) record.symbol_tokens = Array.from(symbols, symbolToken);
+        const defined = definedSymbolsByAnchor.get(anchor);
+        if (record.type === "lvl4" && defined && defined.size) {
+          record.defined_symbol_tokens = Array.from(defined, symbolToken);
+        }
         record.manual = pkg;
         record.tags = [manual[0]];
         record.isBaseOrSystem = pkg === "pgf" && ["The Basic Layer", "The System Layer"].includes(hierarchy.lvl0);
@@ -167,7 +212,7 @@ new Crawler({
   }],
   initialIndexSettings: {
     tikz: {
-      attributesForFaceting: ["lang", "tags", "type"],
+      attributesForFaceting: ["lang", "tags", "type", "filterOnly(symbol_tokens)", "filterOnly(defined_symbol_tokens)"],
       attributesToRetrieve: ["hierarchy", "content", "anchor", "url", "url_without_anchor", "type", "manual", "search_group"],
       attributesToHighlight: ["hierarchy", "content"],
       attributesToSnippet: ["content:10"],
