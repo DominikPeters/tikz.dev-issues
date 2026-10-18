@@ -286,3 +286,13 @@ diff --git a/doc/generic/pgf/pgfmanual-en-tikz-transparency.tex b/doc/generic/pg
  \begin{tikzpicture}
    \pattern[pattern=checkerboard,pattern color=black!15](-1,-1) rectangle (3,1);
    \node at (0,0) [forbidden sign,line width=2ex,draw=red,fill=white] {Smoking};
+@@ -852,7 +852,8 @@
+             time of writing, Apple's Preview will not show the following
+             correctly (you should see the text \tikzname\ in the middle):
+             %
+-\begin{codeexample}[]
++% PDF renderers discard the zero-opacity text; use its outlined SVG mask (#42).
++\begin{codeexample}[imagesource={standalone/pgfmanual-en-tikz-transparency-knockout.svg}]
+ \begin{tikzpicture}
+   \shade [left color=red,right color=blue] (-2,-1) rectangle (2,1);
+   \begin{scope}[transparency group=knockout]
