@@ -5,6 +5,46 @@ import re
 import sys
 
 
+def pdf_contents(pdf):
+    """The sections of the printed manual with their pages: [(number, title,
+    page)], and the page of the source code (the label Thesourcecode)."""
+    from pypdf import PdfReader
+    reader = PdfReader(pdf)
+    entries, source_page = [], None
+    for item in reader.outline:
+        if isinstance(item, list):
+            continue  # subsections
+        page = reader.page_labels[reader.get_destination_page_number(item)]
+        match = re.fullmatch(r'(?:(\d+|[A-Z]) )?(.+)', item.title)
+        number, title = match[1] or '', match[2]
+        if title == 'The source code':
+            source_page = page
+            break
+        if title != 'Contents':  # the contents are not listed in themselves
+            entries.append((number, title, page))
+    if not entries or source_page is None:
+        raise SystemExit(f'{pdf}: no sections or no source code in the bookmarks')
+    return entries, source_page
+
+
+def contents_setup(entries, source_page):
+    """TeX code for the contents wheel: the table of contents and the page
+    numbers of the PDF manual, which its picture shows (lwarp's own pages
+    have nothing to do with the PDF's)."""
+    lines = []
+    for number, title, page in entries:
+        title = re.sub(r'([&%#_$])', r'\\\1', title)
+        name = rf'\numberline {{{number}}}{title}' if number else title
+        anchor = f'section.{number}' if number else 'section*'
+        lines.append(rf'\contentsline {{section}}{{{name}}}{{{page}}}{{{anchor}}}')
+    return ('\\begin{warpHTML}\n\\makeatletter\n'
+            '% the contents wheel shows the sections and pages of the PDF manual\n'
+            '\\gdef\\WCHTMLexamplesetup{%\n'
+            '  \\Etoc@toctoks{%\n    ' + '%\n    '.join(lines) + '}%\n'
+            f'  \\def\\getpagerefnumber##1{{{source_page}}}}}\n'
+            '\\makeatother\n\\end{warpHTML}\n')
+
+
 def prepare(tree):
     path = tree / 'wheelchart.tex'
     source = path.read_text()
@@ -38,6 +78,8 @@ def prepare(tree):
     source = re.sub(r'^\\f@nch@setoffs[^\n]*\n', '', source, flags=re.M)
     source = source.replace(r'\indexsetup{othercode={\thispagestyle{fancy}}}', '')
     source = source.replace(r'\section*{\contentsname}', r'\subsection*{\contentsname}')
+    start = source.index(r'\begin{codeexample}', source.index(r'\subsection*{\contentsname}'))
+    source = source[:start] + contents_setup(*pdf_contents(tree / 'wheelchart.pdf')) + source[start:]
     # The slice-arc comparison table contains native graphics and math. Its
     # row-generating macro must be parsed in the same native context.
     source = re.sub(r'\\begin\{center\}(.*?)\\end\{center\}',

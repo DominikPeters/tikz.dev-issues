@@ -15,7 +15,8 @@
       "sha256": "a2744e3961fd58fd383c2e5013384a80654ffc3b909431f6cc67bc597fb32b7d",
       "files": {
         "usr/share/doc/texlive-doc/latex/wheelchart/wheelchart.tex.gz": "wheelchart.tex",
-        "usr/share/doc/texlive-doc/latex/wheelchart/README.md": "README.md"
+        "usr/share/doc/texlive-doc/latex/wheelchart/README.md": "README.md",
+        "usr/share/doc/texlive-doc/latex/wheelchart/wheelchart.pdf": "wheelchart.pdf"
       }
     }
   ]

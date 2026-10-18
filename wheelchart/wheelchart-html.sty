@@ -5,9 +5,11 @@
 \begin{warpHTML}
 % Some examples consist entirely of a legend, outside any tikzpicture.
 % Capture the full output so native alignments and table libraries stay active.
+% \WCHTMLexamplesetup: code for the next example only (preprocess.py).
+\let\WCHTMLexamplesetup\relax
 \pgfqkeys{/codeexample}{every codeexample/.append style={
-  pre={\begin{lateximage}[Wheelchart example]\begin{minipage}{\linewidth}},
-  post={\end{minipage}\end{lateximage}}
+  pre={\begin{lateximage}[Wheelchart example]\begin{minipage}{\linewidth}\WCHTMLexamplesetup},
+  post={\end{minipage}\end{lateximage}\global\let\WCHTMLexamplesetup\relax}
 }}
 \makeatletter
 \renewcommand*{\LWR@indexsection}[1]{\section*[key-index]{#1}}

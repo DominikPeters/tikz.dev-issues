@@ -1,6 +1,6 @@
 source=archives
 manifest=upstream.json
-commit=64b0455c412a2031b3c2f6fbcde0e6d0e91e6723f1a625123c1ace5ac0de438b
+commit=2bc644f1950d27508504173e857b72be76328529e67530d3473c4cd47a49cd1b
 docdir=.
 documentation=pgf
 sitepath=/wheelchart/

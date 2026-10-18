@@ -24,6 +24,12 @@ their checksums and paths in `upstream.json`, then update the manifest hash in
 new archives. Git upstream-watch intentionally skips this release pin; updates
 are reviewed explicitly. The normal build and deployment workflows include it.
 
+The contents wheel at the start of the manual is drawn from the sections and
+page numbers of the PDF manual (read from the bookmarks of `wheelchart.pdf`,
+pinned with the sources by `preprocess.py`), as the HTML build's own page
+numbers have nothing to do with the PDF's; it stays on the start page above
+the contents.
+
 The adapter preserves all 93 `codeexample` blocks. Complete example output is
 rendered as an image, including legends outside `tikzpicture`. The real `etoc`
 package is retained for examples using its table-of-contents data. TikZlings'

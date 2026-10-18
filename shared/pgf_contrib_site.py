@@ -417,14 +417,16 @@ def rebuild_home(soup, manual, groups, examples=()):
 
     if groups is None:
         return
-    # lwarp's table of contents (or a picture of it) gives way to the cards
-    anchor = None
+    # lwarp's table of contents gives way to the cards; a picture of the
+    # contents (wheelchart's wheel) stays above them
+    anchor, pictures = None, []
     for contents_heading in textbody.select('h4, h5'):
         if contents_heading.get_text(' ', strip=True).startswith('Contents'):
             anchor = contents_heading
             for sibling in list(contents_heading.find_next_siblings()):
-                if sibling.name == 'nav' or 'example' in sibling.get('class', []) or (
-                        sibling.name == 'a' and not sibling.get_text(strip=True)):
+                if 'example' in sibling.get('class', []):
+                    pictures.append(sibling.extract())
+                elif sibling.name == 'nav' or (sibling.name == 'a' and not sibling.get_text(strip=True)):
                     sibling.decompose()
                 else:
                     break
@@ -435,6 +437,9 @@ def rebuild_home(soup, manual, groups, examples=()):
         if container is not None and not container.get_text(strip=True):
             container.decompose()
     cards = BeautifulSoup(showcase(examples) + contents(groups), 'html.parser')
+    contents_title = cards.select_one('.home-contents-title')
+    for picture in reversed(pictures):
+        contents_title.insert_after(picture)
     if anchor is not None:
         top = anchor
         while top.parent is not textbody:
