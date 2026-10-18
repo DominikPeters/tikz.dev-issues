@@ -18,6 +18,12 @@ files used to resolve references and indexes.
 The key includes the upstream revision, package patches and TeX helpers,
 converter and build code, review manifests, relevant environment settings,
 tool versions, the TeX Live package database, local TeX trees and system fonts.
+Of the Python modules in `shared/`, only those the manual uses count (its own
+scripts' imports, those of the build pipeline, and theirs; see
+`scripts/dependencies.py`): an edit to the converters' `texhtml` does not
+rebuild PGF. The same rule picks the manuals CI builds after a push: a shared
+module rebuilds only the manuals that use it, other changes to `shared/`,
+`scripts/` or the workflows rebuild all of them.
 Changes to these inputs require a full build. Python `convert.py` files mix
 capture and HTML logic, so edits to them also require a full build. Modified
 Git checkouts used directly by Python converters and custom `TEXINPUTS` or

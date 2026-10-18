@@ -79,11 +79,16 @@ def key(package):
                 ['git', '-C', str(upstream), 'status', '--porcelain', '--untracked-files=all'], text=True).strip():
             raise ValueError('modified upstream checkout requires a full build')
     files = {}
+    from dependencies import uses
+    used = uses(package, ROOT)
     for directory in [ROOT / package, ROOT / 'shared']:
         for path in sorted(directory.rglob('*')):
             relative = path.relative_to(ROOT).as_posix()
             if (not path.is_file() or EXCLUDED.intersection(path.relative_to(directory).parts)
                     or relative in FRONTEND or path.name == 'postprocessing.py'):
+                continue
+            # shared Python modules that this manual does not use
+            if directory.name == 'shared' and path.suffix == '.py' and relative not in used:
                 continue
             files[relative] = hashlib.sha256(path.read_bytes()).hexdigest()
     for name in ['prepare.py', 'illustration_audit.py', 'native_cache.py', 'build.sh']:

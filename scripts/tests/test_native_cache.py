@@ -48,6 +48,16 @@ class NativeCacheTests(unittest.TestCase):
         with patch.object(native, 'toolchain', return_value={'engine': 'test-2'}):
             self.assertNotEqual(native.key('manual'), original)
 
+    def test_only_shared_modules_in_use_count(self):
+        (self.root / 'shared/unused.py').write_text('import os')
+        (self.root / 'shared/helper.py').write_text('import os')
+        (self.root / 'manual/postprocessing.py').write_text('import helper')
+        original = native.key('manual')
+        (self.root / 'shared/unused.py').write_text('changed elsewhere')
+        self.assertEqual(native.key('manual'), original)
+        (self.root / 'shared/helper.py').write_text('changed helper')
+        self.assertNotEqual(native.key('manual'), original)
+
     def test_cached_raw_inputs_restore_and_corruption_becomes_a_miss(self):
         source = self.root / 'build/manual/src'
         source.mkdir(parents=True)

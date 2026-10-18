@@ -39,14 +39,8 @@ jobs:
             exit 0
           fi
           changed=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" 2>/dev/null || echo shared/)
-          if grep -qE '^(shared|scripts|\.github)/' <<< "$changed"; then
-            echo "packages=$all" >> "$GITHUB_OUTPUT"
-          else
-            packages=$(cut -d/ -f1 <<< "$changed" | sort -u | while read -r pkg; do
-              if [[ -f $pkg/upstream.lock ]]; then echo "$pkg"; fi
-            done | jq -R . | jq -sc .)
-            echo "packages=$packages" >> "$GITHUB_OUTPUT"
-          fi
+          # a shared Python module rebuilds only the manuals that use it
+          echo "packages=$(python3 scripts/dependencies.py affected <<< "$changed")" >> "$GITHUB_OUTPUT"
 
   build:
     needs: changes
