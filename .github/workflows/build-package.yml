@@ -41,7 +41,7 @@ jobs:
             imagemagick pngquant librsvg2-bin nodejs npm lftp gnuplot-nox
           npm install -g svgo prettier
           python3 -m venv /opt/venv
-          /opt/venv/bin/pip install -q beautifulsoup4 html5lib lxml requests numpy pillow "pypdf>=6,<7"
+          /opt/venv/bin/pip install -q beautifulsoup4 html5lib lxml requests numpy pillow "pypdf>=6,<7" "fonttools>=4,<5"
           echo /opt/venv/bin >> "$GITHUB_PATH"
 
       - name: Test build helpers

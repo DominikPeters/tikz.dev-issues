@@ -143,4 +143,4 @@ print("Compiling")
 images.append("pgfmanual-en-tikz-pics-animation-1")
 for image in images:
     subprocess.run(["lualatex", "--output-format=dvi", "-interaction=batchmode", "-output-directory", "standalone/dvi", "standalone/"+image+".tex"])
-    subprocess.run(["dvisvgm", "standalone/dvi/"+image+".dvi", "-o", "standalone/"+image+".svg"])
+    subprocess.run(["dvisvgm", "--font-format=woff", "standalone/dvi/"+image+".dvi", "-o", "standalone/"+image+".svg"], check=True)
