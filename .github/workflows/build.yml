@@ -1,11 +1,10 @@
-# On pushes to main: rebuild and deploy the manuals whose files changed, from
+# On pushes to master: rebuild and deploy the manuals whose files changed, from
 # the upstream commit pinned in their upstream.lock. Also runnable by hand.
 name: build
 
 on:
   push:
-    # monorepo: test branch, deploys below DEPLOY_PREFIX (remove after the switch)
-    branches: [main, monorepo]
+    branches: [master]
     paths: [pgf/**, pgfplots/**, tcolorbox/**, tikz-cd/**, pgf-pie/**, tikz-feynman/**, wheelchart/**, pgfgantt/**, tkz-euclide/**, chemfig/**, forest/**, nicematrix/**, shared/**, scripts/**, .github/workflows/build*.yml]
   workflow_dispatch:
     inputs:

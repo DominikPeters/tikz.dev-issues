@@ -5,7 +5,8 @@ upstream repositories,
 [pgf-tikz-html-manual](https://github.com/DominikPeters/pgf-tikz-html-manual)
 and [pgfplots-html-manual](https://github.com/DominikPeters/pgfplots-html-manual).
 This repository replaces them. It started from the tikz.dev-issues repository,
-so the issues are kept.
+so the issues are kept; it was renamed to tikz.dev (GitHub redirects the old
+URLs), and the branch `monorepo`, where the switch was tested, became `master`.
 
 The forks' own files (build scripts, styles, standalone images, banners) were
 imported with their history into `pgf/` and `pgfplots/`; their edits to
@@ -17,11 +18,8 @@ and removed later.
 
 ## Still to do
 
-* Rename this repository from DominikPeters/tikz.dev-issues to
-  DominikPeters/tikz.dev (GitHub redirects the old URLs) and merge the branch
-  `monorepo` into `main`.
 * Switch from the test deployment under `tikz.dev/monorepo/`: delete the
-  repository variable `DEPLOY_PREFIX`, and remove `monorepo` from the branches
-  in `build.yml`.
+  repository variable `DEPLOY_PREFIX`, build all manuals, and delete
+  `monorepo/` on the server.
 * Archive the two fork repositories, with a link to this one in their README.
 * Point links on tikz.dev to the fork repositories (footer, README) here.

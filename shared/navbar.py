@@ -7,7 +7,7 @@ links to itself.
 """
 
 # The tikz.dev repository (issues, "About this HTML version")
-REPO_URL = "https://github.com/DominikPeters/tikz.dev-issues"
+REPO_URL = "https://github.com/DominikPeters/tikz.dev"
 ISSUES_URL = REPO_URL + "/issues"
 
 # package, name in the menu, folder below the site root
