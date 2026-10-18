@@ -76,8 +76,30 @@ version from the title page and the author from the `Manual`.
 Search uses DocSearch v3 (`shared/docsearch.py`, initialised in
 `pgfmanual.js`) with the Algolia application `JS6V5VZSDB` and index `tikz`.
 Each manual filters by its own tag (PGF: `tikz`, the others: their package
-name); a switch in the search window searches all manuals instead. The crawler and index settings are managed in Algolia, not here; a new
-manual's search returns results once the crawler has indexed and tagged it.
+name); a switch in the search window searches all manuals instead. Both
+scopes send one query, requesting ten groups with up to two hits per group.
+
+The production crawler configuration is kept in `scripts/algolia-crawler.js`
+and published through the Algolia crawler editor. Retain the editor's existing
+crawler API key when copying it; the repository contains only a placeholder.
+The crawler starts at the twelve manuals' root URLs and excludes `/monorepo/`
+and the independent tools on the domain. It assigns each record its manual's
+tag and a `search_group`: the enclosing `h6` anchor, falling back to `h5`,
+`h4`, or the page URL. Definition entries retain their own result links while
+sharing the enclosing subsection's result allowance. Examples and navigation
+are excluded from the indexed text.
+
+The `tikz` index must use `attributeForDistinct: "search_group"`, `distinct: 2`,
+and retrieve the `manual` attribute. The crawler's `initialIndexSettings` mirror
+these settings, but changes to an existing index must also be applied in its
+Configuration tab. New manuals and new group keys appear only after a crawl;
+run the crawler after the root deployment is available, or wait for its weekly
+Monday schedule. Do not crawl the staging prefix to populate production search.
+
+Check a root URL in the crawler's URL Tester before publishing. For local
+grouping and permalink checks, run `node scripts/tests/test_algolia_crawler.js`
+with Cheerio available through `NODE_PATH`; an optional JSON file mapping page
+paths to rendered HTML checks additional manuals without indexing anything.
 
 ## lwarp speedups
 

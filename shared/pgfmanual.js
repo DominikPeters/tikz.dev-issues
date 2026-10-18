@@ -47,43 +47,46 @@ function initDocSearch() {
   addSearchScopeToggle(manual[1]);
 }
 
-// The search for this page's manual, or for all manuals. Searching all
-// manuals in a single query would let one large manual (or one page of it)
-// fill all results, so each manual is searched separately, in one HTTP
-// request: this page's manual first, then a few hits from each of the others.
+// One query for either scope. The index groups records by subsection;
+// ten groups with two matches each return at most twenty hits.
 function scopedSearch(client, query) {
+  const all = searchScope === "all";
   const own = SEARCH_MANUALS[TIKZDEV_PACKAGE][0];
-  if (searchScope !== "all" || query.requests.length !== 1) {
-    return client.search({
-      ...query,
-      requests: query.requests.map((request) => ({ ...request, filters: `tags:${own}` })),
-    });
-  }
-  const request = query.requests[0];
-  const order = [TIKZDEV_PACKAGE].concat(Object.keys(SEARCH_MANUALS).filter((p) => p !== TIKZDEV_PACKAGE));
-  const requests = order.map((pkg) => ({
+  const requests = query.requests.map((request) => ({
     ...request,
-    filters: `tags:${SEARCH_MANUALS[pkg][0]}`,
-    hitsPerPage: pkg === TIKZDEV_PACKAGE ? request.hitsPerPage || 20 : 8,
+    ...(all ? {} : { filters: request.filters ? `(${request.filters}) AND tags:${own}` : `tags:${own}` }),
+    distinct: 2,
+    hitsPerPage: 10,
+    attributesToRetrieve: [...new Set([...(request.attributesToRetrieve || ["*"]), "manual"])],
   }));
   return client.search({ ...query, requests }).then((response) => {
-    const merged = { ...response.results[0], hits: [], nbHits: 0 };
-    response.results.forEach((result, i) => {
-      merged.hits.push(...labelSearchHits(result.hits || [], SEARCH_MANUALS[order[i]][1]));
-      merged.nbHits += result.nbHits || 0;
-    });
-    return { ...response, results: [merged] };
+    if (!all) return response;
+    return { ...response, results: response.results.map((result) => ({
+      ...result, hits: labelSearchHits(result.hits || []),
+    })) };
   });
 }
 
 // With all manuals, results are grouped under "Manual › Part"
-function labelSearchHits(hits, name) {
-  for (const hit of hits) {
-    if (hit.hierarchy && hit.hierarchy.lvl0) hit.hierarchy.lvl0 = `${name} › ${hit.hierarchy.lvl0}`;
+function labelSearchHits(hits) {
+  return hits.map((hit) => {
+    // URL fallback also labels records from before the crawler added `manual`.
+    const path = new URL(hit.url, "https://tikz.dev").pathname.split("/")[1];
+    const manual = SEARCH_MANUALS[hit.manual || path] || SEARCH_MANUALS.pgf;
+    const name = manual[1];
+    const labeled = { ...hit };
+    if (hit.hierarchy && hit.hierarchy.lvl0) {
+      labeled.hierarchy = { ...hit.hierarchy, lvl0: `${name} › ${hit.hierarchy.lvl0}` };
+    }
     const highlighted = hit._highlightResult && hit._highlightResult.hierarchy && hit._highlightResult.hierarchy.lvl0;
-    if (highlighted && highlighted.value) highlighted.value = `${name} › ${highlighted.value}`;
-  }
-  return hits;
+    if (highlighted && highlighted.value) {
+      labeled._highlightResult = { ...hit._highlightResult, hierarchy: {
+        ...hit._highlightResult.hierarchy,
+        lvl0: { ...highlighted, value: `${name} › ${highlighted.value}` },
+      } };
+    }
+    return labeled;
+  });
 }
 
 // A "This manual | All manuals" switch below the search field of the search window

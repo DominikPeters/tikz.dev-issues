@@ -131,14 +131,61 @@ process.stdout.write(JSON.stringify(cases));
                 options = case['calls'][0]
                 tag = 'tikz' if package == 'pgf' else package
                 self.assertEqual([r['filters'] for r in case['sent']['package']], ['tags:' + tag])
-                # all manuals: one request per manual, this page's manual first
-                filters = [r['filters'] for r in case['sent']['all']]
-                self.assertEqual(filters[0], 'tags:' + tag)
-                self.assertEqual(len(filters), len(set(filters)))
-                self.assertIn('tags:tikz', filters)
-                self.assertIn('tags:pgfplots', filters)
+                # All manuals use one unfiltered query, bounded to ten groups.
+                self.assertEqual(len(case['sent']['all']), 1)
+                self.assertNotIn('filters', case['sent']['all'][0])
+                for scope in ['package', 'all']:
+                    request = case['sent'][scope][0]
+                    self.assertEqual((request['distinct'], request['hitsPerPage']), (2, 10))
+                    self.assertIn('manual', request['attributesToRetrieve'])
                 self.assertEqual((options['appId'], options['indexName'], options['container']),
                                  ('JS6V5VZSDB', 'tikz', '#search'))
+
+    @unittest.skipUnless(shutil.which('node'), 'Node.js is required to test browser configuration')
+    def test_global_search_preserves_ranking_cached_hits_and_scope(self):
+        script = r'''
+const fs = require('node:fs');
+const vm = require('node:vm');
+const assert = require('node:assert/strict');
+const sandbox = {
+  document: {documentElement: {classList: ['pkg-pgfplots']}, addEventListener: () => {}},
+  window: {addEventListener: () => {}}, URL,
+};
+vm.runInNewContext(fs.readFileSync(process.argv[1], 'utf8'), sandbox);
+(async () => {
+  const hits = [
+    {url: 'https://tikz.dev/tcolorbox/option-keys', manual: 'tcolorbox',
+     hierarchy: {lvl0: 'Core'}, _highlightResult: {hierarchy: {lvl0: {value: '<mark>Core</mark>'}}}},
+    {url: 'https://tikz.dev/pgfplots/reference-markers', hierarchy: {lvl0: 'Reference'}},
+    {url: 'https://tikz.dev/tikz-shapes', hierarchy: {lvl0: 'TikZ'}},
+  ];
+  const cached = {results: [{hits, nbHits: 30, nbPages: 3, queryID: 'original'}]};
+  const sent = [];
+  sandbox.client = {search: query => {sent.push(query); return Promise.resolve(cached);}};
+  sandbox.query = {requests: [{indexName: 'tikz', query: 'node', attributesToRetrieve: ['url', 'hierarchy']}]};
+  vm.runInNewContext('searchScope = "all";', sandbox);
+  const pending = vm.runInNewContext('scopedSearch(client, query)', sandbox);
+  vm.runInNewContext('searchScope = "package";', sandbox);
+  const result = await pending;
+  assert.equal(sent[0].requests.length, 1);
+  assert.equal(result.results[0].nbHits, 30);
+  assert.equal(result.results[0].queryID, 'original');
+  assert.deepEqual(Array.from(result.results[0].hits, hit => hit.hierarchy.lvl0),
+    ['tcolorbox › Core', 'PGFplots › Reference', 'PGF/TikZ › TikZ']);
+  assert.equal(result.results[0].hits[0]._highlightResult.hierarchy.lvl0.value, 'tcolorbox › <mark>Core</mark>');
+  assert.equal(hits[0].hierarchy.lvl0, 'Core');
+  assert.equal(hits[0]._highlightResult.hierarchy.lvl0.value, '<mark>Core</mark>');
+  assert.equal(sandbox.query.requests[0].attributesToRetrieve.length, 2);
+  assert.ok(!('filters' in sandbox.query.requests[0]));
+  sandbox.query.requests[0].filters = 'lang:en-US';
+  assert.equal(await vm.runInNewContext('scopedSearch(client, query)', sandbox), cached);
+  assert.equal(sent[1].requests[0].filters, '(lang:en-US) AND tags:pgfplots');
+  vm.runInNewContext('searchScope = "all";', sandbox);
+  await vm.runInNewContext('scopedSearch(client, query)', sandbox);
+  assert.equal(sent[2].requests[0].filters, 'lang:en-US');
+})().catch(error => {console.error(error); process.exitCode = 1;});
+'''
+        subprocess.run(['node', '-e', script, str(ROOT / 'shared/pgfmanual.js')], check=True)
 
 
 if __name__ == '__main__':
