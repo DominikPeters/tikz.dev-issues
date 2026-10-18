@@ -1,6 +1,6 @@
 # tikz.dev
 
-Sources of [tikz.dev](https://tikz.dev), HTML versions of the manuals of
+Sources of [tikz.dev](https://tikz.dev) which features HTML versions of the manuals of
 PGF/TikZ and related packages:
 
 | Manual | On tikz.dev | Upstream |
@@ -23,16 +23,19 @@ Feedback, suggestions and bug reports are welcome as
 
 ## How it works
 
-The package sources are not stored here. Each manual pins an upstream commit
-in `<package>/upstream.lock`, and is built from that commit plus the edits in
-its folder (patches, HTML adaptations, postprocessing). Most manuals are
-converted with [lwarp](https://ctan.org/pkg/lwarp); tcolorbox, tkz-euclide,
-chemfig, forest and nicematrix are converted by a Python converter. All manuals share one stylesheet, one script and one header.
+The HTML manuals are built from their sources (taken from GitHub or CTAN) using one of two methods:
 
-GitHub Actions builds and deploys a manual whenever its folder changes, and
-checks every six hours for new upstream commits to its documentation. A new
-commit that builds is published and recorded in the lock file; one that fails
-opens an issue and leaves the site unchanged.
+* **[lwarp](https://ctan.org/pkg/lwarp)**: a LaTeX package that converts a LaTeX document to HTML. 
+It is used for PGF/TikZ, PGFplots, tcolorbox, and wheelchart. The resulting HTML files are then
+postprocessed using a Python script to add the header, menu, and other features of tikz.dev.
+A self-contained version of this pipeline is available at https://github.com/DominikPeters/tikz.dev-style/.
+* **Python converters**: Other manuals are converted to HTML using custom Python converters that
+parse the LaTeX source and generate HTML. There were written by Claude (Opus 5.5) and are used for 
+tikz-cd, TikZ-Feynman, pgfgantt, tkz-euclide, chemfig, forest, and nicematrix.
+
+The builds are run in a GitHub Action. We also use actions to automatically and regularly check for changes
+to the upstream manuals. When a change causes the build to fail, the action opens an issue in this repository.
+Each package has a file `upstream.lock` which specifies the upstream commit or CTAN version that was last successfully built.
 
 ## Building a manual locally
 
@@ -44,7 +47,7 @@ scripts/serve.py          # http://127.0.0.1:8765/, with every manual built so f
 
 This needs a recent TeX Live with LuaLaTeX and lwarp, Python 3 and the image
 tools listed in [.github/workflows/build-package.yml](.github/workflows/build-package.yml).
-The full PGF manual takes a while; the smaller manuals build in minutes.
+The full PGF and pgfplots manuals take 30-50 minutes; the smaller manuals are fast.
 
 ## Repository layout
 
