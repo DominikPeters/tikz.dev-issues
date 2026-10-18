@@ -16,10 +16,8 @@ Photoshop sources of the banners were not imported. The mapping from old to
 new commit hashes was added in commit `ca2e143` as `migration/*-commit-map.txt`
 and removed later.
 
-## Still to do
+## The switch
 
-* Switch from the test deployment under `tikz.dev/monorepo/`: delete the
-  repository variable `DEPLOY_PREFIX`, build all manuals, and delete
-  `monorepo/` on the server.
-* Archive the two fork repositories, with a link to this one in their README.
-* Point links on tikz.dev to the fork repositories (footer, README) here.
+On 2026-10-18 tikz.dev was deployed from this repository for the first time
+(the test copy under `tikz.dev/monorepo/` was deleted), and the two fork
+repositories were archived, with a link to this one in their README.
