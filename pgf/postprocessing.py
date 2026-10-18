@@ -725,8 +725,8 @@ def add_header_links_to_other_sites(filename):
         html = f.read()
         html = html.replace('<div id="search"></div>', f"""
         <span class="other-header-links">
-          | {other_packages_menu("pgf")}
-          | <a href="/editor/">TikZ Editor</a>
+          <span class="header-separator">|</span> {other_packages_menu("pgf", [("TikZ Editor", "/editor/")])}
+          <span class="header-separator">|</span> <a class="header-editor-link" href="/editor/">TikZ Editor</a>
         </span>
         <div id="search"></div>""")
     with open("processed/"+filename, "w") as f:

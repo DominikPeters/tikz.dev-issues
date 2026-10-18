@@ -840,6 +840,61 @@ header .pkg-menu-list a[aria-current] {
   font-weight: bold;
 }
 
+header .pkg-menu-list .pkg-menu-divider {
+  height: 1px;
+  margin: 0.35rem 0;
+  background: #ddd;
+}
+
+.pkg-menu-external {
+  width: 0.75em;
+  height: 0.75em;
+  margin-left: 0.4em;
+  vertical-align: -0.02em;
+  color: #888;
+}
+
+header .pkg-menu-list .pkg-menu-phone {
+  display: none;
+}
+
+/* phones: the PGF header keeps its title and a caret (like the other
+   manuals); the caret's tap area extends beyond it */
+@media screen and (max-width: 639px) {
+  header .header-separator,
+  header .header-editor-link {
+    display: none;
+  }
+
+  header .pkg-menu-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  header .other-header-links {
+    margin-left: 0;
+  }
+
+  header .pkg-menu-list .pkg-menu-phone {
+    display: list-item;
+  }
+
+  .pkg-menu-button {
+    padding: 0.7rem 1.4rem 0.7rem 0.3rem;
+    margin: -0.7rem -1.4rem -0.7rem 0;
+  }
+
+  .pkg-menu-caret {
+    width: 0.75em;
+    height: 0.45em;
+    margin-left: 0.2em;
+  }
+}
+
 #hamburger-button {
   font-family: "Linux Libertine O", "Hoefler Text", "Garamond", "Bembo",
     "Janson", "TeX Gyre Pagella", "Palatino", "Liberation Serif",
