@@ -819,7 +819,8 @@ header .pkg-menu:focus-within .pkg-menu-list {
 }
 
 @media (hover: hover) {
-  header .pkg-menu:hover .pkg-menu-list {
+  header .pkg-menu:hover .pkg-menu-list,
+  header .pkg-menu.hover .pkg-menu-list {
     display: block;
   }
 }

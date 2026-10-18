@@ -284,6 +284,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
       if (!open) button.blur(); // otherwise :focus-within keeps it open
       closePackageMenus(menu);
     });
+    // stay open briefly after the mouse leaves, so that a diagonal move from
+    // the caret to the list does not close it
+    let closeTimer;
+    menu.addEventListener("mouseenter", () => {
+      clearTimeout(closeTimer);
+      menu.classList.add("hover");
+    });
+    menu.addEventListener("mouseleave", () => {
+      closeTimer = setTimeout(() => menu.classList.remove("hover"), 400);
+    });
   }
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".pkg-menu")) closePackageMenus(null);
