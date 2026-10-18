@@ -11,19 +11,20 @@ REPO_URL = "https://github.com/DominikPeters/tikz.dev"
 ISSUES_URL = REPO_URL + "/issues"
 
 # package, name in the menu, folder below the site root
+# (in the menu order: PGF/TikZ and PGFplots, then alphabetical)
 PACKAGES = [
     ("pgf", 'PGF/<span class="tikzname">TikZ</span>', ""),
     ("pgfplots", "PGFplots", "pgfplots/"),
-    ("tcolorbox", "tcolorbox", "tcolorbox/"),
-    ("tikz-cd", "tikz-cd", "tikz-cd/"),
-    ("pgf-pie", "pgf-pie", "pgf-pie/"),
-    ("tikz-feynman", "TikZ-Feynman", "tikz-feynman/"),
-    ("wheelchart", "wheelchart", "wheelchart/"),
-    ("pgfgantt", "pgfgantt", "pgfgantt/"),
-    ("tkz-euclide", "tkz-euclide", "tkz-euclide/"),
     ("chemfig", "chemfig", "chemfig/"),
     ("forest", "forest", "forest/"),
     ("nicematrix", "nicematrix", "nicematrix/"),
+    ("pgf-pie", "pgf-pie", "pgf-pie/"),
+    ("pgfgantt", "pgfgantt", "pgfgantt/"),
+    ("tcolorbox", "tcolorbox", "tcolorbox/"),
+    ("tikz-cd", "tikz-cd", "tikz-cd/"),
+    ("tikz-feynman", "TikZ-Feynman", "tikz-feynman/"),
+    ("tkz-euclide", "tkz-euclide", "tkz-euclide/"),
+    ("wheelchart", "wheelchart", "wheelchart/"),
 ]
 FOLDERS = {pkg: folder for pkg, _, folder in PACKAGES}
 
