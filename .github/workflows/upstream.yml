@@ -62,6 +62,10 @@ jobs:
   update:
     needs: check
     if: needs.check.outputs.updates != '[]'
+    # The called record job commits lock updates and manages failure issues.
+    permissions:
+      contents: write
+      issues: write
     strategy:
       fail-fast: false
       matrix:
