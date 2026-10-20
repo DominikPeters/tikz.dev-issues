@@ -1,7 +1,7 @@
 diff --git a/doc/latex/pgfplots/pgfplots.tex b/doc/latex/pgfplots/pgfplots.tex
 --- a/doc/latex/pgfplots/pgfplots.tex
 +++ b/doc/latex/pgfplots/pgfplots.tex
-@@ -23,13 +23,14 @@
+@@ -23,7 +23,8 @@
  % SEE pgfplots-macros.tex as well!
  %\pdfminorversion=5 % to allow compression
  %\pdfobjcompresslevel=2
@@ -9,7 +9,9 @@ diff --git a/doc/latex/pgfplots/pgfplots.tex b/doc/latex/pgfplots/pgfplots.tex
 +% \documentclass[a4paper,openany]{book}
 +\documentclass[a4paper,doc2]{ltxdoc}
  
- \let\bookmaketitle=\maketitle
+ % Promote `Missing character' reports to full errors
+ \tracinglostchars=3
+@@ -32,7 +33,7 @@
  
  % -----------------------------------
  % this here is from ltxdoc:
@@ -18,7 +20,7 @@ diff --git a/doc/latex/pgfplots/pgfplots.tex b/doc/latex/pgfplots/pgfplots.tex
  \AtBeginDocument{\MakeShortVerb{\|}}
  %\setlength{\textwidth}{355pt}
  %\addtolength\marginparwidth{30pt}
-@@ -46,6 +47,20 @@
+@@ -49,6 +50,20 @@
    {\ttfamily(}\meta{#1}{\ttfamily)}}
  \raggedbottom
  
@@ -39,7 +41,7 @@ diff --git a/doc/latex/pgfplots/pgfplots.tex b/doc/latex/pgfplots/pgfplots.tex
  % -----------------------------------
  \input{pgfplots.preamble.tex}
  
-@@ -58,7 +73,7 @@
+@@ -61,7 +76,7 @@
  
  %\RequirePackage[german,english,francais]{babel}
  
@@ -48,7 +50,7 @@ diff --git a/doc/latex/pgfplots/pgfplots.tex b/doc/latex/pgfplots/pgfplots.tex
  
  \IfFileExists{tikzlibraryspy.code.tex}{%
  \usetikzlibrary{spy}
-@@ -95,11 +110,20 @@
+@@ -98,11 +113,20 @@
      tabsize=4,
  }
  
@@ -70,7 +72,7 @@ diff --git a/doc/latex/pgfplots/pgfplots.tex b/doc/latex/pgfplots/pgfplots.tex
  \title{%
      Manual for Package \PGFPlots{}\\
      {\small 2D/3D Plots in \LaTeX{}, Version \pgfplotsversion}\\
-@@ -170,18 +194,24 @@
+@@ -173,18 +197,24 @@
  }%
  
  

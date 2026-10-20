@@ -11,8 +11,8 @@ diff --git a/doc/latex/pgfplots/pgfplots.bib b/doc/latex/pgfplots/pgfplots.bib
 +                  \href{https://www.ruhr-uni-bochum.de/TeX/einfuehrung-in-tex.pdf}{\texttt{.pdf}}},
  }
  
- @MISC{keyvalintro,
-@@ -60,14 +60,14 @@
+ @article{keyvalintro,
+@@ -63,14 +63,14 @@
    author       = {C.~Feuers\"anger},
    title        = {{\PGFPlotstable{} package -- Loading, rounding and formatting tables in \LaTeX{}}},
    howpublished = {{Available as separate package
